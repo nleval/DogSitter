@@ -1,7 +1,7 @@
 <?php
 
 //Ajout de l'autoload de composer
-require_once 'vendor/autoload.php';
+// require_once 'vendor/autoload.php';
 
 //Récupération des constantes
 require_once 'config/init.php';
