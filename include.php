@@ -13,6 +13,9 @@ require_once 'config/twig.php';
 require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_index.class.php';
+require_once 'controllers/controller_utilisateur.class.php';
 
 //Ajout des modèles
 require_once 'modeles/Bd.class.php';
+require_once 'modeles/Utilisateur.class.php';
+require_once 'modeles/Utilisateur.dao.php';
