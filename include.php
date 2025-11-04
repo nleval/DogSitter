@@ -16,3 +16,6 @@ require_once 'controllers/controller_index.class.php';
 
 //Ajout des modèles
 require_once 'modeles/Bd.class.php';
+
+//Ajout de Chien
+require_once 'modeles/chien.class.php';
