@@ -1,8 +1,19 @@
 {
-    
+    "name": "vicla/dog-sitter",
+    "autoload": {
+        "psr-4": {
+            "Vicla\\DogSitter\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Victor Lalanne",
+            "email": "vlalanne001@iutbayonne.univ-pau.fr"
+        }
+    ],
     "require": {
-        "twig/twig": "^3.11",
-        "twig/intl-extra": "^3.11",
-        "symfony/yaml": "^5.4"
+        "symfony/yaml": "^7.3",
+        "twig/twig": "^3.22",
+        "twig/intl-extra": "^3.22"
     }
 }
