@@ -7,10 +7,10 @@ class ControllerAnnonce extends Controller
         parent::__construct($twig, $loader);
     }
 
-    /**
+    /**git 
      * Afficher une annonce spécifique
      */
-    public function afficherAnnonce($id_annonce = 1)
+    public function afficherAnnonce($id_annonce = 'ANNONCE001')
     {
         // Récupérer une annonce spécifique depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
@@ -42,7 +42,7 @@ class ControllerAnnonce extends Controller
     /**
      * Afficher toutes les annonces d’un utilisateur donné
      */
-    public function afficherAnnoncesParUtilisateur($id_utilisateur)
+    public function afficherAnnoncesParUtilisateur($id_utilisateur = 'USER003')
     {
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);

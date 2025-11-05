@@ -6,7 +6,11 @@
 </head>
 <body>
     {% if annoncesListe is defined and annoncesListe|length > 0 %}
-        <h2>Liste des annonces :</h2>
+        {% if id_utilisateur is defined %}
+            <h2>Annonces publiées par l'utilisateur {{ id_utilisateur }}</h2>
+        {% else %}
+            <h2>Toutes les annonces</h2>
+        {% endif %}
         <ul>
             {% for annonce in annoncesListe %}
                 <li>
@@ -17,28 +21,13 @@
                     <strong>Tarif :</strong> {{ annonce.tarif }} €<br>
                     <strong>Status :</strong> {{ annonce.status }}<br>
                     <strong>Description :</strong> {{ annonce.description }}<br>
-                    <strong>ID Utilisateur :</strong> {{ annonce.id_utilisateur }}
-                    <hr>
+                    <strong>ID Utilisateur :</strong> {{ annonce.idUtilisateur }}<br>
+                    
                 </li>
-            {% else %}
-                <li>Aucune annonce trouvée.</li>
             {% endfor %}
         </ul>
-
-    {% elseif annonce is defined %}
-        <h2>Détails de l’annonce :</h2>
-        <ul>
-            <li><strong>Date :</strong> {{ annonce.datePromenade }}</li>
-            <li><strong>Horaire :</strong> {{ annonce.horaire }}</li>
-            <li><strong>Durée :</strong> {{ annonce.duree }} minutes</li>
-            <li><strong>Endroit :</strong> {{ annonce.endroitPromenade }}</li>
-            <li><strong>Tarif :</strong> {{ annonce.tarif }} €</li>
-            <li><strong>Status :</strong> {{ annonce.status }}</li>
-            <li><strong>Description :</strong> {{ annonce.description }}</li>
-            <li><strong>ID Utilisateur :</strong> {{ annonce.id_utilisateur }}</li>
-        </ul>
     {% else %}
-        <p>Aucune annonce à afficher.</p>
+        <p>Aucune annonce trouvée.</p>
     {% endif %}
 
     <a href="?controleur=Index&methode=render">Accueil</a>
