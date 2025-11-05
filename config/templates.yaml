@@ -4,6 +4,6 @@
 DB_:
   HOST: localhost
   NAME: dogsitter
-  USER: root
+  USER: 
   PASS: 
 PREFIXE_TABLE: dog_

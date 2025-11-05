@@ -1,5 +1,15 @@
 {
-    
+    "name": "root/dog-sitter",
+    "autoload": {
+        "psr-4": {
+            "Root\\DogSitter\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Robin"
+        }
+    ],
     "require": {
         "twig/twig": "^3.22",
         "twig/intl-extra": "^3.11",
