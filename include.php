@@ -19,3 +19,4 @@ require_once 'modeles/Bd.class.php';
 
 //Ajout de Chien
 require_once 'modeles/chien.class.php';
+require_once 'modeles/chien.dao.php';
