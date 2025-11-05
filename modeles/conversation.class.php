@@ -2,7 +2,7 @@
     class Conversation {
         // Attributs de la conversation
         private ?string $idConversation;
-        private ?date $dateCreation;
+        private ?string $dateCreation;
         
         // Constructeur de la classe Conversation
         public function __construct(?string $idConversation = null, ?date $dateCreation = null) {
@@ -18,10 +18,10 @@
         public function setIdConversation(?string $idConversation): void {
             $this->idConversation = $idConversation;
         }
-        public function getDateCreation(): ?date {
+        public function getDateCreation(): ?string {
             return $this->dateCreation;
         }
-        public function setDateCreation(?date $dateCreation): void {
+        public function setDateCreation(?string $dateCreation): void {
             $this->dateCreation = $dateCreation;
         }
     }
