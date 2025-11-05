@@ -2,8 +2,8 @@
 
 # Connexion à la base de donnée
 DB_:
-  HOST: localhost
-  NAME: dogsitter
-  USER: root
-  PASS: 
+  HOST: lakartxela
+  NAME: apigeon001_pro
+  USER: apigeon001_pro
+  PASS: apigeon001_pro
 PREFIXE_TABLE: dog_

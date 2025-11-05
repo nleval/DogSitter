@@ -9,7 +9,7 @@
         <h2>Liste des avis :</h2>
         <ul>
             {% for avis in avisListe %}
-                <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idutilisateurnote }}</li>
+                <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idpromenade }} - {{ avis.idutilisateurnote }}</li>
             {% else %}
                 <li>Aucun avis trouvé.</li>
             {% endfor %}
@@ -18,7 +18,7 @@
     {% elseif avis is defined %}
         <h2>Un avis :</h2>
         <ul>
-            <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idutilisateurnote }}</li>
+            <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idpromenade }} - {{ avis.idutilisateurnote }}</li>
         </ul>
     {% else %}
         <p>Aucun avis à afficher.</p>
