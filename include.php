@@ -15,6 +15,7 @@ require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_index.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_promenade.class.php';
+require_once 'controllers/controller_annonce.class.php';
 
 //Ajout des modèles
 require_once 'modeles/Bd.class.php';
@@ -22,3 +23,5 @@ require_once 'modeles/Utilisateur.class.php';
 require_once 'modeles/Utilisateur.dao.php';
 require_once 'modeles/Promenade.class.php';
 require_once 'modeles/Promenade.dao.php';
+require_once 'modeles/Annonce.class.php';
+require_once 'modeles/Annonce.dao.php';
