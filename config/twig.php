@@ -1,6 +1,6 @@
 <?php
 //ajout de la classe IntlExtension et creation de l’alias IntlExtension
-// use Twig\Extra\Intl\IntlExtension;
+//use Twig\Extra\Intl\IntlExtension;
 
 //initialisation twig : chargement du dossier contenant les templates
 $loader = new Twig\Loader\FilesystemLoader('templates');
@@ -22,7 +22,7 @@ $twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/P
 $twig->addExtension(new \Twig\Extension\DebugExtension());
 
 //Ajout de l'extension d'internationalisation qui permet d'utiliser les filtres de date dans twig
-// $twig->addExtension(new IntlExtension());
+//$twig->addExtension(new IntlExtension());
 
 use Symfony\Component\Yaml\Yaml;
 
