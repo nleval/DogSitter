@@ -10,10 +10,10 @@ class ControllerChien extends Controller
     {
         // Récupérer un chien spécifique depuis la base de données
         $managerchien = new ChienDAO($this->getPDO());
-        $chien = $managerchien->find(1); // Exemple avec l'ID 1
+        $chien = $managerchien->findById(1); // Exemple avec l'ID 1
 
         // Rendre la vue avec le chien
-        $template = $this->getTwig()->load('chiens.html.twig');
+        $template = $this->getTwig()->load('chien.html.twig');
         echo $template->render([
             'chien' => $chien
         ]);
@@ -26,7 +26,7 @@ class ControllerChien extends Controller
         $chiensListe = $managerchien->findAll();
 
         // Rendre la vue avec les chiens
-        $template = $this->getTwig()->load('chiens.html.twig');
+        $template = $this->getTwig()->load('chien.html.twig');
         echo $template->render([
             'chiensListe' => $chiensListe
         ]);

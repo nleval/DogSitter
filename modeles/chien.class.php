@@ -2,13 +2,13 @@
 class Chien{
     private ?int $id_chien;
     private ?string $nom_chien;
-    private ?float $poids;
-    private ?int $taille;
+    private ?string $poids;
+    private ?string $taille;
     private ?string $race;
     private ?string $cheminPhoto;
     private ?int $id_utilisateur;
 
-    public function __construct(?int $id_chien=null, ?string $nom_chien=null, ?float $poids=null, ?int $taille=null, ?string $race=null, ?string $cheminPhoto=null, ?int $id_utilisateur=null){
+    public function __construct(?int $id_chien=null, ?string $nom_chien=null, ?string $poids=null, ?string $taille=null, ?string $race=null, ?string $cheminPhoto=null, ?int $id_utilisateur=null){
         $this->id_chien=$id_chien;
         $this->nom_chien=$nom_chien;
         $this->poids=$poids;
@@ -18,31 +18,31 @@ class Chien{
         $this->id_utilisateur=$id_utilisateur;
     }
 
-    public function getIdChien(){
+    public function getId_Chien(){
         return $this->id_chien;
     }
-    public function setIdChien(int $id_chien): void{
+    public function setId_Chien(int $id_chien): void{
         $this->id_chien=$id_chien;
     }
 
-    public function getNomChien(){
+    public function getNom_Chien(){
         return $this->nom_chien;
     }
-    public function setNomChien(string $nom_chien): void{
+    public function setNom_Chien(string $nom_chien): void{
         $this->nom_chien=$nom_chien;
     }
 
     public function getPoids(){
         return $this->poids;
     }
-    public function setPoids(float $poids): void{
+    public function setPoids(string $poids): void{
         $this->poids=$poids;
     }
 
     public function getTaille(){
         return $this->taille;
     }
-    public function setTaille(int $taille): void{
+    public function setTaille(string $taille): void{
         $this->taille=$taille;
     }
 
@@ -60,10 +60,10 @@ class Chien{
         $this->cheminPhoto=$cheminPhoto;
     }
 
-    public function getIdUtilisateur(){
+    public function getid_Utilisateur(){
         return $this->id_utilisateur;
     }
-    public function setIdUtilisateur(int $id_utilisateur): void{
+    public function setid_Utilisateur(int $id_utilisateur): void{
         $this->id_utilisateur=$id_utilisateur;
     }
 }

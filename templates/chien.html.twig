@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chien</title>
+</head>
+<body>
+    {% if chiensListe is defined and chiensListe|length > 0 %}
+        <h2>Liste des chiens :</h2>
+        <ul>
+            {% for chien in chiensListe %}
+                <li><strong>ID :</strong> {{chien.id_chien}}<br>
+                    <strong>Nom :</strong> {{chien.nom_chien}}<br>
+                    <strong>Poids :</strong> {{chien.poids}} kg<br>
+                    <strong>Taille :</strong> {{chien.taille}} cm<br>
+                    <strong>Race :</strong> {{chien.race}}<br>
+                    <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
+                    <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
+                </li>
+            {% else %}
+                <li>Aucun chien trouvé.</li>
+            {% endfor %}
+        </ul>
+
+    {% elseif chien is defined %}
+        <h2>Détails du chien :</h2>
+        <ul>
+            <li><strong>ID :</strong> {{chien.id_chien}}<br>
+                <strong>Nom :</strong> {{chien.nom_chien}}<br>
+                <strong>Poids :</strong> {{chien.poids}} kg<br>
+                <strong>Taille :</strong> {{chien.taille}} cm<br>
+                <strong>Race :</strong> {{chien.race}}<br>
+                <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
+                <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
+            </li>
+        </ul>
+    {% else %}
+        <p>Aucun chien trouvé.</p>
+    {% endif %}
+    <a href="?controleur=Index&methode=render">Accueil</a>
+</body>
+</html>
