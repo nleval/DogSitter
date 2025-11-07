@@ -14,12 +14,43 @@ class ChienDAO{
         $this->pdo = $pdo;
     }
 
-    public function find($id){
-
+    public function find(?int $id): ?Chien{
+        $pdoStatement=$this->pdo->prepare("SELECT * FROM". PREFIXE_TABLE."Chien WHERE id=:id");
+        $pdoStatement -> bindParam(':id', $id, PDO::PARAM_INT);
+        $pdoStatement->execute();
+        $row = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        if($row){
+            return new Chien(
+                $row['id_chien'],
+                $row['nom_chien'],
+                $row['poids'],
+                $row['taille'],
+                $row['race'],
+                $row['cheminPhoto'],
+                $row['id_utilisateur']
+            );
+        }
+        return null;
     }
 
     public function findAll(){
+        $chiens = [];
+        $pdoStatement = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Chien");
+        $pdoStatement->execute();
+        $results = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($results as $row) {
+            $chiens[] = new Chien(
+                $row['id_chien'],
+                $row['nom_chien'],
+                $row['poids'],
+                $row['taille'],
+                $row['race'],
+                $row['cheminPhoto'],
+                $row['id_utilisateur']
+            );
+        }
+        return $chiens;
     }
 }
 ?>
