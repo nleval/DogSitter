@@ -2,26 +2,26 @@
 
 class Annonce
 {
-    private ?int $id_annonce;
+    private ?string $id_annonce;
     private ?string $datePromenade;
     private ?string $horaire;
     private ?string $status;
-    private ?float $tarif;
+    private ?string $tarif;
     private ?string $description;
     private ?string $endroitPromenade;
     private ?int $duree;
-    private ?int $id_utilisateur;
+    private ?string $id_utilisateur;
 
     public function __construct(
-        ?int $id_annonce = null,
+        ?string $id_annonce = null,
         ?string $datePromenade = null,
         ?string $horaire = null,
         ?string $status = null,
-        ?float $tarif = null,
+        ?string $tarif = null,
         ?string $description = null,
         ?string $endroitPromenade = null,
         ?int $duree = null,
-        ?int $id_utilisateur = null
+        ?string $id_utilisateur = null
     ) {
         $this->id_annonce = $id_annonce;
         $this->datePromenade = $datePromenade;
@@ -36,10 +36,10 @@ class Annonce
 
     // GETTERS & SETTERS
 
-    public function getIdAnnonce(): ?int {
+    public function getIdAnnonce(): ?string {
         return $this->id_annonce;
     }
-    public function setIdAnnonce(?int $id_annonce): void {
+    public function setIdAnnonce(?string $id_annonce): void {
         $this->id_annonce = $id_annonce;
     }
 
@@ -64,10 +64,10 @@ class Annonce
         $this->status = $status;
     }
 
-    public function getTarif(): ?float {
+    public function getTarif(): ?string {
         return $this->tarif;
     }
-    public function setTarif(?float $tarif): void {
+    public function setTarif(?string $tarif): void {
         $this->tarif = $tarif;
     }
 
@@ -92,10 +92,10 @@ class Annonce
         $this->duree = $duree;
     }
 
-    public function getIdUtilisateur(): ?int {
+    public function getIdUtilisateur(): ?string {
         return $this->id_utilisateur;
     }
-    public function setIdUtilisateur(?int $id_utilisateur): void {
+    public function setIdUtilisateur(?string $id_utilisateur): void {
         $this->id_utilisateur = $id_utilisateur;
     }
 }
