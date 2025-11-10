@@ -14,6 +14,10 @@ require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_index.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
+require_once 'controllers/controller_avis.class.php';
+require_once 'controllers/controller_promenade.class.php';
+require_once 'controllers/controller_annonce.class.php';
+require_once 'controllers/controller_chien.class.php';
 
 //Ajout des modèles
 require_once 'modeles/Bd.class.php';
@@ -23,3 +27,11 @@ require_once 'modeles/conversation.class.php';
 require_once 'modeles/conversation.dao.php';
 require_once 'modeles/message.class.php';
 require_once 'modeles/message.dao.php';
+require_once 'modeles/Avis.class.php';
+require_once 'modeles/Avis.dao.php';
+require_once 'modeles/Promenade.class.php';
+require_once 'modeles/Promenade.dao.php';
+require_once 'modeles/Annonce.class.php';
+require_once 'modeles/Annonce.dao.php';
+require_once 'modeles/chien.class.php';
+require_once 'modeles/chien.dao.php';

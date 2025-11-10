@@ -1,8 +1,13 @@
 {
-    
+    "name": "root/dog-sitter",
+    "authors": [
+        {
+            "name": "Julian"
+        }
+    ],
     "require": {
-        "twig/twig": "^3.11",
-        "twig/intl-extra": "^3.11",
-        "symfony/yaml": "^5.4"
+        "twig/twig": "^3.22",
+        "twig/intl-extra": "^3.22",
+        "symfony/yaml": "^7.3"
     }
 }
