@@ -32,8 +32,6 @@ class ChienDAO{
             );
             
             
-            
-            
         }
         return null;
     }
@@ -53,7 +51,6 @@ class ChienDAO{
                 $row['cheminPhoto'],
                 $row['id_utilisateur']
             );
-            var_dump($chiens);
         }
         return $chiens;
     }
