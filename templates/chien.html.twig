@@ -17,13 +17,14 @@
                     <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
                     <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
                 </li>
+                <a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
             {% else %}
                 <li>Aucun chien trouvé.</li>
             {% endfor %}
         </ul>
 
     {% elseif chien is defined %}
-        <h2>Détails du chien :</h2>
+        <h2>Détails du chien {{chien.id_chien}}:</h2>
         <ul>
             <li><strong>ID :</strong> {{chien.id_chien}}<br>
                 <strong>Nom :</strong> {{chien.nom_chien}}<br>
