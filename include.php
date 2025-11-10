@@ -28,3 +28,7 @@ require_once 'modeles/Promenade.class.php';
 require_once 'modeles/Promenade.dao.php';
 require_once 'modeles/Annonce.class.php';
 require_once 'modeles/Annonce.dao.php';
+require_once 'modeles/conversation.class.php';
+require_once 'modeles/conversation.dao.php';
+require_once 'modeles/message.class.php';
+require_once 'modeles/message.dao.php';
