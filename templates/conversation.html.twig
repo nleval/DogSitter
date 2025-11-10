@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chien</title>
+</head>
+<body>
+    {% if conversationListe is defined and conversationListe|length > 0 %}
+        <h2>Liste des conversations :</h2>
+        <ul>
+            {% for conversation in conversationListe %}
+                <li><strong>ID :</strong> {{conversation.id_conversation}}<br>
+                    <strong>Nom :</strong> {{conversation.date_creation}}<br>
+                </li>
+            {% else %}
+                <li>Aucune conversation trouvée.</li>
+            {% endfor %}
+        </ul>
+
+    {% elseif conversation is defined %}
+        <h2>Détails de la conversation :</h2>
+        <ul>
+            <li><strong>ID :</strong> {{conversation.id_conversation}}<br>
+                <strong>Date de création :</strong> {{conversation.date_creation}}<br>
+            </li>
+        </ul>
+    {% else %}
+        <p>Aucune conversation trouvée.</p>
+    {% endif %}
+    <a href="?controleur=Index&methode=render">Accueil</a>
+</body>
+</html>
