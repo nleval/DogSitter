@@ -8,17 +8,11 @@ Exécutez les commandes suivantes pour installer les dépendances du projet et l
 
 Installation des dépendances principales du projet :
     
-    code Bash
-
-    
     composer install
 
   
 
 Ajout de Twig en tant que moteur de templating :
-
-    code Bash
-
     
     composer require twig/twig
 
@@ -26,9 +20,6 @@ Ajout de Twig en tant que moteur de templating :
 
 Ajout de l'extension Twig Intl (pour les fonctionnalités d'internationalisation) :
 
-    code Bash
-
-        
     composer require twig/intl-extra
 
       
