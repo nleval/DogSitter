@@ -2,18 +2,27 @@
 
 class Annonce
 {
-    private $id_annonce;
-    private $datePromenade;
-    private $horaire;
-    private $status;
-    private $tarif;
-    private $description;
-    private $endroitPromenade;
-    private $duree;
-    private $id_utilisateur;
+    private ?int $id_annonce;
+    private ?string $datePromenade;
+    private ?string $horaire;
+    private ?string $status;
+    private ?float $tarif;
+    private ?string $description;
+    private ?string $endroitPromenade;
+    private ?int $duree;
+    private ?int $id_utilisateur;
 
-    public function __construct($id_annonce, $datePromenade, $horaire, $status, $tarif, $description, $endroitPromenade, $duree, $id_utilisateur)
-    {
+    public function __construct(
+        ?int $id_annonce = null,
+        ?string $datePromenade = null,
+        ?string $horaire = null,
+        ?string $status = null,
+        ?float $tarif = null,
+        ?string $description = null,
+        ?string $endroitPromenade = null,
+        ?int $duree = null,
+        ?int $id_utilisateur = null
+    ) {
         $this->id_annonce = $id_annonce;
         $this->datePromenade = $datePromenade;
         $this->horaire = $horaire;
@@ -27,75 +36,67 @@ class Annonce
 
     // GETTERS & SETTERS
 
-    // ID Annonce
-    public function getIdAnnonce() {
+    public function getIdAnnonce(): ?int {
         return $this->id_annonce;
     }
-    public function setIdAnnonce($id_annonce): void {
+    public function setIdAnnonce(?int $id_annonce): void {
         $this->id_annonce = $id_annonce;
     }
 
-    // Date promenade
-    public function getDatePromenade() {
+    public function getDatePromenade(): ?string {
         return $this->datePromenade;
     }
-    public function setDatePromenade($datePromenade): void {
+    public function setDatePromenade(?string $datePromenade): void {
         $this->datePromenade = $datePromenade;
     }
 
-    // Horaire
-    public function getHoraire() {
+    public function getHoraire(): ?string {
         return $this->horaire;
     }
-    public function setHoraire($horaire): void {
+    public function setHoraire(?string $horaire): void {
         $this->horaire = $horaire;
     }
 
-    // Status
-    public function getStatus() {
+    public function getStatus(): ?string {
         return $this->status;
     }
-    public function setStatus($status): void {
+    public function setStatus(?string $status): void {
         $this->status = $status;
     }
 
-    // Tarif
-    public function getTarif() {
+    public function getTarif(): ?float {
         return $this->tarif;
     }
-    public function setTarif($tarif): void {
+    public function setTarif(?float $tarif): void {
         $this->tarif = $tarif;
     }
 
-    // Description
-    public function getDescription() {
+    public function getDescription(): ?string {
         return $this->description;
     }
-    public function setDescription($description): void {
+    public function setDescription(?string $description): void {
         $this->description = $description;
     }
 
-    // Endroit promenade
-    public function getEndroitPromenade() {
+    public function getEndroitPromenade(): ?string {
         return $this->endroitPromenade;
     }
-    public function setEndroitPromenade($endroitPromenade): void {
+    public function setEndroitPromenade(?string $endroitPromenade): void {
         $this->endroitPromenade = $endroitPromenade;
     }
 
-    // Durée
-    public function getDuree() {
+    public function getDuree(): ?int {
         return $this->duree;
     }
-    public function setDuree($duree): void {
+    public function setDuree(?int $duree): void {
         $this->duree = $duree;
     }
 
-    // ID Utilisateur (clé étrangère)
-    public function getIdUtilisateur() {
+    public function getIdUtilisateur(): ?int {
         return $this->id_utilisateur;
     }
-    public function setIdUtilisateur($id_utilisateur): void {
+    public function setIdUtilisateur(?int $id_utilisateur): void {
         $this->id_utilisateur = $id_utilisateur;
     }
 }
+?>
