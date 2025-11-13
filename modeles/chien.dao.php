@@ -29,13 +29,7 @@ class ChienDAO{
                 $row['race'],
                 $row['cheminPhoto'],
                 $row['id_utilisateur']
-            );
-            
-<<<<<<< HEAD
-=======
-   
->>>>>>> bd7f2461d36bfc0914d1eb0182c277318fc48dfb
-            
+            );            
         }
         return null;
     }
@@ -55,10 +49,6 @@ class ChienDAO{
                 $row['cheminPhoto'],
                 $row['id_utilisateur']
             );
-<<<<<<< HEAD
-=======
-            
->>>>>>> bd7f2461d36bfc0914d1eb0182c277318fc48dfb
         }
         return $chiens;
     }
