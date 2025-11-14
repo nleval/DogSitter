@@ -8,7 +8,6 @@
     {% if promenadesListe is defined and promenadesListe|length > 0 %}
         <h2>Liste des Promenades :</h2>
             {% for promenade in promenadesListe %}
-            {{ dump(promenade) }}
                 <ul>
                     <li>{{ promenade.id_promenade }} </li>
                     <li>{{ promenade.statut }}</li>

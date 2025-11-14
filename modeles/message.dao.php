@@ -28,11 +28,11 @@ class MessageDAO
 
         foreach ($results as $row) {
             $messages[] = new Message(
-                $row['idMessage'],
+                $row['id_message'],
                 $row['contenu'],
-                $row['dateHeureMessage'],
-                $row['idUtilisateur'],
-                $row['idConversation']
+                $row['DateHeureMessage'],
+                $row['id_utilisateur'],
+                $row['id_conversation']
             );
         }
 
@@ -41,18 +41,18 @@ class MessageDAO
 
     public function findById($idMessage): ?Message
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Message WHERE idMessage = :idMessage");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Message WHERE id_message = :idMessage");
         $stmt->bindParam(':idMessage', $idMessage, PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
             return new Message(
-                $row['idMessage'],
+                $row['id_message'],
                 $row['contenu'],
-                $row['dateHeureMessage'],
-                $row['idUtilisateur'],
-                $row['idConversation']
+                $row['DateHeureMessage'],
+                $row['id_utilisateur'],
+                $row['id_conversation']
             );
         }
 
