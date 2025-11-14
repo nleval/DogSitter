@@ -1,11 +1,11 @@
 <?php
     class Conversation {
         // Attributs de la conversation
-        private ?string $idConversation;
+        private ?int $idConversation;
         private ?string $dateCreation;
         
         // Constructeur de la classe Conversation
-        public function __construct(?string $idConversation = null, ?date $dateCreation = null) {
+        public function __construct(?int $idConversation = null, ?string $dateCreation = null) {
             $this->idConversation = $idConversation;
             $this->dateCreation = $dateCreation;
         }
