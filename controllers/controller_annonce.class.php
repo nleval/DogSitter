@@ -42,7 +42,7 @@ class ControllerAnnonce extends Controller
     /**
      * Afficher toutes les annonces d’un utilisateur donné
      */
-    public function afficherAnnoncesParUtilisateur($id_utilisateur = 3)
+    public function afficherAnnoncesParUtilisateur($id_utilisateur = 2)
     {
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);

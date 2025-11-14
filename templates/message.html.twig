@@ -9,11 +9,11 @@
         <h2>Liste des chiens :</h2>
         <ul>
             {% for message in messageListe %}
-                <li><strong>ID :</strong> {{message.id_message}}<br>
+                <li><strong>ID :</strong> {{message.idMessage}}<br>
                     <strong>Contenu :</strong> {{message.contenu}}<br>
                     <strong>Date :</strong> {{message.DateHeureMessage}} kg<br>
-                    <strong>ID Utilisateur :</strong> {{message.id_utilisateur}}<br>
-                    <strong>ID Conversation :</strong> {{message.id_conversation}}<br>
+                    <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
+                    <strong>ID Conversation :</strong> {{message.idConversation}}<br>
                 </li>
             {% else %}
                 <li>Aucun message trouvé.</li>
@@ -23,11 +23,11 @@
     {% elseif message is defined %}
         <h2>Détails du message :</h2>
         <ul>
-            <li><strong>ID :</strong> {{message.id_message}}<br>
+            <li><strong>ID :</strong> {{message.idMessage}}<br>
                 <strong>Contenu :</strong> {{message.contenu}}<br>
                 <strong>Date :</strong> {{message.DateHeureMessage}} kg<br>
-                <strong>ID Utilisateur :</strong> {{message.id_utilisateur}}<br>
-                <strong>ID Conversation :</strong> {{message.id_conversation}}<br>
+                <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
+                <strong>ID Conversation :</strong> {{message.idConversation}}<br>
             </li>
         </ul>
     {% else %}
