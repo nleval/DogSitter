@@ -2,8 +2,8 @@
 class Chien{
     private ?int $id_chien;
     private ?string $nom_chien;
-    private ?int $poids;
-    private ?int $taille;
+    private ?string $poids;
+    private ?string $taille;
     private ?string $race;
     private ?string $cheminPhoto;
     private ?int $id_utilisateur;
