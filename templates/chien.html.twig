@@ -11,13 +11,14 @@
             {% for chien in chiensListe %}
                 <li><strong>ID :</strong> {{chien.id_chien}}<br>
                     <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                    <strong>Poids :</strong> {{chien.poids}} kg<br>
-                    <strong>Taille :</strong> {{chien.taille}} cm<br>
+                    <strong>Poids :</strong> {{chien.poids}}<br>
+                    <strong>Taille :</strong> {{chien.taille}}<br>
                     <strong>Race :</strong> {{chien.race}}<br>
                     <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
                     <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
                 </li>
-                <a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
+                <br>
+             
             {% else %}
                 <li>Aucun chien trouvé.</li>
             {% endfor %}
@@ -28,12 +29,14 @@
         <ul>
             <li><strong>ID :</strong> {{chien.id_chien}}<br>
                 <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                <strong>Poids :</strong> {{chien.poids}} kg<br>
-                <strong>Taille :</strong> {{chien.taille}} cm<br>
+                <strong>Poids :</strong> {{chien.poids}}<br>
+                <strong>Taille :</strong> {{chien.taille}}<br>
                 <strong>Race :</strong> {{chien.race}}<br>
                 <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
                 <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
+                
             </li>
+            <br>
         </ul>
     {% else %}
         <p>Aucun chien trouvé.</p>

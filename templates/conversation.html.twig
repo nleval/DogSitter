@@ -9,8 +9,8 @@
         <h2>Liste des conversations :</h2>
         <ul>
             {% for conversation in conversationListe %}
-                <li><strong>ID :</strong> {{conversation.id_conversation}}<br>
-                    <strong>Date de création :</strong> {{conversation.date_creation}}<br>
+                <li><strong>ID :</strong> {{conversation.idConversation}}<br>
+                    <strong>Date de création :</strong> {{conversation.dateCreation}}<br>
                 </li>
             {% else %}
                 <li>Aucune conversation trouvée.</li>
@@ -20,8 +20,8 @@
     {% elseif conversation is defined %}
         <h2>Détails de la conversation :</h2>
         <ul>
-            <li><strong>ID :</strong> {{conversation.id_conversation}}<br>
-                <strong>Date de création :</strong> {{conversation.date_creation}}<br>
+            <li><strong>ID :</strong> {{conversation.idConversation}}<br>
+                <strong>Date de création :</strong> {{conversation.dateCreation}}<br>
             </li>
         </ul>
     {% else %}
