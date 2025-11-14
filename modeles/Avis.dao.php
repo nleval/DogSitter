@@ -31,7 +31,7 @@ class AvisDAO
                 $row['texte_commentaire'],
                 $row['id_utilisateur'],
                 $row['id_promenade'],
-                $row['id_utilisateur_note']
+                $row['id_utilisateur_1']
             );
         }
 
@@ -52,7 +52,7 @@ class AvisDAO
                 $row['texte_commentaire'],
                 $row['id_utilisateur'],
                 $row['id_promenade'],
-                $row['id_utilisateur_note']
+                $row['id_utilisateur_1']
             );
         }
 
