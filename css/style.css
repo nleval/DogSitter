@@ -1,0 +1,72 @@
+/* BARRE DE NAVIGATION */
+.navbar-custom {
+    background-color: #537031;
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .navbar-brand {
+    color: #FEFAE0 !important;
+    font-weight: 600;
+}
+
+.navbar-custom .nav-link.active {
+    color: #DDA15E !important;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #9AAD5A !important;
+}
+
+/* PIED DE PAGE */
+footer {
+    background-color: #537031;
+    color: #FEFAE0;
+    margin-top: 50px;
+}
+
+footer a {
+    color: #DDA15E;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #9AAD5A;
+}
+
+/* LOGO */
+.logo-dog {
+    height: 45px;
+    width: auto;
+}
+
+/* Icône pour connexion/inscription (petit logo dans la navbar) */
+.auth-icon {
+    width: 26px;
+    height: 26px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px; /* espace avant le texte caché */
+    color: #FEFAE0; /* reprend la couleur du texte de navigation */
+}
+
+.nav-link:focus .auth-icon,
+.nav-link:hover .auth-icon {
+    color: #DDA15E; /* couleur visuelle au survol / focus */
+}
+
+
+/* Icône pour les messages */
+.msg-icon {
+    width: 22px;
+    height: 22px;
+    color: #FEFAE0;
+}
+
+.nav-link:focus .msg-icon,
+.nav-link:hover .msg-icon {
+    color: #DDA15E; /* orange/beige */
+}
+
+.nav-link.active .msg-icon {
+    color: #DDA15E;
+}
