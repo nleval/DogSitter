@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ config.application.language }}">
+<html lang="fr">
 <head>
     {% block head %}
     <meta charset="UTF-8">
@@ -43,13 +43,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
 
-                    {# Barre de recherche professionnelle centrée (visible sur toutes tailles) #}
+                    {# Barre de recherche #}
                     <div class="search-center mx-auto d-flex align-items-center">
                         <form class="w-100" onsubmit="return false;">
                             <div class="input-group">
                                 <input id="headerSearch" list="headerSearchOptions" class="form-control header-search" placeholder="Rechercher (ex : regarder les annonces, poster une annonce)" aria-label="Recherche rapide" autocomplete="off">
                                 <datalist id="headerSearchOptions">
-                                    <option value="Regarder les annonces" data-url="annonces.php"></option>
+                                    <option value="Regarder les annonces" data-url="index.php?controleur=annonce&methode=afficherAllAnnonces"></option>
                                     <option value="Poster une annonce" data-url="poster_annonce.php"></option>
                                 </datalist>
                                 <button id="headerSearchBtn" class="btn btn-search-action" type="button" aria-label="Valider la recherche">Recherche</button>
@@ -61,7 +61,7 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
 
                             <li class="nav-item me-2">
-                                <a class="nav-link link-msg" href="conversation.php" aria-label="Messages">
+                                <a class="nav-link link-msg" href="index.php?controleur=conversation&methode=afficherAllConversation" aria-label="Messages">
                                     <!-- SVG messages -->
                                     <svg class="msg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                                         <path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v14l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
@@ -71,7 +71,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link {% if menu=='auth' %}active{% endif %} d-flex align-items-center" href="login.php" aria-label="Se connecter ou créer un compte">
+                                <a class="nav-link {% if menu=='auth' %}active{% endif %} d-flex align-items-center" href="index.php?controleur=utilisateur&methode=afficherUtilisateur" aria-label="Se connecter ou créer un compte">
                                     <!-- SVG utilisateur -->
                                     <svg class="auth-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                                         <path fill="currentColor" d="M12 2a5 5 0 1 1 0 10a5 5 0 0 1 0-10zm0 12c4.418 0 8 1.79 8 4v2H4v-2c0-2.21 3.582-4 8-4z"/>

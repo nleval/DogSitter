@@ -1,41 +1,40 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
-<body>
-    {% if avisListe is defined and avisListe|length > 0 %}
-        <h2>Liste des avis :</h2>
-        <ul>
-            {% for avis in avisListe %}
+{% extends 'base_template.twig' %}
+
+{% block title %}Avis — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        {% if avisListe is defined and avisListe|length > 0 %}
+            <h2>Liste des avis :</h2>
+            <ul>
+                {% for avis in avisListe %}
+                    <li><strong>ID :</strong> {{ avis.id }}<br>
+                        <strong>Note :</strong> {{ avis.note }}<br>
+                        <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
+                        <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
+                        <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
+                        <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
+                    </li>
+                {% else %}
+                    <li>Aucun avis trouvé.</li>
+                {% endfor %}
+            </ul>
+
+        {% elseif avis is defined %}
+            <h2>Un avis :</h2>
+            <ul>
                 <li><strong>ID :</strong> {{ avis.id }}<br>
                     <strong>Note :</strong> {{ avis.note }}<br>
                     <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
                     <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
                     <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
-                    <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
+                    <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br>
                 </li>
-            {% else %}
-                <li>Aucun avis trouvé.</li>
-            {% endfor %}
-        </ul>
+            </ul>
+        {% else %}
+            <p>Aucun avis à afficher.</p>
+        {% endif %}
 
-    {% elseif avis is defined %}
-        <h2>Un avis :</h2>
-        <ul>
-            <li><strong>ID :</strong> {{ avis.id }}<br>
-                <strong>Note :</strong> {{ avis.note }}<br>
-                <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
-                <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
-                <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
-                <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br>
-            </li>
-        </ul>
-    {% else %}
-        <p>Aucun avis à afficher.</p>
-    {% endif %}
-
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}

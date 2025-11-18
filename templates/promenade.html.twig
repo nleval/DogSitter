@@ -1,31 +1,30 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Promenade</title>
-</head>
-<body>
-    {% if promenadesListe is defined and promenadesListe|length > 0 %}
-        <h2>Liste des Promenades :</h2>
+{% extends 'base_template.twig' %}
+
+{% block title %}Promenades — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        {% if promenadesListe is defined and promenadesListe|length > 0 %}
+            <h2>Liste des Promenades :</h2>
             {% for promenade in promenadesListe %}
                 <ul>
                     <li>{{ promenade.id_promenade }} </li>
                     <li>{{ promenade.statut }}</li>
                 </ul>
             {% else %}
-                <p>Aucune promenade trouvé.</p>
+                <p>Aucune promenade trouvée.</p>
             {% endfor %}
 
-    {% elseif promenade is defined %}
-        <h2>Un utilisateur :</h2>
-        <ul>
-            <li>{{ promenade.id_promenade }}</li>
-            <li>{{ promenade.statut }}</li>
-        </ul>
-    {% else %}
-        <p>Aucune promenade à afficher.</p>
-    {% endif %}
+        {% elseif promenade is defined %}
+            <h2>Une promenade :</h2>
+            <ul>
+                <li>{{ promenade.id_promenade }}</li>
+                <li>{{ promenade.statut }}</li>
+            </ul>
+        {% else %}
+            <p>Aucune promenade à afficher.</p>
+        {% endif %}
 
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}

@@ -1,32 +1,32 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Chien</title>
-</head>
-<body>
-    {% if conversationListe is defined and conversationListe|length > 0 %}
-        <h2>Liste des conversations :</h2>
-        <ul>
-            {% for conversation in conversationListe %}
+{% extends 'base_template.twig' %}
+
+{% block title %}Conversations — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        {% if conversationListe is defined and conversationListe|length > 0 %}
+            <h2>Liste des conversations :</h2>
+            <ul>
+                {% for conversation in conversationListe %}
+                    <li><strong>ID :</strong> {{conversation.idConversation}}<br>
+                        <strong>Date de création :</strong> {{conversation.dateCreation}}<br>
+                    </li>
+                {% else %}
+                    <li>Aucune conversation trouvée.</li>
+                {% endfor %}
+            </ul>
+
+        {% elseif conversation is defined %}
+            <h2>Détails de la conversation :</h2>
+            <ul>
                 <li><strong>ID :</strong> {{conversation.idConversation}}<br>
                     <strong>Date de création :</strong> {{conversation.dateCreation}}<br>
                 </li>
-            {% else %}
-                <li>Aucune conversation trouvée.</li>
-            {% endfor %}
-        </ul>
+            </ul>
+        {% else %}
+            <p>Aucune conversation trouvée.</p>
+        {% endif %}
 
-    {% elseif conversation is defined %}
-        <h2>Détails de la conversation :</h2>
-        <ul>
-            <li><strong>ID :</strong> {{conversation.idConversation}}<br>
-                <strong>Date de création :</strong> {{conversation.dateCreation}}<br>
-            </li>
-        </ul>
-    {% else %}
-        <p>Aucune conversation trouvée.</p>
-    {% endif %}
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}

@@ -72,10 +72,6 @@ footer a:hover {
     color: #DDA15E;
 }
 
-/* Recherche visuelle centrale (ressemble à une barre de recherche) */
-
-/* Champ de recherche centré - input réel */
-/* Search bar removed - related styles deleted per user request */
 
 .input-group .btn {
     border-radius: 0 1rem 1rem 0;
@@ -96,7 +92,7 @@ footer a:hover {
     color: #537031;
 }
 
-/* Styles pour la barre de recherche professionnelle centrée */
+/* Styles pour la barre de recherche */
 .search-center {
     position: absolute;
     left: 50%;
@@ -107,7 +103,6 @@ footer a:hover {
     z-index: 30;
 }
 
-/* make the whole control pill-shaped by rounding the input-group and hiding overflow */
 .search-center .input-group {
     border-radius: 999px;
     overflow: hidden;
@@ -115,19 +110,17 @@ footer a:hover {
 }
 
 .header-search {
-    /* remove individual rounding so the input fits flush inside the pill */
     border-radius: 0;
     padding: 0.5rem 1rem;
-    background: #FEFAE0 !important; /* forced beige background */
-    color: #2b3b17; /* dark text for contrast */
+    background: #FEFAE0 !important; 
+    color: #2b3b17; 
     border: none;
 }
 
-/* left icon removed from markup; ensure any old icon rules are neutral */
 .input-group .search-icon svg { display: none; }
 
 .btn-search-action {
-    border-radius: 0; /* handled by input-group's pill */
+    border-radius: 0; 
     background: #FEFAE0 !important;
     color: #2b3b17;
     border: none;
