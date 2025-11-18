@@ -1,6 +1,7 @@
 /* BARRE DE NAVIGATION */
 .navbar-custom {
     background-color: #537031;
+    position: relative; /* permet de centrer absolument la barre de recherche */
 }
 
 .navbar-custom .nav-link,
@@ -69,4 +70,90 @@ footer a:hover {
 
 .nav-link.active .msg-icon {
     color: #DDA15E;
+}
+
+/* Recherche visuelle centrale (ressemble à une barre de recherche) */
+
+/* Champ de recherche centré - input réel */
+/* Search bar removed - related styles deleted per user request */
+
+.input-group .btn {
+    border-radius: 0 1rem 1rem 0;
+}
+
+/* Centrer le dropdown visuellement sous le bouton */
+.dropdown-menu-center {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+.dropdown-menu-center .dropdown-item {
+    color: #333;
+}
+
+.dropdown-menu-center .dropdown-item:hover {
+    background-color: #FEFAE0;
+    color: #537031;
+}
+
+/* Styles pour la barre de recherche professionnelle centrée */
+.search-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px;
+    max-width: 92%;
+    z-index: 30;
+}
+
+/* make the whole control pill-shaped by rounding the input-group and hiding overflow */
+.search-center .input-group {
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(43,59,23,0.06);
+}
+
+.header-search {
+    /* remove individual rounding so the input fits flush inside the pill */
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+    background: #FEFAE0 !important; /* forced beige background */
+    color: #2b3b17; /* dark text for contrast */
+    border: none;
+}
+
+/* left icon removed from markup; ensure any old icon rules are neutral */
+.input-group .search-icon svg { display: none; }
+
+.btn-search-action {
+    border-radius: 0; /* handled by input-group's pill */
+    background: #FEFAE0 !important;
+    color: #2b3b17;
+    border: none;
+    padding: 0.5rem 1rem;
+}
+
+.btn-search-action:hover, .btn-search-action:focus {
+    background: #e6d9bf;
+    color: #2b3b17;
+}
+
+.header-search::placeholder { color: rgba(43,59,23,0.45); }
+
+/* Forcer la couleur du texte foncé dans l'input */
+.header-search,
+.header-search:focus,
+.header-search:-webkit-autofill {
+    color: #2b3b17 !important;
+}
+
+/* Toujours visible : s'assurer qu'aucune règle précédente ne masque la barre */
+.search-center { display: flex !important; }
+
+@media (max-width: 520px) {
+    /* Sur très petits écrans, réduire la largeur et espacer légèrement */
+    .search-center { width: 92%; left: 50%; transform: translate(-50%, -50%); }
+    .header-search { padding: 0.5rem 0.75rem; }
+    .btn-search-action { padding: 0.45rem 0.75rem; }
 }

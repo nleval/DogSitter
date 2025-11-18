@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
 
     {% block css %}{% endblock %}
     <title>{% block title %}DogSitter{% endblock %}</title>
@@ -40,13 +40,25 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-            
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                        
-                        {# Ajout des icônes pour messages et connexion/inscription dans le header. #}
-                        
 
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                    {# Barre de recherche professionnelle centrée (visible sur toutes tailles) #}
+                    <div class="search-center mx-auto d-flex align-items-center">
+                        <form class="w-100" onsubmit="return false;">
+                            <div class="input-group">
+                                <input id="headerSearch" list="headerSearchOptions" class="form-control header-search" placeholder="Rechercher (ex : regarder les annonces, poster une annonce)" aria-label="Recherche rapide" autocomplete="off">
+                                <datalist id="headerSearchOptions">
+                                    <option value="Regarder les annonces" data-url="annonces.php"></option>
+                                    <option value="Poster une annonce" data-url="poster_annonce.php"></option>
+                                </datalist>
+                                <button id="headerSearchBtn" class="btn btn-search-action" type="button" aria-label="Valider la recherche">Recherche</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {# Icônes à droite : messages et connexion #}
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
 
                             <li class="nav-item me-2">
                                 <a class="nav-link link-msg" href="conversation.php" aria-label="Messages">
@@ -91,6 +103,40 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// petite logique pour rediriger selon le choix dans la datalist ou le texte saisi
+(function(){
+    var input = document.getElementById('headerSearch');
+    var btn = document.getElementById('headerSearchBtn');
+    function goTo(value){
+        if(!value) return;
+        var opts = document.querySelectorAll('#headerSearchOptions option');
+        for(var i=0;i<opts.length;i++){
+            if(opts[i].value === value){
+                var url = opts[i].getAttribute('data-url');
+                if(url){ window.location.href = url; return; }
+            }
+        }
+        var v = value.toLowerCase();
+        for(var j=0;j<opts.length;j++){
+            if(opts[j].value.toLowerCase().indexOf(v) !== -1){
+                var u = opts[j].getAttribute('data-url');
+                if(u){ window.location.href = u; return; }
+            }
+        }
+    }
+    if(input){
+        input.addEventListener('keydown', function(e){
+            if(e.key === 'Enter'){
+                e.preventDefault();
+                goTo(this.value);
+            }
+        });
+    }
+    if(btn){ btn.addEventListener('click', function(){ goTo(input.value); }); }
+})();
+</script>
 
 </body>
 </html>
