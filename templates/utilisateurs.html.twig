@@ -1,29 +1,28 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
-<body>
-    {% if utilisateursListe is defined and utilisateursListe|length > 0 %}
-        <h2>Liste des utilisateurs :</h2>
-        <ul>
-            {% for utilisateur in utilisateursListe %}
+{% extends 'base_template.twig' %}
+
+{% block title %}Utilisateurs — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        {% if utilisateursListe is defined and utilisateursListe|length > 0 %}
+            <h2>Liste des utilisateurs :</h2>
+            <ul>
+                {% for utilisateur in utilisateursListe %}
+                    <li>{{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.email }}</li>
+                {% else %}
+                    <li>Aucun utilisateur trouvé.</li>
+                {% endfor %}
+            </ul>
+
+        {% elseif utilisateur is defined %}
+            <h2>Un utilisateur :</h2>
+            <ul>
                 <li>{{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.email }}</li>
-            {% else %}
-                <li>Aucun utilisateur trouvé.</li>
-            {% endfor %}
-        </ul>
+            </ul>
+        {% else %}
+            <p>Aucun utilisateur à afficher.</p>
+        {% endif %}
 
-    {% elseif utilisateur is defined %}
-        <h2>Un utilisateur :</h2>
-        <ul>
-            <li>{{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.email }}</li>
-        </ul>
-    {% else %}
-        <p>Aucun utilisateur à afficher.</p>
-    {% endif %}
-
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}

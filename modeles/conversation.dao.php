@@ -28,8 +28,8 @@ class ConversationDAO
 
         foreach ($results as $row) {
             $conversations[] = new Conversation(
-                $row['idConversation'],
-                $row['dateCreation']
+                $row['id_conversation'],
+                $row['date_creation']
             );
         }
 
@@ -38,15 +38,15 @@ class ConversationDAO
 
     public function findById($idConversation): ?Conversation
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Conversation WHERE idConversation = :idConversation");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Conversation WHERE id_Conversation = :idConversation");
         $stmt->bindParam(':idConversation', $idConversation, PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
             return new Conversation(
-                $row['idConversation'],
-                $row['dateCreation']
+                $row['id_conversation'],
+                $row['date_creation']
             );
         }
 

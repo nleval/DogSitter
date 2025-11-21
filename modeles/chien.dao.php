@@ -29,9 +29,7 @@ class ChienDAO{
                 $row['race'],
                 $row['cheminPhoto'],
                 $row['id_utilisateur']
-            );
-            
-            
+            );            
         }
         return null;
     }

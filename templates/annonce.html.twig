@@ -1,11 +1,20 @@
-<h2>Détails de l'annonce</h2>
-<ul>
-    <li>Date : {{ annonce.datePromenade }}</li>
-    <li>Horaire : {{ annonce.horaire }}</li>
-    <li>Durée : {{ annonce.duree }} minutes</li>
-    <li>Endroit : {{ annonce.endroitPromenade }}</li>
-    <li>Tarif : {{ annonce.tarif }}</li>
-    <li>Status : {{ annonce.status }}</li>
-    <li>Description : {{ annonce.description }}</li>
-    <li>ID Utilisateur : {{ annonce.idUtilisateur }}</li>
-</ul>
+
+{% extends 'base_template.twig' %}
+
+{% block title %}Annonce — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h2 class="mb-3">Détails de l'annonce</h2>
+        <ul class="list-unstyled">
+            <li><strong>Date :</strong> {{ annonce.datePromenade }}</li>
+            <li><strong>Horaire :</strong> {{ annonce.horaire }}</li>
+            <li><strong>Durée :</strong> {{ annonce.duree }} minutes</li>
+            <li><strong>Endroit :</strong> {{ annonce.endroitPromenade }}</li>
+            <li><strong>Tarif :</strong> {{ annonce.tarif }}</li>
+            <li><strong>Status :</strong> {{ annonce.status }}</li>
+            <li><strong>Description :</strong> {{ annonce.description }}</li>
+            <li><strong>ID Utilisateur :</strong> {{ annonce.idUtilisateur }}</li>
+        </ul>
+    </div>
+{% endblock %}

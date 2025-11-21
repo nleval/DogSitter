@@ -1,29 +1,40 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
-<body>
-    {% if avisListe is defined and avisListe|length > 0 %}
-        <h2>Liste des avis :</h2>
-        <ul>
-            {% for avis in avisListe %}
-                <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idpromenade }} - {{ avis.idutilisateurnote }}</li>
-            {% else %}
-                <li>Aucun avis trouvé.</li>
-            {% endfor %}
-        </ul>
+{% extends 'base_template.twig' %}
 
-    {% elseif avis is defined %}
-        <h2>Un avis :</h2>
-        <ul>
-            <li>{{ avis.note }} - {{ avis.textecommentaire }} - {{ avis.idutilisateur }} - {{ avis.idpromenade }} - {{ avis.idutilisateurnote }}</li>
-        </ul>
-    {% else %}
-        <p>Aucun avis à afficher.</p>
-    {% endif %}
+{% block title %}Avis — DogSitter{% endblock %}
 
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+{% block content %}
+    <div class="container my-4">
+        {% if avisListe is defined and avisListe|length > 0 %}
+            <h2>Liste des avis :</h2>
+            <ul>
+                {% for avis in avisListe %}
+                    <li><strong>ID :</strong> {{ avis.id }}<br>
+                        <strong>Note :</strong> {{ avis.note }}<br>
+                        <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
+                        <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
+                        <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
+                        <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
+                    </li>
+                {% else %}
+                    <li>Aucun avis trouvé.</li>
+                {% endfor %}
+            </ul>
+
+        {% elseif avis is defined %}
+            <h2>Un avis :</h2>
+            <ul>
+                <li><strong>ID :</strong> {{ avis.id }}<br>
+                    <strong>Note :</strong> {{ avis.note }}<br>
+                    <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
+                    <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
+                    <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
+                    <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br>
+                </li>
+            </ul>
+        {% else %}
+            <p>Aucun avis à afficher.</p>
+        {% endif %}
+
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}
