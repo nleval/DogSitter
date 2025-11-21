@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Chien</title>
-</head>
-<body>
-    {% if messageListe is defined and messageListe|length > 0 %}
-        <h2>Liste des chiens :</h2>
-        <ul>
-            {% for message in messageListe %}
+{% extends 'base_template.twig' %}
+
+{% block title %}Messages — DogSitter{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        {% if messageListe is defined and messageListe|length > 0 %}
+            <h2>Liste des messages :</h2>
+            <ul>
+                {% for message in messageListe %}
+                    <li><strong>ID :</strong> {{message.idMessage}}<br>
+                        <strong>Contenu :</strong> {{message.contenu}}<br>
+                        <strong>Date :</strong> {{message.DateHeureMessage}}<br>
+                        <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
+                        <strong>ID Conversation :</strong> {{message.idConversation}}<br>
+                    </li>
+                {% else %}
+                    <li>Aucun message trouvé.</li>
+                {% endfor %}
+            </ul>
+
+        {% elseif message is defined %}
+            <h2>Détails du message :</h2>
+            <ul>
                 <li><strong>ID :</strong> {{message.idMessage}}<br>
                     <strong>Contenu :</strong> {{message.contenu}}<br>
-                    <strong>Date :</strong> {{message.DateHeureMessage}} kg<br>
+                    <strong>Date :</strong> {{message.DateHeureMessage}}<br>
                     <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
                     <strong>ID Conversation :</strong> {{message.idConversation}}<br>
                 </li>
-            {% else %}
-                <li>Aucun message trouvé.</li>
-            {% endfor %}
-        </ul>
+            </ul>
+        {% else %}
+            <p>Aucun message trouvé.</p>
+        {% endif %}
 
-    {% elseif message is defined %}
-        <h2>Détails du message :</h2>
-        <ul>
-            <li><strong>ID :</strong> {{message.idMessage}}<br>
-                <strong>Contenu :</strong> {{message.contenu}}<br>
-                <strong>Date :</strong> {{message.DateHeureMessage}} kg<br>
-                <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
-                <strong>ID Conversation :</strong> {{message.idConversation}}<br>
-            </li>
-        </ul>
-    {% else %}
-        <p>Aucun message trouvé.</p>
-    {% endif %}
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+        <a href="?controleur=Index&methode=render">Accueil</a>
+    </div>
+{% endblock %}

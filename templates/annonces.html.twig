@@ -1,36 +1,36 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Annonces</title>
-</head>
-<body>
-    {% if annoncesListe is defined and annoncesListe|length > 0 %}
-        {% if id_utilisateur is defined %}
-            <h2>Annonces publiées par l'utilisateur {{ id_utilisateur }}</h2>
-        {% else %}
-            <h2>Toutes les annonces</h2>
-        {% endif %}
-        <ul>
-            {% for annonce in annoncesListe %}
-                <li>
-                    <strong>Date :</strong> {{ annonce.datePromenade }}<br>
-                    <strong>Horaire :</strong> {{ annonce.horaire }}<br>
-                    <strong>Durée :</strong> {{ annonce.duree }} minutes<br>
-                    <strong>Endroit :</strong> {{ annonce.endroitPromenade }}<br>
-                    <strong>Tarif :</strong> {{ annonce.tarif }} €<br>
-                    <strong>Status :</strong> {{ annonce.status }}<br>
-                    <strong>Description :</strong> {{ annonce.description }}<br>
-                    <strong>ID Utilisateur :</strong> {{ annonce.idUtilisateur }}<br>
-                    
-                </li>
-                <br>
-            {% endfor %}
-        </ul>
+{% extends 'base_template.twig' %}
+
+{% block title %}Annonces{% endblock %}
+
+{% block content %}
+
+{% if annoncesListe is defined and annoncesListe|length > 0 %}
+    {% if id_utilisateur is defined %}
+        <h2>Annonces publiées par l'utilisateur {{ id_utilisateur }}</h2>
     {% else %}
-        <p>Aucune annonce trouvée.</p>
+        <h2>Toutes les annonces</h2>
     {% endif %}
 
-    <a href="?controleur=Index&methode=render">Accueil</a>
-</body>
-</html>
+    <ul>
+        {% for annonce in annoncesListe %}
+            <li>
+                <strong>Date :</strong> {{ annonce.datePromenade }}<br>
+                <strong>Horaire :</strong> {{ annonce.horaire }}<br>
+                <strong>Durée :</strong> {{ annonce.duree }} minutes<br>
+                <strong>Endroit :</strong> {{ annonce.endroitPromenade }}<br>
+                <strong>Tarif :</strong> {{ annonce.tarif }} €<br>
+                <strong>Status :</strong> {{ annonce.status }}<br>
+                <strong>Description :</strong> {{ annonce.description }}<br>
+                <strong>ID Utilisateur :</strong> {{ annonce.idUtilisateur }}<br>
+            </li>
+            <br>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>Aucune annonce trouvée.</p>
+{% endif %}
+
+<a href="?controleur=Index&methode=render">Accueil</a>
+
+{% endblock %}
