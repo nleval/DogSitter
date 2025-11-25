@@ -29,13 +29,17 @@ class ControllerAnnonce extends Controller
             // Récupérer les chiens concernés par cette annonce
             $managerChien = new ChienDAO($this->getPDO());
             $chienConcernes = $managerChien->findByAnnonce($annonceId);
+
+            $managerUtilisateur = new UtilisateurDAO($this->getPDO()); // Assurez-vous que le DAO existe
+            $proprietaire = $managerUtilisateur->findById($annonce->getIdUtilisateur());
         }
 
         // Rendre la vue avec l'annonce
         $template = $this->getTwig()->load('annonce.html.twig');
         echo $template->render([
             'annonce' => $annonce,
-            'chiens' => $chienConcernes
+            'chiens' => $chienConcernes,
+            'proprietaire' => $proprietaire
             
         ]);
     }

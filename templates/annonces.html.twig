@@ -41,7 +41,7 @@
 
                     <div class="flex-grow-1 d-flex flex-column justify-content-between">
                         <p class="mb-2" style="color:#537031; font-weight: bold;">
-                             Courte description de la promenade:
+                             {{ annonce.titre }}
                         </p>
                         <p class="mb-2 text-muted">
                             {{ annonce.description|slice(0, 150) ~ '...' }} ({{ annonce.datePromenade }} à {{ annonce.endroitPromenade }})
