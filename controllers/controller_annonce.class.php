@@ -10,16 +10,33 @@ class ControllerAnnonce extends Controller
     /**git 
      * Afficher une annonce spécifique
      */
-    public function afficherAnnonce($id_annonce = 1)
+    public function afficherAnnonce($id_annonce = null)
     {
+        // Vérifie si l'identifiant de l'annonce ($id_annonce) n'a pas été reçu en tant qu'argument
+        if(is_null($id_annonce) && isset($_GET['id_annonce'])) {
+
+            // Si l'ID est manquant dans les arguments, on le récupère manuellement depuis les paramètres de la requête HTTP (URL).
+            $id_annonce = filter_var($_GET['id_annonce'], FILTER_SANITIZE_NUMBER_INT);
+        }
         // Récupérer une annonce spécifique depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annonce = $managerAnnonce->findById($id_annonce);
 
+        $chienConcernes = [];
+        if($annonce !== null) {
+
+            $annonceId = $annonce->getIdAnnonce();
+            // Récupérer les chiens concernés par cette annonce
+            $managerChien = new ChienDAO($this->getPDO());
+            $chienConcernes = $managerChien->findByAnnonce($annonceId);
+        }
+
         // Rendre la vue avec l'annonce
         $template = $this->getTwig()->load('annonce.html.twig');
         echo $template->render([
-            'annonce' => $annonce
+            'annonce' => $annonce,
+            'chiens' => $chienConcernes
+            
         ]);
     }
 
