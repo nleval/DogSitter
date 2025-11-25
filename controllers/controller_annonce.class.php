@@ -43,17 +43,38 @@ class ControllerAnnonce extends Controller
     /**
      * Afficher toutes les annonces
      */
-    public function afficherAllAnnonces()
-    {
+    public function afficherAllAnnonces(){
+    
         // Récupérer toutes les annonces depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annoncesListe = $managerAnnonce->findAll();
 
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+        $annoncesEnrichies = [];
+        foreach ($annoncesListe as $annonce) {
+            $idUtilisateur = $annonce->getIdUtilisateur(); 
+            
+            // Récupérer l'objet Utilisateur
+            $utilisateur = $managerUtilisateur->findById($idUtilisateur);
+
+            // Ajouter le numéro de téléphone à l'objet Annonce
+            if ($utilisateur !== null) {
+                // Créer une nouvelle propriété 'telephone' sur l'objet Annonce pour Twig
+                $annonce->telephone = $utilisateur->getNumTelephone();
+            } else {
+                $annonce->telephone = 'N/A'; // Valeur par défaut si l'utilisateur n'est pas trouvé
+            }
+
+                $annoncesEnrichies[] = $annonce;
+        }
+            
+            
         // Rendre la vue avec la liste des annonces
         $template = $this->getTwig()->load('annonces.html.twig');
         echo $template->render([
-            'annoncesListe' => $annoncesListe
+            'annoncesListe' => $annoncesEnrichies
         ]);
+        
     }
 
     /**
