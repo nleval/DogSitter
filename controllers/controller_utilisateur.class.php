@@ -13,7 +13,7 @@ class ControllerUtilisateur extends Controller
         $utilisateur = $managerutilisateur->findById(1); // Exemple avec l'ID 1
 
         // Rendre la vue avec l'utilisateur
-        $template = $this->getTwig()->load('utilisateurs.html.twig');
+        $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur
         ]);

@@ -1,0 +1,76 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}Détails de l’utilisateur — DogSitter{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    {% if utilisateur is defined %}
+        <h2 class="mb-4">Détails de l’utilisateur</h2>
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h4>
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th style="width: 200px;">ID</th>
+                            <td>{{ utilisateur.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ utilisateur.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Téléphone</th>
+                            <td>{{ utilisateur.numTelephone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Adresse</th>
+                            <td>{{ utilisateur.adresse }}</td>
+                        </tr>
+                        <tr>
+                            <th>Mot de passe (hash)</th>
+                            <td>{{ utilisateur.motDePasse }}</td>
+                        </tr>
+                        <tr>
+                            <th>Est maître ?</th>
+                            <td>
+                                {% if utilisateur.estMaitre %}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Non</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Est promeneur ?</th>
+                            <td>
+                                {% if utilisateur.estPromeneur %}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Non</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <a href="?controleur=Index&methode=render" class="btn btn-outline-dark mt-3">
+                    Accueil
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="alert alert-warning">
+            Aucun utilisateur trouvé.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

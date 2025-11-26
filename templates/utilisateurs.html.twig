@@ -1,28 +1,61 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}Utilisateurs — DogSitter{% endblock %}
+{% block title %}Liste des utilisateurs — DogSitter{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        {% if utilisateursListe is defined and utilisateursListe|length > 0 %}
-            <h2>Liste des utilisateurs :</h2>
-            <ul>
-                {% for utilisateur in utilisateursListe %}
-                    <li>{{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.email }}</li>
-                {% else %}
-                    <li>Aucun utilisateur trouvé.</li>
-                {% endfor %}
-            </ul>
+<div class="container my-5">
 
-        {% elseif utilisateur is defined %}
-            <h2>Un utilisateur :</h2>
-            <ul>
-                <li>{{ utilisateur.prenom }} {{ utilisateur.nom }} - {{ utilisateur.email }}</li>
-            </ul>
-        {% else %}
-            <p>Aucun utilisateur à afficher.</p>
-        {% endif %}
+    <h2 class="mb-4">Liste des utilisateurs</h2>
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
+    {% if utilisateursListe is defined and utilisateursListe|length > 0 %}
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+            {% for utilisateur in utilisateursListe %}
+                <div class="col">
+                    <div class="card shadow h-100">
+
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ utilisateur.prenom }} {{ utilisateur.nom }}
+                            </h5>
+
+                            <p class="card-text mb-2">
+                                <strong>Email :</strong> {{ utilisateur.email }}<br>
+                                <strong>Téléphone :</strong> {{ utilisateur.numTelephone }}<br>
+                                <strong>Adresse :</strong> {{ utilisateur.adresse }}
+                            </p>
+
+                            <p class="mb-2">
+                                <span class="badge {% if utilisateur.estMaitre %}bg-success{% else %}bg-secondary{% endif %}">
+                                    Maître
+                                </span>
+                                <span class="badge {% if utilisateur.estPromeneur %}bg-success{% else %}bg-secondary{% endif %}">
+                                    Promeneur
+                                </span>
+                            </p>
+
+                        </div>
+
+                        <div class="card-footer bg-light">
+                            <small class="text-muted">ID : {{ utilisateur.id }}</small>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+        <div class="alert alert-warning">
+            Aucun utilisateur trouvé.
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="?controleur=Index&methode=render" class="btn btn-outline-dark">Accueil</a>
     </div>
+
+</div>
 {% endblock %}
