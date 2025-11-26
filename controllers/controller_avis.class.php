@@ -31,4 +31,16 @@ class ControllerAvis extends Controller
             'avisListe' => $avisListe
         ]);
     }
+
+    public function afficherAvisParIdUtilisateurNote($id_utilisateur_note = 2)
+    {
+        $manageravis = new AvisDAO($this->getPDO());
+        $avisUtilisateurNote = $manageravis->findByIdUtilisateurNote($id_utilisateur_note);
+
+        $template = $this->getTwig()->load('avis.html.twig');
+        echo $template->render([
+            'avisUtilisateurNote' => $avisUtilisateurNote,
+            'id_utilisateur_note' => $id_utilisateur_note
+        ]);
+    }
 }

@@ -58,4 +58,26 @@ class AvisDAO
 
         return null;
     }
+
+    public function findByIdUtilisateurNote($id_utilisateur_note): array
+    {
+        $avis = [];
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_utilisateur_note = :id_utilisateur_note");
+        $stmt->bindParam(':id_utilisateur_note', $id_utilisateur_note, PDO::PARAM_STR);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($results as $row) {
+            $avis[] = new Avis(
+                $row['id_avis'],
+                $row['note'],
+                $row['texte_commentaire'],
+                $row['id_utilisateur'],
+                $row['id_promenade'],
+                $row['id_utilisateur_note']
+            );
+        }
+
+        return $avis;
+    }
 }

@@ -3,6 +3,7 @@
 {% block title %}Avis — DogSitter{% endblock %}
 
 {% block content %}
+
     <div class="container my-4">
         {% if avisListe is defined and avisListe|length > 0 %}
             <h2>Liste des avis :</h2>
@@ -30,6 +31,22 @@
                     <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
                     <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br>
                 </li>
+            </ul>
+
+        {% elseif avisUtilisateurNote is defined %}
+           <h2>Liste des avis donnés à l'utilisateur {{ id_utilisateur_note }} :</h2>
+            <ul>
+                {% for avis in avisUtilisateurNote %}
+                    <li><strong>ID :</strong> {{ avis.id }}<br>
+                        <strong>Note :</strong> {{ avis.note }}<br>
+                        <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
+                        <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
+                        <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
+                        <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
+                    </li>
+                {% else %}
+                    <li>Aucun avis trouvé.</li>
+                {% endfor %}
             </ul>
         {% else %}
             <p>Aucun avis à afficher.</p>
