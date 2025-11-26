@@ -1,46 +1,69 @@
-
 {% extends 'base_template.twig' %}
 
-{% block title %}Chiens — DogSitter{% endblock %}
+{% block title %}Chiens — DogSitter
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        {% if chiensListe is defined and chiensListe|length > 0 %}
-            <h2>Liste des chiens :</h2>
-            <ul>
-                {% for chien in chiensListe %}
-                    <li><strong>ID :</strong> {{chien.id_chien}}<br>
-                        <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                        <strong>Poids :</strong> {{chien.poids}}<br>
-                        <strong>Taille :</strong> {{chien.taille}}<br>
-                        <strong>Race :</strong> {{chien.race}}<br>
-                        <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
-                        <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
-                    </li>
-                    <a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
-                    <br>
-                {% else %}
-                    <li>Aucun chien trouvé.</li>
-                {% endfor %}
-            </ul>
+	<div class="container my-4">
+		{% if chiensListe is defined and chiensListe|length > 0 %}
+			<h2>Liste des chiens :</h2>
+			<ul>
+				{% for chien in chiensListe %}
+					<li>
+						<strong>ID :</strong>
+						{{chien.id_chien}}<br>
+						<strong>Nom :</strong>
+						{{chien.nom_chien}}<br>
+						<strong>Poids :</strong>
+						{{chien.poids}}<br>
+						<strong>Taille :</strong>
+						{{chien.taille}}<br>
+						<strong>Race :</strong>
+						{{chien.race}}<br>
+						<strong>chemin_photo :</strong>
+						{{chien.cheminPhoto}}<br>
+						<strong>ID Utilisateur :</strong>
+						{{chien.id_utilisateur}}<br>
+					</li>
+					<a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
+					<br>
+				{% else %}
+					<li>Aucun chien trouvé.</li>
+				{% endfor %}
+			</ul>
 
-        {% elseif chien is defined %}
-            <h2>Détails du chien {{chien.id_chien}}:</h2>
-            <ul>
-                <li><strong>ID :</strong> {{chien.id_chien}}<br>
-                    <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                    <strong>Poids :</strong> {{chien.poids}}<br>
-                    <strong>Taille :</strong> {{chien.taille}}<br>
-                    <strong>Race :</strong> {{chien.race}}<br>
-                    <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
-                    <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
-                </li>
-                <br>
-            </ul>
-        {% else %}
-            <p>Aucun chien trouvé.</p>
-        {% endif %}
+		{% elseif chien is defined %}
+			<h2>Détails du chien
+				{{chien.id_chien}}:</h2>
+			<div class="card mb-3" style="max-width: 540px;">
+				<div class="row g-0">
+					<div class="col-md-4">
+						<img src="./{{chien.cheminPhoto}}" class="img-fluid rounded-start object-fit-cover w-100 h-100" alt="{{chien.cheminPhoto}}">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body ">
+							<h5 class="card-title">{{chien.nom_chien}}</h5>
+							<p class="card-text">
+								<strong>Poids :</strong>
+								{{chien.poids}}<br>
+								<strong >Taille :</strong>
+								{{chien.taille}}<br>
+								<strong>Race :</strong>
+								{{chien.race}}<br></p>
+							<p class="card-text" style="color: #DDA15E">
+								<small>ID Utilisateur :
+									{{chien.id_utilisateur}}</small>
+								<br><small>ID Chien :
+									{{chien.id_chien}}</small>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+		{% else %}
+			<p>Aucun chien trouvé.</p>
+		{% endif %}
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
-    </div>
+	</div>
 {% endblock %}
