@@ -3,74 +3,83 @@
 {% block title %}Détails de l’utilisateur — DogSitter{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
 
-    {% if utilisateur is defined %}
-        <h2 class="mb-4">Détails de l’utilisateur</h2>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
 
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h4>
+            {% if utilisateur is defined %}
+            <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius:12px;">
+
+                <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                    <h4 class="mb-0">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-striped" style="background-color:#F8F4E8;">
+                        <tbody>
+                            <tr>
+                                <th style="width: 200px;">ID</th>
+                                <td>{{ utilisateur.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ utilisateur.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Téléphone</th>
+                                <td>{{ utilisateur.numTelephone }}</td>
+                            </tr>
+                            <tr>
+                                <th>Adresse</th>
+                                <td>{{ utilisateur.adresse }}</td>
+                            </tr>
+                            <tr>
+                                <th>Mot de passe (hash)</th>
+                                <td>{{ utilisateur.motDePasse }}</td>
+                            </tr>
+                            <tr>
+                                <th>Est maître ?</th>
+                                <td>
+                                    {% if utilisateur.estMaitre %}
+                                        <span class="badge bg-success">Oui</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Est promeneur ?</th>
+                                <td>
+                                    {% if utilisateur.estPromeneur %}
+                                        <span class="badge bg-success">Oui</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-3">
+                        <a href="?controleur=Index&methode=render" class="btn px-4"
+                           style="background-color:#DDA15E; color:white;">
+                            Retour à l’accueil
+                        </a>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="card-body">
-
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <th style="width: 200px;">ID</th>
-                            <td>{{ utilisateur.id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Email</th>
-                            <td>{{ utilisateur.email }}</td>
-                        </tr>
-                        <tr>
-                            <th>Téléphone</th>
-                            <td>{{ utilisateur.numTelephone }}</td>
-                        </tr>
-                        <tr>
-                            <th>Adresse</th>
-                            <td>{{ utilisateur.adresse }}</td>
-                        </tr>
-                        <tr>
-                            <th>Mot de passe (hash)</th>
-                            <td>{{ utilisateur.motDePasse }}</td>
-                        </tr>
-                        <tr>
-                            <th>Est maître ?</th>
-                            <td>
-                                {% if utilisateur.estMaitre %}
-                                    <span class="badge bg-success">Oui</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Non</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Est promeneur ?</th>
-                            <td>
-                                {% if utilisateur.estPromeneur %}
-                                    <span class="badge bg-success">Oui</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Non</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <a href="?controleur=Index&methode=render" class="btn btn-outline-dark mt-3">
-                    Accueil
-                </a>
+            {% else %}
+            <div class="alert alert-warning text-center"
+                 style="background-color:#F8F4E8; color:#BC6C25;">
+                Aucun utilisateur trouvé.
             </div>
-        </div>
+            {% endif %}
 
-    {% else %}
-        <div class="alert alert-warning">
-            Aucun utilisateur trouvé.
         </div>
-    {% endif %}
-
+    </div>
 </div>
 {% endblock %}
