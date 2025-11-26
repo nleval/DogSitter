@@ -52,5 +52,33 @@ class ChienDAO{
         }
         return $chiens;
     }
+
+    public function findByAnnonce($id_annonce): array
+{
+    $chiens = [];
+    // Jointure entre dog_chien (c) et dog_concerne (co) pour filtrer par id_annonce
+    $sql = "SELECT c.* FROM " . PREFIXE_TABLE . "Chien c 
+            JOIN " . PREFIXE_TABLE . "concerne co ON c.id_chien = co.id_chien 
+            WHERE co.id_annonce = :id_annonce";
+            
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':id_annonce', $id_annonce, PDO::PARAM_INT);
+    $stmt->execute();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Hydratation des objets Chien
+    foreach ($results as $row) {
+        $chiens[] = new Chien(
+            $row['id_chien'],
+            $row['nom_chien'],
+            $row['poids'],
+            $row['taille'],
+            $row['race'],
+            $row['cheminPhoto'],
+            $row['id_utilisateur']
+        );
+    }
+    return $chiens;
+}
 }
 ?>
