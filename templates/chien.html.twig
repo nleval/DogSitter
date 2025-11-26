@@ -1,3 +1,4 @@
+
 {% extends 'base_template.twig' %}
 
 {% block title %}Chiens — DogSitter{% endblock %}
@@ -16,6 +17,7 @@
                         <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
                         <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
                     </li>
+                    <a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
                     <br>
                 {% else %}
                     <li>Aucun chien trouvé.</li>

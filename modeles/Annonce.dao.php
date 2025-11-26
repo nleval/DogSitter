@@ -31,6 +31,7 @@ class AnnonceDAO
 
         foreach ($results as $row) {
             $annonces[] = new Annonce(
+                $row['titre'],
                 $row['id_annonce'],
                 $row['datePromenade'],
                 $row['horaire'],
@@ -58,6 +59,7 @@ class AnnonceDAO
 
         if ($row) {
             return new Annonce(
+                $row['titre'],
                 $row['id_annonce'],
                 $row['datePromenade'],
                 $row['horaire'],
@@ -86,6 +88,7 @@ class AnnonceDAO
 
         foreach ($results as $row) {
             $annonces[] = new Annonce(
+                $row['titre'],
                 $row['id_annonce'],
                 $row['datePromenade'],
                 $row['horaire'],

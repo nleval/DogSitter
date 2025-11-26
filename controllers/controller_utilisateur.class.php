@@ -8,12 +8,14 @@ class ControllerUtilisateur extends Controller
 
     public function afficherUtilisateur()
     {
+        $id_utilisateur = $_GET['id_utilisateur'];
+
         // Récupérer un utilisateur spécifique depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
-        $utilisateur = $managerutilisateur->findById(1); // Exemple avec l'ID 1
+        $utilisateur = $managerutilisateur->findById($id_utilisateur);
 
         // Rendre la vue avec l'utilisateur
-        $template = $this->getTwig()->load('utilisateurs.html.twig');
+        $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur
         ]);
