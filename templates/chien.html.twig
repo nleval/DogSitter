@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container my-4">
+	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
 		{% if chiensListe is defined and chiensListe|length > 0 %}
 			<h2 class="mb-4">Liste des chiens :</h2>
 			{% for chien in chiensListe %}
