@@ -1,27 +1,168 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}Accueil — DogSitter{% endblock %}
+{% block title %}
+    Accueil — DogSitter : Promenade de Chiens
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <h1>{{ message }}</h1>
-        <ul>
-            <li><a href="?controleur=Utilisateur&methode=afficherUtilisateur&id_utilisateur">afficherUtilisateur</a></li>
-            <li><a href="?controleur=Utilisateur&methode=afficherAllUtilisateurs">afficherAllUtilisateurs</a></li>
-            <li><a href="?controleur=Avis&methode=afficherAvis">afficherAvis</a></li>
-            <li><a href="?controleur=Avis&methode=afficherAllAvis">afficherAllAvis</a></li>
-            <li><a href="?controleur=Avis&methode=afficherAvisParIdUtilisateurNote&id_utilisateur_note">afficherAvisParIdUtilisateurNote</a></li>
-            <li><a href="?controleur=Annonce&methode=afficherAnnonce&id_annonce">afficherAnnonce</a></li>
-            <li><a href="?controleur=Annonce&methode=afficherAllAnnonces">afficherAllAnnonces</a></li>
-            <li><a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur">afficherAnnoncesParUtilisateur</a></li>
-            <li><a href="?controleur=Promenade&methode=afficherPromenade">afficherPromenade</a></li>
-            <li><a href="?controleur=Promenade&methode=afficherAllPromenades">afficherAllPromenades</a></li>
-            <li><a href="?controleur=Chien&methode=afficherAllChiens">afficherAllChiens</a></li>
-            <li><a href="?controleur=Chien&methode=afficherChien&id_chien=1">afficherChien</a></li>
-            <li><a href="?controleur=Conversation&methode=afficherAllConversation">afficherAllConversation</a></li>
-            <li><a href="?controleur=Conversation&methode=afficherconversation&id_conversation">afficherConversation</a></li>
-            <li><a href="?controleur=Message&methode=afficherAllMessage">afficherAllMessage</a></li>
-            <li><a href="?controleur=Message&methode=afficherMessage&id_message">afficherMessage</a></li>
-        </ul>
+    {# 1. BANNIÈRE INTRO #}
+    <header class="text-center py-5 shadow-sm" style="background-color: #FEFAE0;">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-3" style="color:#537031; font-family: 'Poppins', sans-serif;">
+                Des promenades de confiance pour votre compagnon
+            </h1>
+            <p class="lead mb-4 text-muted">
+                Propriétaires : publiez vos annonces facilement. Sitters : trouvez les promenades qui vous conviennent.
+            </p>
+
+            <a href="?controleur=Annonce&methode=afficherAllAnnonces"
+                class="btn btn-lg shadow-lg fw-bold text-white"
+                style="background-color:#BC6C25;">
+                <i class="bi bi-search me-2"></i> Trouver une promenade
+            </a>
+            <div class="mt-4">
+                <a href="?controleur=Annonce&methode=creerAnnonce"
+                    class="fw-bold text-decoration-none"
+                    style="color:#DDA15E;">
+                    Publier une annonce <i class="bi bi-arrow-right-circle-fill ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    {# 2. SECTION DES SERVICES #}
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold" style="color:#537031;">
+                Comment ça fonctionne
+            </h2>
+            <div class="row text-center">
+                {# Carte 1: Poster une annonce #}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <div class="card-body">
+                            <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
+                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
+                                Publier une annonce
+                            </h5>
+                            <p class="card-text text-muted">
+                                Les propriétaires publient leurs demandes de promenades selon leurs besoins.
+                            </p>
+                            <a href="?controleur=Annonce&methode=creerAnnonce"
+                                class="fw-bold text-decoration-none"
+                                style="color:#DDA15E;">
+                                Publier maintenant
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Carte 2: Parcourir les annonces pour les Sitters #}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <div class="card-body">
+                            <i class="bi bi-search display-5" style="color:#DDA15E;"></i>
+                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
+                                Parcourir les annonces
+                            </h5>
+                            <p class="card-text text-muted">
+                                Consultez les demandes de promenades publiées par les propriétaires et choisissez celles
+                                que vous pouvez réaliser.
+                            </p>
+                            <a href="?controleur=Annonce&methode=afficherAllAnnonces"
+                                class="fw-bold text-decoration-none"
+                                style="color:#DDA15E;">
+                                Voir toutes les annonces
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Carte 3: Avis et Confiance pour les Sitters #}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <div class="card-body">
+                            <i class="bi bi-star-fill display-5" style="color:#DDA15E;"></i>
+                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
+                                Avis des propriétaires
+                            </h5>
+                            <p class="card-text text-muted">
+                                Consultez les évaluations laissées par les propriétaires pour mieux connaître leur
+                                expérience et choisir les annonces adaptées.
+                            </p>
+                            <a href="?controleur=Avis&methode=afficherAllAvis"
+                                class="fw-bold text-decoration-none"
+                                style="color:#DDA15E;">
+                                Lire les avis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="border-warning opacity-50 mx-auto w-75 my-5" />
+
+    {# 3. SECTION TÉMOIGNAGES #}
+    <section class="py-5" style="background-color:#FEFAE0;">
+        <div class="container text-center">
+            <h2 class="mb-4 fw-bold" style="color:#537031;">
+                Ce que nos utilisateurs disent
+            </h2>
+            <blockquote class="blockquote fst-italic mx-auto" style="max-width: 700px;">
+                <p style="color:#DDA15E;">
+                    "Mon chien, Lilian, adore ses promenades avec son Sitter. Je me sens en confiance et le système de
+                    messagerie est très pratique !"
+                </p>
+                <footer class="blockquote-footer mt-2" style="color:#537031;">
+                    Alice Martin, <cite title="Source Title">Propriétaire de Lilian</cite>
+                </footer>
+            </blockquote>
+        </div>
+    </section>
+
+    {# 4. LIENS DE DÉVELOPPEMENT #}
+    <div class="container my-5">
+        <button class="btn btn-sm text-light"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#devLinks"
+            aria-expanded="false"
+            aria-controls="devLinks"
+            style="background-color:#537031;">
+            <i class="bi bi-tools me-1"></i> Liens de Développement / Test
+        </button>
+        <div class="collapse mt-3" id="devLinks">
+            <div class="card card-body" style="background-color:#FEFAE0; border: 1px solid #DDA15E;">
+                <h5 class="card-title" style="color:#537031;">
+                    {{ message }}
+                </h5>
+                <ul class="list-unstyled row">
+                    {% for key, link in {
+                        'Utilisateur (seul)': '?controleur=Utilisateur&methode=afficherUtilisateur&id_utilisateur=1',
+                        'Tous Utilisateurs': '?controleur=Utilisateur&methode=afficherAllUtilisateurs',
+                        'Avis (seul)': '?controleur=Avis&methode=afficherAvis&id_avis=1',
+                        'Tous Avis': '?controleur=Avis&methode=afficherAllAvis',
+                        'Avis vers un utilisateur': '?controleur=Avis&methode=afficherAvisParIdUtilisateurNote&id_utilisateur_note',
+                        'Annonce (seule)': '?controleur=Annonce&methode=afficherAnnonce&id_annonce=1',
+                        'Toutes Annonces': '?controleur=Annonce&methode=afficherAllAnnonces',
+                        'Annonces par User': '?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur=1',
+                        'Promenade (seule)': '?controleur=Promenade&methode=afficherPromenade&id_promenade=1',
+                        'Toutes Promenades': '?controleur=Promenade&methode=afficherAllPromenades',
+                        'Tous Chiens': '?controleur=Chien&methode=afficherAllChiens',
+                        'Chien (seul)': '?controleur=Chien&methode=afficherChien&id_chien=1',
+                        'Toutes Conv. (Liste)': '?controleur=Conversation&methode=afficherAllConversations',
+                        'Conv. (active)': '?controleur=Conversation&methode=afficherConversation&id_conversation=1',
+                        'Tous Messages': '?controleur=Message&methode=afficherAllMessage',
+                        'Message (seul)': '?controleur=Message&methode=afficherMessage&id_message=1'
+                    } %}
+                        <li class="col-md-4">
+                            <a href="{{ link }}" class="text-decoration-none" style="color:#DDA15E;">{{ key }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 {% endblock %}
