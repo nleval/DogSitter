@@ -8,17 +8,17 @@
 		{% if chiensListe is defined and chiensListe|length > 0 %}
 			<h2 class="mb-4">Liste des chiens :</h2>
 			{% for chien in chiensListe %}
-            	<div class="row align-items-center border p-2 mb-2 rounded">
+            	<div class="row align-items-center border p-2 mb-2 rounded shadow-lg" style="background-color: #FAF6E9;">
         
-        <div class="col-2"><strong>ID :</strong> {{ chien.id_chien }}</div>
-        <div class="col-3"><strong>Nom :</strong> {{ chien.nom_chien }}</div>
-        <div class="col-3"><strong>Race :</strong> {{ chien.race }}</div>
-        <div class="col-3"><strong>ID Utilisateur :</strong> {{ chien.id_utilisateur }}</div>
+        			<div class="col-2"><strong>ID :</strong> {{ chien.id_chien }}</div>
+        			<div class="col-3"><strong>Nom :</strong> {{ chien.nom_chien }}</div>
+        			<div class="col-3"><strong>Race :</strong> {{ chien.race }}</div>
+        			<div class="col-3"><strong>ID Utilisateur :</strong> {{ chien.id_utilisateur }}</div>
         
-        <div class="col-1 text-end">
-            <a class="btn btn-primary btn-sm"
-               href="?controleur=Chien&methode=afficherChien&id_chien={{ chien.id_chien }}">
-                    Voir les détails
+        		<div class="col-1 text-end">
+        		    <a class="btn btn-primary btn-sm" style="background-color: #537031"
+        			href="?controleur=Chien&methode=afficherChien&id_chien={{ chien.id_chien }}">
+        		    	Voir les détails
                 </a>
             </div>
         </div>
