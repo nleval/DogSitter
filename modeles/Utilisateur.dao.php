@@ -64,4 +64,27 @@ class UtilisateurDAO
 
         return null;
     }
+
+    public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur 
+                (email, estMaitre, estPromeneur, adresse, motDePasse, nom, prenom, numTelephone) 
+                VALUES 
+                (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :nom, :prenom, :numTelephone)";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+
+        $reussite = $pdoStatement->execute([
+            'email'        => $utilisateur->getEmail(),
+            'estMaitre'    => $utilisateur->getEstMaitre(),
+            'estPromeneur' => $utilisateur->getEstPromeneur(),
+            'adresse'      => $utilisateur->getAdresse(),
+            'motDePasse'   => $utilisateur->getMotDePasse(),
+            'nom'          => $utilisateur->getNom(),
+            'prenom'       => $utilisateur->getPrenom(),
+            'numTelephone' => $utilisateur->getNumTelephone()
+        ]);
+
+    return $reussite;
+}
+
 }

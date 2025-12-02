@@ -2,17 +2,17 @@
 
 class Utilisateur
 {
-    private $id_utilisateur;
-    private $email;
-    private $estMaitre;
-    private $estPromeneur;
-    private $adresse;
-    private $motDePasse;
-    private $nom;
-    private $prenom;
-    private $numTelephone;
+    private ?int $id_utilisateur;
+    private ?string $email;
+    private ?bool $estMaitre;
+    private ?bool $estPromeneur;
+    private ?string $adresse;
+    private ?string $motDePasse;
+    private ?string $nom;
+    private ?string $prenom;
+    private ?string $numTelephone;
 
-    public function __construct($id_utilisateur, $email, $estMaitre, $estPromeneur, $adresse, $motDePasse, $nom, $prenom, $numTelephone)
+    public function __construct(?int $id_utilisateur, ?string $email, ?bool $estMaitre, ?bool $estPromeneur, ?string $adresse, ?string $motDePasse, ?string $nom, ?string $prenom, ?string $numTelephone)
     {
         $this->id_utilisateur = $id_utilisateur;
         $this->email = $email;
