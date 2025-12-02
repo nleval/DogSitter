@@ -22,6 +22,8 @@
                                         class="form-control"
                                         id="titre"
                                         name="titre"
+                                        minlength="10"
+                                        maxlength="100"
                                         placeholder="Ex : Promenade matinale au parc"
                                         style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
                                         required />
@@ -36,6 +38,7 @@
                                             class="form-control"
                                             id="datePromenade"
                                             name="datePromenade"
+                                            min="{{ 'now'|date_modify('+1 day')|date('Y-m-d') }}"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
                                             required />
                                     </div>
@@ -71,12 +74,15 @@
                                         <label for="tarif" class="form-label fw-bold" style="color:#537031;">
                                             Tarif (€)
                                         </label>
-                                        <input type="text"
+                                        <input type="number"
+                                            min="1"
+                                            step="0.01"
                                             class="form-control"
                                             id="tarif"
                                             name="tarif"
                                             placeholder="Ex : 20"
-                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
                                     </div>
                                 </div>
 
