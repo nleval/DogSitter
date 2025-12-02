@@ -1,0 +1,153 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Créer une annonce — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
+                        Créer une annonce
+                    </h2>
+
+                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
+                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
+                            <form method="post" action="?controleur=Annonce&methode=creerAnnonce">
+                                <div class="mb-4">
+                                    <label for="titre" class="form-label fw-bold" style="color:#537031;">Titre</label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="titre"
+                                        name="titre"
+                                        placeholder="Ex : Promenade matinale au parc"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                        required />
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="datePromenade" class="form-label fw-bold" style="color:#537031;">
+                                            Date
+                                        </label>
+                                        <input type="date"
+                                            class="form-control"
+                                            id="datePromenade"
+                                            name="datePromenade"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="horaire" class="form-label fw-bold" style="color:#537031;">
+                                            Horaire
+                                        </label>
+                                        <input type="time"
+                                            class="form-control"
+                                            id="horaire"
+                                            name="horaire"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="duree" class="form-label fw-bold" style="color:#537031;">
+                                            Durée (minutes)
+                                        </label>
+                                        <input type="number"
+                                            min="15"
+                                            step="15"
+                                            class="form-control"
+                                            id="duree"
+                                            name="duree"
+                                            placeholder="Ex : 60"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="tarif" class="form-label fw-bold" style="color:#537031;">
+                                            Tarif (€)
+                                        </label>
+                                        <input type="text"
+                                            class="form-control"
+                                            id="tarif"
+                                            name="tarif"
+                                            placeholder="Ex : 20"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="endroitPromenade" class="form-label fw-bold" style="color:#537031;">
+                                        Lieu
+                                    </label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="endroitPromenade"
+                                        name="endroitPromenade"
+                                        placeholder="Ex : Parc du Bois"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="description" class="form-label fw-bold" style="color:#537031;">
+                                        Description
+                                    </label>
+                                    <textarea class="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="4"
+                                        placeholder="Donnez des détails (comportement du chien, préférences, accessoires...)"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px; resize: vertical;"></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold" style="color:#537031;">Chiens concernés</label>
+                                    <div class="d-flex flex-wrap">
+                                        {% for chien in chiens %}
+                                            <div class="form-check me-3 mb-2">
+                                                <input class="form-check-input"
+                                                    type="checkbox"
+                                                    name="chiens[]"
+                                                    value="{{ chien.getId_Chien() }}"
+                                                    id="chien{{ chien.getId_Chien() }}"
+                                                    style="border-color:#DDA15E;" />
+                                                <label class="form-check-label"
+                                                    for="chien{{ chien.getId_Chien() }}"
+                                                    style="color:#537031;">
+                                                    {{ chien.getNom_Chien() }}
+                                                </label>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">
+                                                Aucun chien trouvé — vous pouvez en ajouter depuis votre profil.
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="status" value="Disponible" />
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="index.php"
+                                        class="btn btn-outline"
+                                        style="border-radius:8px; border-color: #537031; color: #537031;">
+                                        Annuler
+                                    </a>
+                                    <button type="submit"
+                                        class="btn fw-bold text-white"
+                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                        Publier l'annonce
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

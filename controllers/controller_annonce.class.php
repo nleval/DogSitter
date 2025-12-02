@@ -95,4 +95,93 @@ class ControllerAnnonce extends Controller
             'id_utilisateur' => $id_utilisateur
         ]);
     }
+
+
+public function creerAnnonce()
+{
+    // A DECOMMENTER QUAND LA GESTION DES SESSIONS SERA EN PLACE
+
+    // session_start();
+    // $id_utilisateur = $_SESSION['id_utilisateur'] ?? null;
+
+    // if (!$id_utilisateur) {
+    //     die("Vous devez être connecté pour créer une annonce.");
+    // }
+
+    // $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+    // $utilisateur = $managerUtilisateur->findById($id_utilisateur);
+
+    // if(!$utilisateur || !$utilisateur->getEstMaitre()) {
+    //     die("Seuls les utilisateurs avec le rôle 'maître' peuvent créer des annonces.");
+    // }
+
+    // FORMULAIRE ENVOYÉ
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        $titre = $_POST['titre'] ?? null;
+        $datePromenade = $_POST['datePromenade'] ?? null;
+        $horaire = $_POST['horaire'] ?? null;
+        $status = $_POST['status'] ?? 'Disponible';
+        $tarif = $_POST['tarif'] ?? null;
+        $description = $_POST['description'] ?? null;
+        $endroitPromenade = $_POST['endroitPromenade'] ?? null;
+        $duree = $_POST['duree'] ?? null;
+        $chiens = $_POST['chiens'] ?? [];
+
+        $pdo = $this->getPDO();
+
+        // INSERT annonce
+        $stmt = $pdo->prepare("
+            INSERT INTO " . PREFIXE_TABLE . "Annonce 
+            (titre, datePromenade, horaire, status, tarif, description, endroitPromenade, duree, id_utilisateur)
+            VALUES (:titre, :datePromenade, :horaire, :status, :tarif, :description, :endroitPromenade, :duree, :id_utilisateur)
+        ");
+
+        $stmt->execute([
+            ':titre' => $titre,
+            ':datePromenade' => $datePromenade,
+            ':horaire' => $horaire,
+            ':status' => $status,
+            ':tarif' => $tarif,
+            ':description' => $description,
+            ':endroitPromenade' => $endroitPromenade,
+            ':duree' => $duree,
+            ':id_utilisateur' => $id_utilisateur  
+        ]);
+
+        $id_annonce = $pdo->lastInsertId();
+
+        // INSERT chiens associés
+        if (!empty($chiens)) {
+            $stmtChien = $pdo->prepare("
+                INSERT INTO " . PREFIXE_TABLE . "concerne (id_annonce, id_chien)
+                VALUES (:id_annonce, :id_chien)
+            ");
+
+            foreach ($chiens as $id_chien) {
+                $stmtChien->execute([
+                    ':id_annonce' => $id_annonce,
+                    ':id_chien' => $id_chien
+                ]);
+            }
+        }
+
+        echo "Annonce créée avec succès.";
+        return;
+    }
+
+    // AFFICHAGE DU FORMULAIRE
+    $managerChien = new ChienDAO($this->getPDO());
+    $chiensUtilisateur = $managerChien->findAll(); // À remplacer par une méthode filtrant par utilisateur quand la connexion sera implémentée
+
+    $template = $this->getTwig()->load('creer_annonce.html.twig');
+    echo $template->render([
+        'chiens' => $chiensUtilisateur,
+
+    ]);
 }
+
+}
+
+
+

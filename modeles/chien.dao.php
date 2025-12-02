@@ -80,5 +80,36 @@ class ChienDAO{
     }
     return $chiens;
 }
+
+public function findByUtilisateur(int $id_utilisateur): array
+{
+    $stmt = $this->pdo->prepare("
+        SELECT *
+        FROM " . PREFIXE_TABLE . "Chien
+        WHERE id_utilisateur = :id_utilisateur
+    ");
+
+    $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $chiens = [];
+
+    foreach ($resultats as $row) {
+        $chiens[] = new Chien(
+            $row['id_chien'],
+            $row['nom_chien'],
+            $row['poids'],
+            $row['taille'],
+            $row['race'],
+            $row['cheminPhoto'],
+            $row['id_utilisateur']
+        );
+    }
+
+    return $chiens;
+}
+
 }
 ?>
