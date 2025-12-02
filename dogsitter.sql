@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 05 nov. 2025 à 15:13
+-- Généré le : mar. 02 déc. 2025 à 16:33
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -270,27 +270,27 @@ INSERT INTO `dog_répond` (`id_annonce`, `id_utilisateur`) VALUES
 
 DROP TABLE IF EXISTS `dog_utilisateur`;
 CREATE TABLE IF NOT EXISTS `dog_utilisateur` (
-  `id_utilisateur` int NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `estMaitre` tinyint(1) NOT NULL,
-  `estPromeneur` tinyint(1) NOT NULL,
-  `adresse` varchar(50) DEFAULT NULL,
-  `motDePasse` varchar(50) NOT NULL,
-  `nom` varchar(50) NOT NULL,
-  `prenom` varchar(50) NOT NULL,
-  `numTelephone` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id_utilisateur`),
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) NOT NULL,
+  `estMaitre` tinyint(1) NOT NULL DEFAULT '0',
+  `estPromeneur` tinyint(1) NOT NULL DEFAULT '0',
+  `adresse` varchar(255) DEFAULT NULL,
+  `motDePasse` varchar(255) NOT NULL,
+  `nom` varchar(100) NOT NULL,
+  `prenom` varchar(100) NOT NULL,
+  `numTelephone` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `dog_utilisateur`
 --
 
-INSERT INTO `dog_utilisateur` (`id_utilisateur`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `nom`, `prenom`, `numTelephone`) VALUES
-(1, 'utilisateur1@example.com', 1, 1, '123 Rue A, Paris', 'motdepasse1', 'Dupont', 'Jean', '0123456789'),
-(2, 'utilisateur2@example.com', 0, 1, '456 Rue B, Lyon', 'motdepasse2', 'Martin', 'Sophie', '0987654321'),
-(3, 'utilisateur3@example.com', 1, 0, '789 Rue C, Marseille', 'motdepasse3', 'Lemoine', 'Paul', '0234567890');
+INSERT INTO `dog_utilisateur` (`id`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `nom`, `prenom`, `numTelephone`) VALUES
+(1, 'alice@example.com', 1, 0, '12 rue du Chien, Paris', 'oui', 'Durand', 'Alice', '0600000001'),
+(2, 'bob@example.com', 0, 1, '34 avenue des Promeneurs, Lyon', 'oui', 'Martin', 'Bob', '0600000002'),
+(3, 'carol@example.com', 1, 1, '56 boulevard des Chiens, Marseille', 'oui', 'Bernard', 'Carol', '0600000003');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
