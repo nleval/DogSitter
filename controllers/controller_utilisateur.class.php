@@ -70,7 +70,7 @@ class ControllerUtilisateur extends Controller
 
         // Supprimer l'utilisateur de la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
-        $managerutilisateur->delete($id_utilisateur);
+        $managerutilisateur->supprimerUtilisateur($id_utilisateur);
 
         // Rediriger vers la liste des utilisateurs
         header('Location: index.php?action=afficherAllUtilisateurs');

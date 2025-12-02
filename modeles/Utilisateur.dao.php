@@ -85,6 +85,13 @@ class UtilisateurDAO
         ]);
 
     return $reussite;
-}
+    }
+
+    public function supprimerUtilisateur($id_utilisateur): ?bool
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
+    }
 
 }
