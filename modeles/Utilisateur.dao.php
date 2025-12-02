@@ -19,50 +19,52 @@ class UtilisateurDAO
 
     public function findAll(): array
     {
-        $utilisateurs = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Utilisateur");
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($results as $row) {
-            $utilisateurs[] = new Utilisateur(
-                $row['id_utilisateur'],
-                $row['email'],
-                $row['estMaitre'],
-                $row['estPromeneur'],
-                $row['adresse'],
-                $row['motDePasse'],
-                $row['nom'],
-                $row['prenom'],
-                $row['numTelephone']
-            );
-        }
-
-        return $utilisateurs;
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur";
+        $pdoStatement  = $this->pdo->prepare($sql);
+        $pdoStatement ->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetchAll();
+        
+        return $this->hydrateAll($utilisateur);
     }
 
     public function findById($id_utilisateur): ?Utilisateur
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur");
-        $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            return new Utilisateur(
-                $row['id_utilisateur'],
-                $row['email'],
-                $row['estMaitre'],
-                $row['estPromeneur'],
-                $row['adresse'],
-                $row['motDePasse'],
-                $row['nom'],
-                $row['prenom'],
-                $row['numTelephone']
-            );
+        if ($id_utilisateur === null && isset($_GET['id_utilisateur'])) {
+            $id_utilisateur = (int) $_GET['id_utilisateur'];
         }
 
-        return null;
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetch();
+
+        return $utilisateur ? $this->hydrate($utilisateur) : null;
+    }
+
+    private function hydrateAll(array $resul): array {
+        $utilisateurListe = [];
+        foreach ($resul as $ligne) {
+            $utilisateurListe[] = $this->hydrate($ligne);
+        }
+        return $utilisateurListe;
+    }
+
+    private function hydrate(array $tableauAssoc): ?Utilisateur {
+        $utilisateur = new Utilisateur();
+
+        $utilisateur->setId($tableauAssoc['id_utilisateur'] ?? null);
+        $utilisateur->setEmail($tableauAssoc['email'] ?? null);
+        $utilisateur->setEstMaitre($tableauAssoc['estMaitre'] ?? null);
+        $utilisateur->setEstPromeneur($tableauAssoc['estPromeneur'] ?? null);
+        $utilisateur->setAdresse($tableauAssoc['adresse'] ?? null);
+        $utilisateur->setMotDePasse($tableauAssoc['motDePasse'] ?? null);
+        $utilisateur->setNom($tableauAssoc['nom'] ?? null);
+        $utilisateur->setPrenom($tableauAssoc['prenom'] ?? null);
+        $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);
+
+        return $utilisateur;
     }
 
     public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
