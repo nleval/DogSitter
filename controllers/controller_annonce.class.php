@@ -128,6 +128,74 @@ public function creerAnnonce()
         $duree = $_POST['duree'] ?? null;
         $chiens = $_POST['chiens'] ?? [];
 
+
+        $regles = [
+            'titre' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 10,
+                'longueur_max' => 100
+            ],
+            'datePromenade' => [
+                'obligatoire' => true,
+                'format' => '/^\d{4}-\d{2}-\d{2}$/'
+            ],
+            'horaire' => [
+                'obligatoire' => true,
+                'format' => '/^\d{2}:\d{2}$/'
+            ],
+            'duree' => [
+                'obligatoire' => true,
+                'type' => 'numeric',
+                'plage_min' => 15
+            ],
+            'tarif' => [
+                'obligatoire' => true,
+                'type' => 'numeric',
+                'plage_min' => 1
+            ],
+            'endroitPromenade' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 255
+            ],
+            'description' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 500
+            ],
+            'chiens' => [
+                'obligatoire' => false    // géré manuellement ensuite
+            ]
+        ];
+
+        $validator = new Validator($regles);
+        $valide = $validator->valider($_POST);
+        $erreurs = $validator->getMessagesErreurs();
+
+        // Validation manuelle des chiens
+        if (empty($chiens) || !is_array($chiens)) {
+            $erreurs[] = "Vous devez sélectionner au moins un chien.";
+            $valide = false;
+        }
+
+     
+          // SI ERREURS → on réaffiche le formulaire
+     
+        if (!$valide) {
+            $managerChien = new ChienDAO($this->getPDO());
+            $chiensUtilisateur = $managerChien->findAll();
+
+            $template = $this->getTwig()->load('creer_annonce.html.twig');
+            echo $template->render([
+                'erreurs' => $erreurs,
+                'donnees' => $_POST,          
+                'chiens' => $chiensUtilisateur
+            ]);
+            return;
+        }
+
+
         $pdo = $this->getPDO();
 
         // INSERT annonce
@@ -146,7 +214,7 @@ public function creerAnnonce()
             ':description' => $description,
             ':endroitPromenade' => $endroitPromenade,
             ':duree' => $duree,
-            ':id_utilisateur' => $id_utilisateur  
+            // ':id_utilisateur' => $id_utilisateur  // A DECOMMENTER QUAND LA GESTION DES SESSIONS SERA EN PLACE
         ]);
 
         $id_annonce = $pdo->lastInsertId();

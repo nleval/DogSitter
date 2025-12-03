@@ -20,6 +20,7 @@
                                     <label for="titre" class="form-label fw-bold" style="color:#537031;">Titre</label>
                                     <input type="text"
                                         class="form-control"
+                                        value="{{ donnees.titre|default('') }}"
                                         id="titre"
                                         name="titre"
                                         minlength="10"
@@ -36,6 +37,7 @@
                                         </label>
                                         <input type="date"
                                             class="form-control"
+                                            value="{{ donnees.datePromenade|default('') }}"
                                             id="datePromenade"
                                             name="datePromenade"
                                             min="{{ 'now'|date_modify('+1 day')|date('Y-m-d') }}"
@@ -48,6 +50,7 @@
                                         </label>
                                         <input type="time"
                                             class="form-control"
+                                            value="{{ donnees.horaire|default('') }}"
                                             id="horaire"
                                             name="horaire"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
@@ -61,6 +64,7 @@
                                             Durée (minutes)
                                         </label>
                                         <input type="number"
+                                            value="{{ donnees.duree|default('') }}"
                                             min="15"
                                             step="15"
                                             class="form-control"
@@ -75,6 +79,7 @@
                                             Tarif (€)
                                         </label>
                                         <input type="number"
+                                            value="{{ donnees.tarif|default('') }}"
                                             min="1"
                                             step="0.01"
                                             class="form-control"
@@ -91,6 +96,7 @@
                                         Lieu
                                     </label>
                                     <input type="text"
+                                        value="{{ donnees.endroitPromenade|default('') }}"
                                         class="form-control"
                                         id="endroitPromenade"
                                         name="endroitPromenade"
@@ -103,6 +109,7 @@
                                         Description
                                     </label>
                                     <textarea class="form-control"
+                                        value="{{ donnees.description|default('') }}"
                                         id="description"
                                         name="description"
                                         rows="4"
@@ -120,6 +127,7 @@
                                                     name="chiens[]"
                                                     value="{{ chien.getId_Chien() }}"
                                                     id="chien{{ chien.getId_Chien() }}"
+                                                    {% if donnees.chiens is defined and chien.getId_Chien() in donnees.chiens %}checked{% endif %}
                                                     style="border-color:#DDA15E;" />
                                                 <label class="form-check-label"
                                                     for="chien{{ chien.getId_Chien() }}"
@@ -150,6 +158,17 @@
                                     </button>
                                 </div>
                             </form>
+
+                            {% if erreurs is defined and erreurs %}
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            {% for err in erreurs %}
+                <li>{{ err }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
                         </div>
                     </div>
                 </div>
