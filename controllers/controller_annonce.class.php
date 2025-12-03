@@ -178,13 +178,12 @@ public function creerAnnonce()
             $erreurs[] = "Vous devez sélectionner au moins un chien.";
             $valide = false;
         }
-
      
           // SI ERREURS → on réaffiche le formulaire
      
         if (!$valide) {
             $managerChien = new ChienDAO($this->getPDO());
-            $chiensUtilisateur = $managerChien->findAll();
+            $chiensUtilisateur = $managerChien->findAll(); // À remplacer par une méthode filtrant par utilisateur quand la connexion sera implémentée
 
             $template = $this->getTwig()->load('creer_annonce.html.twig');
             echo $template->render([

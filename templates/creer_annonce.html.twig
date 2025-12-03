@@ -127,7 +127,11 @@
                                                     name="chiens[]"
                                                     value="{{ chien.getId_Chien() }}"
                                                     id="chien{{ chien.getId_Chien() }}"
-                                                    {% if donnees.chiens is defined and chien.getId_Chien() in donnees.chiens %}checked{% endif %}
+                                                    {{
+                                                    donnees.chiens is defined and chien.getId_Chien() in donnees.chiens
+                                                        ? 'checked'
+                                                        : ''
+                                                    }}
                                                     style="border-color:#DDA15E;" />
                                                 <label class="form-check-label"
                                                     for="chien{{ chien.getId_Chien() }}"
@@ -160,15 +164,14 @@
                             </form>
 
                             {% if erreurs is defined and erreurs %}
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            {% for err in erreurs %}
-                <li>{{ err }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
-
+                                <div class="alert alert-danger mt-4">
+                                    <ul class="mb-0">
+                                        {% for err in erreurs %}
+                                            <li>{{ err }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
