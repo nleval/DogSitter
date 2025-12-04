@@ -18,8 +18,14 @@
 
     <!-- Styles hover inline -->
     <style>
+        * { box-sizing: border-box; }
+
         html, body {
             height: 100%;
+            overflow-x: hidden; 
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
@@ -28,15 +34,16 @@
         }
 
         .container-fluid {
-            flex: 1 0 auto; /* Permet au contenu de pousser le footer vers le bas */
+            flex: 1 0 auto; 
+            overflow-x: hidden;
         }
 
         footer {
-            flex-shrink: 0; /* Le footer ne rétrécit pas */
+            flex-shrink: 0; 
         }
 
         /* Survol des liens et icônes */
-        .nav-link:hover, 
+        .nav-link:hover,
         .nav-link:hover i {
             color: #DDA15E !important;
         }
@@ -74,7 +81,7 @@
                 <!-- Navbar content -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Barre de recherche centrée -->
-                    <div class="position-absolute top-50 start-50 translate-middle w-100" style="max-width: 520px; z-index: 30;">
+                    <div class="position-absolute top-50 start-50 translate-middle" style="left:50%; transform:translate(-50%,-50%); width:90%; max-width:520px; z-index:30;">
                         <form class="d-flex" onsubmit="return false;">
                             <div class="input-group rounded-pill overflow-hidden border" style="border-color: rgba(43,59,23,0.06);">
                                 <input id="headerSearch" class="form-control" placeholder="Tapez votre recherche" aria-label="Recherche rapide" autocomplete="off"
