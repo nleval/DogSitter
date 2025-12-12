@@ -13,24 +13,32 @@ class ControllerAnnonce extends Controller
     public function afficherAnnonce($id_annonce = null)
     {
         // Vérifie si l'identifiant de l'annonce ($id_annonce) n'a pas été reçu en tant qu'argument
-        if(is_null($id_annonce) && isset($_GET['id_annonce'])) {
-
-            // Si l'ID est manquant dans les arguments, on le récupère manuellement depuis les paramètres de la requête HTTP (URL).
-            $id_annonce = filter_var($_GET['id_annonce'], FILTER_SANITIZE_NUMBER_INT);
+        if($id_annonce === null) {
+            if (isset($_GET['id_annonce'])) {
+                $id_annonce = (int) $_GET['id_annonce'];
+            }
+            else {
+                 http_response_code(404);
+                 $template = $this->getTwig()->load('404.html.twig');
+                 echo $template->render(['message' => 'Annonce non trouvée.']);
+                 return;           
+                 }
         }
+
         // Récupérer une annonce spécifique depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annonce = $managerAnnonce->findById($id_annonce);
 
         $chienConcernes = [];
+        $proprietaire = null;
+
         if($annonce !== null) {
 
-            $annonceId = $annonce->getIdAnnonce();
             // Récupérer les chiens concernés par cette annonce
             $managerChien = new ChienDAO($this->getPDO());
-            $chienConcernes = $managerChien->findByAnnonce($annonceId);
+            $chienConcernes = $managerChien->findByAnnonce($annonce->getIdAnnonce());
 
-            $managerUtilisateur = new UtilisateurDAO($this->getPDO()); // Assurez-vous que le DAO existe
+            $managerUtilisateur = new UtilisateurDAO($this->getPDO()); 
             $proprietaire = $managerUtilisateur->findById($annonce->getIdUtilisateur());
         }
 
@@ -55,23 +63,15 @@ class ControllerAnnonce extends Controller
 
         $managerUtilisateur = new UtilisateurDAO($this->getPDO());
         $annoncesEnrichies = [];
+
         foreach ($annoncesListe as $annonce) {
-            $idUtilisateur = $annonce->getIdUtilisateur(); 
             
             // Récupérer l'objet Utilisateur
-            $utilisateur = $managerUtilisateur->findById($idUtilisateur);
+            $utilisateur = $managerUtilisateur->findById($annonce->getIdUtilisateur());
 
-            // Ajouter le numéro de téléphone à l'objet Annonce
-            if ($utilisateur !== null) {
-                // Créer une nouvelle propriété 'telephone' sur l'objet Annonce pour Twig
-                $annonce->telephone = $utilisateur->getNumTelephone();
-            } else {
-                $annonce->telephone = 'N/A'; // Valeur par défaut si l'utilisateur n'est pas trouvé
-            }
-
-                $annoncesEnrichies[] = $annonce;
+            $annonce->telephone = $utilisateur ? $utilisateur->getNumTelephone() : 'N/A';
+            $annoncesEnrichies[] = $annonce;
         }
-            
             
         // Rendre la vue avec la liste des annonces
         $template = $this->getTwig()->load('annonces.html.twig');
@@ -84,10 +84,24 @@ class ControllerAnnonce extends Controller
     /**
      * Afficher toutes les annonces d’un utilisateur donné
      */
-    public function afficherAnnoncesParUtilisateur($id_utilisateur = 2)
+    public function afficherAnnoncesParUtilisateur($id_utilisateur)
     {
         $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+
         $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);
+
+        $annoncesEnrichies = [];
+
+        foreach ($annoncesListe as $annonce) {
+            // Récupérer l'objet Utilisateur
+            $utilisateur = $managerUtilisateur->findById($annonce->getIdUtilisateur());
+
+            $annoncesEnrichies[] = [
+                'annonce' => $annonce,
+                'utilisateur' => $utilisateur ? $utilisateur->getNumTelephone() : 'N/A'
+            ];
+        }
 
         $template = $this->getTwig()->load('annonces.html.twig');
         echo $template->render([
@@ -100,16 +114,33 @@ class ControllerAnnonce extends Controller
 public function creerAnnonce()
 {
     // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle maître peuvent créer des annonces
-    $id_utilisateur = $_SESSION['user']['id_utilisateur'] ?? null;
+    $sessionUser = $_SESSION['user'] ?? null;
+
+    // Si l'utilisateur en session est un tableau
+    if (is_array($sessionUser)) {
+        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+
+    // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
+    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+        $id_utilisateur = $sessionUser->getId();
+
+    } else {
+        // On considère qu'il n'y a pas d'utilisateur connecté
+        $id_utilisateur = null;
+    }
     if (!$id_utilisateur) {
-        die("Vous devez être connecté pour créer une annonce.");
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();   
     }
 
     $managerUtilisateur = new UtilisateurDAO($this->getPDO());
     $utilisateur = $managerUtilisateur->findById($id_utilisateur);
 
     if (!$utilisateur || !$utilisateur->getEstMaitre()) {
-        die("Seuls les utilisateurs avec le rôle 'maître' peuvent créer des annonces.");
+        http_response_code(403); 
+        $template = $this->getTwig()->load('403.html.twig');
+        echo $template->render(['message' => "Seuls les utilisateurs avec le rôle 'maître' peuvent créer des annonces."]);
+        return;
     }
 
     // FORMULAIRE ENVOYÉ
@@ -204,7 +235,7 @@ public function creerAnnonce()
             $description,
             $endroitPromenade,
             $duree,
-            null        // id_utilisateur (à mettre quand la session sera active)
+            $id_utilisateur
             );
 
 

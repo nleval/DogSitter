@@ -5,7 +5,7 @@ use Symfony\Component\Yaml\Yaml;
 // Charger le YAML
 $config = Symfony\Component\Yaml\Yaml::parseFile(__DIR__ . '/../config/constantes.yaml');
 
-// Définir les constantes si elles n'existent pas déjà
+// Définir les constantes 
 defined('PREFIXE_TABLE') or define('PREFIXE_TABLE', $config['PREFIXE_TABLE']);
 defined('MAX_CONNEXIONS_ECHOUEES') or define('MAX_CONNEXIONS_ECHOUEES', $config['max_connexions_echouees']);
 defined('DELAI_ATTENTE_CONNEXION') or define('DELAI_ATTENTE_CONNEXION', $config['delai_attente_connexion']);
@@ -41,8 +41,8 @@ class UtilisateurDAO
 
     public function findById($id_utilisateur): ?Utilisateur
     {
-        if ($id_utilisateur === null && isset($_GET['id_utilisateur'])) {
-            $id_utilisateur = (int) $_GET['id_utilisateur'];
+        if ($id_utilisateur === null) {
+            return null;
         }
 
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
@@ -74,6 +74,9 @@ class UtilisateurDAO
         $utilisateur->setNom($tableauAssoc['nom'] ?? null);
         $utilisateur->setPrenom($tableauAssoc['prenom'] ?? null);
         $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);
+        $utilisateur->setTentativesEchouees((int)($tableauAssoc['tentatives_echouees'] ?? 0));
+        $utilisateur->setDateDernierEchecConnexion($tableauAssoc['date_dernier_echec_connexion'] ?? null);
+        $utilisateur->setStatutCompte($tableauAssoc['statut_compte'] ?? 'actif');
 
         return $utilisateur;
     }
@@ -150,8 +153,8 @@ public function authentification(string $email, string $motDePasse): bool
     }
 
     // Vérification si le compte est temporairement désactivé 
-    $compteDesactive = ($utilisateur['statut_compte'] === 'desactive');
-    $derniereTentative = $utilisateur['date_dernier_echec_connexion'];
+    $compteDesactive = ($utilisateur->getStatutCompte() === 'desactive');
+    $derniereTentative = $utilisateur->getDateDernierEchecConnexion();
 
     if ($compteDesactive && $derniereTentative) {
 
@@ -163,18 +166,18 @@ public function authentification(string $email, string $motDePasse): bool
         }
 
         // Si le temps est expiré → on réactive le compte
-        $this->reactiverCompte($utilisateur['id_utilisateur']);
-        $utilisateur['tentatives_echouees'] = 0;
+        $this->reactiverCompte($utilisateur->getId());
+        $utilisateur->setTentativesEchouees(0);
     }
 
     // Vérification du mot de passe 
-    $mdpCorrect = password_verify($motDePasse, $utilisateur['motDePasse']);
+    $mdpCorrect = password_verify($motDePasse, $utilisateur->getMotDePasse());
 
     if ($mdpCorrect) {
 
         // Si l'utilisateur avait des tentatives enregistrées → on les remet à 0
-        if ($utilisateur['tentatives_echouees'] > 0) {
-            $this->reinitialiserTentatives($utilisateur['id_utilisateur']);
+        if ($utilisateur->getTentativesEchouees() > 0) {
+            $this->reinitialiserTentatives($utilisateur->getId());
         }
 
         return true;
@@ -187,32 +190,41 @@ public function authentification(string $email, string $motDePasse): bool
 }
 
     /** Récupère un utilisateur par email */
-    public function findByEmail(string $email): ?array
+    public function findByEmail(string $email): ?Utilisateur
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ?: null;
+        return $result ? $this->hydrate($result) : null;
     }
 
     /** Incrémente les tentatives échouées */
-    public function incrementerTentatives(array $utilisateur): void
+    public function incrementerTentatives(Utilisateur $utilisateur): void
     {
-        $tentatives = $utilisateur['tentatives_echouees'] + 1;
+        $tentatives = $utilisateur->getTentativesEchouees() + 1;
+        $utilisateur->setTentativesEchouees($tentatives);
+
+        // On met à jour la date de la dernière tentative dans l'objet
+        $dateNow = date('Y-m-d H:i:s');
+        $utilisateur->setDateDernierEchecConnexion($dateNow);
+
         if ($tentatives >= MAX_CONNEXIONS_ECHOUEES) {
             $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
-                    SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = NOW(), statut_compte = 'desactive'
+                    SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = :date, statut_compte = 'desactive'
                     WHERE id_utilisateur = :id";
+            $utilisateur->setStatutCompte('desactive');
         } else {
             $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
-                    SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = NOW()
+                    SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = :date
                     WHERE id_utilisateur = :id";
         }
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':tentatives' => $tentatives,
-            ':id' => $utilisateur['id_utilisateur']
+            ':date' => $dateNow,
+            ':id' => $utilisateur->getId()
         ]);
     }
 
@@ -220,7 +232,7 @@ public function authentification(string $email, string $motDePasse): bool
     public function reinitialiserTentatives(int $id): void
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
-                SET tentatives_echouees = 0, date_dernier_echec_connexion = NULL
+                SET tentatives_echouees = 0, date_dernier_echec_connexion = NULL, statut_compte = 'actif'
                 WHERE id_utilisateur = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);

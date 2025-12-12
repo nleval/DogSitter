@@ -19,7 +19,27 @@ class ControllerUtilisateur extends Controller
 
     public function afficherUtilisateur()
     {
-        $id_utilisateur = $_GET['id_utilisateur'];
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
+        // Récupérer l'ID depuis la session (profil de l'utilisateur connecté)
+        $sessionUser = $_SESSION['user'];
+
+        // Si l'utilisateur en session est un tableau
+        if (is_array($sessionUser)) {
+            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+            
+        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
+        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+            $id_utilisateur = $sessionUser->getId();
+        } else {
+            // Invalide -> redirection vers l'authentification
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
 
         // Récupérer un utilisateur spécifique depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
@@ -254,13 +274,19 @@ class ControllerUtilisateur extends Controller
 
                 if ($utilisateur) {
                     // On évite de stocker le mot de passe en session
-                    unset($utilisateur['motDePasse']);
+                    $utilisateur->setMotDePasse(null);
 
-                    $_SESSION['user'] = $utilisateur;
+                    $_SESSION['user'] = [
+                        'id_utilisateur' => $utilisateur->getId(),
+                        'email' => $utilisateur->getEmail(),
+                        'estMaitre' => $utilisateur->getEstMaitre(),
+                        'estPromeneur' => $utilisateur->getEstPromeneur(),
+                        'prenom' => $utilisateur->getPrenom(),
+                        'nom' => $utilisateur->getNom()
+                    ];
 
                     header(
-                        'Location: index.php?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur=' 
-                        . $utilisateur['id_utilisateur']
+                        'Location: index.php?controleur=utilisateur&methode=afficherUtilisateur'
                     );
                     exit();
                 }
@@ -276,9 +302,8 @@ class ControllerUtilisateur extends Controller
             if ($e->getMessage() === "compte_desactive") {
 
                 $utilisateur = $manager->findByEmail($email);
-                $tempsRestant = $manager->tempsRestantAvantReactivationCompte(
-                    $utilisateur['date_dernier_echec_connexion']
-                );
+                $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
+                $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
 
                 $minutes = floor($tempsRestant / 60);
                 $secondes = $tempsRestant % 60;

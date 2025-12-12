@@ -30,18 +30,7 @@ class AnnonceDAO
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $row) {
-            $annonces[] = new Annonce(
-                $row['id_annonce'],
-                $row['titre'],
-                $row['datePromenade'],
-                $row['horaire'],
-                $row['status'],
-                $row['tarif'],
-                $row['description'],
-                $row['endroitPromenade'],
-                $row['duree'],
-                $row['id_utilisateur']
-            );
+            $annonces[] = $this->hydrate($row);
         }
 
         return $annonces;
@@ -87,18 +76,7 @@ class AnnonceDAO
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $row) {
-            $annonces[] = new Annonce(
-                $row['id_annonce'],
-                $row['titre'],
-                $row['datePromenade'],
-                $row['horaire'],
-                $row['status'],
-                $row['tarif'],
-                $row['description'],
-                $row['endroitPromenade'],
-                $row['duree'],
-                $row['id_utilisateur']
-            );
+            $annonces[] = $this->hydrate($row);
         }
 
         return $annonces;
@@ -126,4 +104,21 @@ class AnnonceDAO
 
         return $reussite;
     }
+
+    private function hydrate(array $data): Annonce
+{
+    return new Annonce(
+        $data['id_annonce'] ?? null,
+        $data['titre'] ?? null,
+        $data['datePromenade'] ?? null,
+        $data['horaire'] ?? null,
+        $data['status'] ?? null,
+        $data['tarif'] ?? null,
+        $data['description'] ?? null,
+        $data['endroitPromenade'] ?? null,
+        $data['duree'] ?? null,
+        $data['id_utilisateur'] ?? null
+    );
+}
+
 }
