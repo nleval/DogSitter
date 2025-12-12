@@ -2,8 +2,8 @@
 
 class Annonce
 {
-    private ?string $titre;
     private ?string $id_annonce;
+    private ?string $titre;
     private ?string $datePromenade;
     private ?string $horaire;
     private ?string $status;
@@ -14,8 +14,8 @@ class Annonce
     private ?string $id_utilisateur;
 
     public function __construct(
-        ?string $titre = null,
         ?string $id_annonce = null,
+        ?string $titre = null,
         ?string $datePromenade = null,
         ?string $horaire = null,
         ?string $status = null,
@@ -25,8 +25,8 @@ class Annonce
         ?int $duree = null,
         ?string $id_utilisateur = null
     ) {
-        $this->titre = $titre;
         $this->id_annonce = $id_annonce;
+        $this->titre = $titre;
         $this->datePromenade = $datePromenade;
         $this->horaire = $horaire;
         $this->status = $status;

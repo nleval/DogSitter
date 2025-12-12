@@ -31,8 +31,8 @@ class AnnonceDAO
 
         foreach ($results as $row) {
             $annonces[] = new Annonce(
-                $row['titre'],
                 $row['id_annonce'],
+                $row['titre'],
                 $row['datePromenade'],
                 $row['horaire'],
                 $row['status'],
@@ -59,8 +59,8 @@ class AnnonceDAO
 
         if ($row) {
             return new Annonce(
-                $row['titre'],
                 $row['id_annonce'],
+                $row['titre'],
                 $row['datePromenade'],
                 $row['horaire'],
                 $row['status'],
@@ -88,8 +88,8 @@ class AnnonceDAO
 
         foreach ($results as $row) {
             $annonces[] = new Annonce(
-                $row['titre'],
                 $row['id_annonce'],
+                $row['titre'],
                 $row['datePromenade'],
                 $row['horaire'],
                 $row['status'],
@@ -102,5 +102,28 @@ class AnnonceDAO
         }
 
         return $annonces;
+    }
+
+    public function ajouterAnnonce(?Annonce $annonce): bool
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO " . PREFIXE_TABLE . "Annonce 
+            (titre, datePromenade, horaire, status, tarif, description, endroitPromenade, duree, id_utilisateur)
+            VALUES (:titre, :datePromenade, :horaire, :status, :tarif, :description, :endroitPromenade, :duree, :id_utilisateur)
+        ");
+
+        $reussite = $stmt->execute([
+            ':titre' => $annonce->getTitre(),
+            ':datePromenade' => $annonce->getDatePromenade(),
+            ':horaire' => $annonce->getHoraire(),
+            ':status' => $annonce->getStatus(),
+            ':tarif' => $annonce->getTarif(),
+            ':description' => $annonce->getDescription(),
+            ':endroitPromenade' => $annonce->getEndroitPromenade(),
+            ':duree' => $annonce->getDuree(),
+            ':id_utilisateur' => $annonce->getIdUtilisateur()
+        ]);
+
+        return $reussite;
     }
 }

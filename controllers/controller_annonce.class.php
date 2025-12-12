@@ -99,21 +99,18 @@ class ControllerAnnonce extends Controller
 
 public function creerAnnonce()
 {
-    // A DECOMMENTER QUAND LA GESTION DES SESSIONS SERA EN PLACE
+    // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle maître peuvent créer des annonces
+    $id_utilisateur = $_SESSION['user']['id_utilisateur'] ?? null;
+    if (!$id_utilisateur) {
+        die("Vous devez être connecté pour créer une annonce.");
+    }
 
-    // session_start();
-    // $id_utilisateur = $_SESSION['id_utilisateur'] ?? null;
+    $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+    $utilisateur = $managerUtilisateur->findById($id_utilisateur);
 
-    // if (!$id_utilisateur) {
-    //     die("Vous devez être connecté pour créer une annonce.");
-    // }
-
-    // $managerUtilisateur = new UtilisateurDAO($this->getPDO());
-    // $utilisateur = $managerUtilisateur->findById($id_utilisateur);
-
-    // if(!$utilisateur || !$utilisateur->getEstMaitre()) {
-    //     die("Seuls les utilisateurs avec le rôle 'maître' peuvent créer des annonces.");
-    // }
+    if (!$utilisateur || !$utilisateur->getEstMaitre()) {
+        die("Seuls les utilisateurs avec le rôle 'maître' peuvent créer des annonces.");
+    }
 
     // FORMULAIRE ENVOYÉ
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -197,24 +194,25 @@ public function creerAnnonce()
 
         $pdo = $this->getPDO();
 
-        // INSERT annonce
-        $stmt = $pdo->prepare("
-            INSERT INTO " . PREFIXE_TABLE . "Annonce 
-            (titre, datePromenade, horaire, status, tarif, description, endroitPromenade, duree, id_utilisateur)
-            VALUES (:titre, :datePromenade, :horaire, :status, :tarif, :description, :endroitPromenade, :duree, :id_utilisateur)
-        ");
+            $annonce = new Annonce(
+            null,                     // id_annonce (auto-increment)
+            $titre,
+            $datePromenade,
+            $horaire,
+            $status,
+            $tarif,
+            $description,
+            $endroitPromenade,
+            $duree,
+            null        // id_utilisateur (à mettre quand la session sera active)
+            );
 
-        $stmt->execute([
-            ':titre' => $titre,
-            ':datePromenade' => $datePromenade,
-            ':horaire' => $horaire,
-            ':status' => $status,
-            ':tarif' => $tarif,
-            ':description' => $description,
-            ':endroitPromenade' => $endroitPromenade,
-            ':duree' => $duree,
-            // ':id_utilisateur' => $id_utilisateur  // A DECOMMENTER QUAND LA GESTION DES SESSIONS SERA EN PLACE
-        ]);
+
+        // INSERT annonce
+        $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $managerAnnonce->ajouterAnnonce($annonce);
+
+
 
         $id_annonce = $pdo->lastInsertId();
 

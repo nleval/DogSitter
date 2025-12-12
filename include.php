@@ -3,6 +3,11 @@
 //Ajout de l'autoload de composer
 require_once 'vendor/autoload.php';
 
+// Démarrage de la session (disponible à travers toutes les pages)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 //Récupération des constantes
 require_once 'config/init.php';
 

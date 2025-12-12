@@ -15,7 +15,7 @@
 
                     <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
                         <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
-                            <form method="post" action="?controleur=Utilisateur&methode=creer">
+                            <form method="post" action="?controleur=Utilisateur&methode=ajouterUtilisateur">
                                 <!-- NOM -->
                                 <div class="mb-4">
                                     <label for="nom" class="form-label fw-bold" style="color:#537031;">Nom</label>
@@ -54,6 +54,7 @@
                                         <input type="email"
                                             class="form-control"
                                             id="email"
+                                            maxlength="100"
                                             name="email"
                                             placeholder="votreE-mail@example.org"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
@@ -132,18 +133,25 @@
                                 </div>
 
                                 <!-- BOUTONS -->
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center mt-3">
                                     <a href="index.php"
                                         class="btn btn-outline"
                                         style="border-radius:8px; border-color: #537031; color: #537031;">
                                         Annuler
                                     </a>
+                                    <div>
+                                        <a href="?controleur=Utilisateur&methode=login"
+                                            class="btn btn-outline fw-bold me-2"
+                                            style="border-radius:8px; border-color:#537031; color:#537031;">
+                                            Se connecter
+                                        </a>
 
-                                    <button type="submit"
-                                        class="btn fw-bold text-white"
-                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
-                                        Créer mon compte
-                                    </button>
+                                        <button type="submit"
+                                            class="btn fw-bold text-white"
+                                            style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                            Créer mon compte
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
 

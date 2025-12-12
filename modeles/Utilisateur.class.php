@@ -12,6 +12,7 @@ class Utilisateur
     private ?string $prenom;
     private ?string $numTelephone;
 
+
     public function __construct(?int $id_utilisateur = null, ?string $email = null, ?bool $estMaitre = null, ?bool $estPromeneur = null, ?string $adresse = null, ?string $motDePasse = null, ?string $nom = null, ?string $prenom = null, ?string $numTelephone = null)
     {
         $this->id_utilisateur = $id_utilisateur;
@@ -23,6 +24,8 @@ class Utilisateur
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->numTelephone = $numTelephone;
+      
+        
     }
 
     //GETTEUR & SETTEUR
@@ -97,4 +100,5 @@ class Utilisateur
     public function setNumTelephone($numTelephone): void {
         $this->numTelephone = $numTelephone;
     }
-}
+
+}   
