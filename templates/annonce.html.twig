@@ -43,8 +43,11 @@
                                     </div>
                                 {% endfor %}
 
-                                <p class="mb-0" style="font-size:0.9rem; color:#537031;">
-                                    Propriétaire: {{ proprietaire.getPrenom()|default('Inconnu') }} {{ proprietaire.getNom() }}
+                                <p class="mb-0 d-flex align-items-center" style="font-size:0.9rem; color:#537031; gap:8px;">
+                                    {% if proprietaire.photoProfil is not empty %}
+                                        <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo" width="32" height="32" class="rounded-circle" style="object-fit:cover;">
+                                    {% endif %}
+                                    Propriétaire: {{ proprietaire.pseudo|default('Inconnu') }}
                                 </p>
                             </aside>
 

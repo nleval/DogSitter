@@ -87,13 +87,7 @@ class UtilisateurDAO
                 VALUES 
                 (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
 
-    public function supprimerUtilisateur($id_utilisateur): ?bool
-    {
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
-        return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
-    }
-
         $reussite = $pdoStatement->execute([
             'email'        => $utilisateur->getEmail(),
             'estMaitre'    => $utilisateur->getEstMaitre(),
@@ -103,6 +97,18 @@ class UtilisateurDAO
             'numTelephone' => $utilisateur->getNumTelephone(), 
             'pseudo'       => $utilisateur->getPseudo(),
             'photoProfil'  => $utilisateur->getPhotoProfil(),
+
+        ]);
+        return $reussite;
+    }
+
+  public function supprimerUtilisateur($id_utilisateur): ?bool
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
+    }
+
     public function emailExist(string $email): bool
 {
     $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
@@ -140,8 +146,8 @@ public function inscription(Utilisateur $utilisateur): bool
     $motDePasseHache = password_hash($utilisateur->getMotDePasse(), PASSWORD_BCRYPT);
     
     // Préparer et exécuter la requête d'insertion
-    $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur (email, estMaitre, estPromeneur, adresse, motDePasse, nom, prenom, numTelephone) 
-            VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :nom, :prenom, :numTelephone)";
+    $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
+            VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
     
     $stmt = $pdo->prepare($sql);
     return $stmt->execute([
@@ -150,9 +156,9 @@ public function inscription(Utilisateur $utilisateur): bool
         ':estPromeneur' => $utilisateur->getEstPromeneur(),
         ':adresse'      => $utilisateur->getAdresse(),
         ':motDePasse'   => $motDePasseHache,
-        ':nom'          => $utilisateur->getNom(),
-        ':prenom'       => $utilisateur->getPrenom(),
-        ':numTelephone' => $utilisateur->getNumTelephone()
+        ':numTelephone' => $utilisateur->getNumTelephone(),
+        ':pseudo'       => $utilisateur->getPseudo(),
+        ':photoProfil'  => $utilisateur->getPhotoProfil()
     ]);
 
 }
@@ -269,9 +275,8 @@ public function authentification(string $email, string $motDePasse): bool
         $tempsRestant = DELAI_ATTENTE_CONNEXION - $tempsEcoule;
         return $tempsRestant > 0 ? $tempsRestant : 0;
     }
-}
 
-    public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
+     public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -280,5 +285,8 @@ public function authentification(string $email, string $motDePasse): bool
             ':id_utilisateur' => $id_utilisateur
         ]);
     }
-
 }
+
+   
+
+

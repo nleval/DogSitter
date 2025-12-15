@@ -10,11 +10,12 @@
             <div class="col-12 col-lg-8">
                 {% if utilisateur is defined %}
                     <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius:12px;">
-                        <div class="card-header"
+                        <div class="card-header d-flex align-items-center gap-3"
                             style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                            <h4 class="mb-0">
-                                {{ utilisateur.prenom }} {{ utilisateur.nom }}
-                            </h4>
+                            {% if utilisateur.photoProfil is not empty %}
+                                <img src="images/utilisateur/{{ utilisateur.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                            {% endif %}
+                            <h4 class="mb-0">{{ utilisateur.pseudo }}</h4>
                         </div>
 
                     <table class="table table-striped" style="background-color:#F8F4E8;">
