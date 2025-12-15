@@ -71,9 +71,9 @@ class UtilisateurDAO
         $utilisateur->setEstPromeneur($tableauAssoc['estPromeneur'] ?? null);
         $utilisateur->setAdresse($tableauAssoc['adresse'] ?? null);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse'] ?? null);
-        $utilisateur->setNom($tableauAssoc['nom'] ?? null);
-        $utilisateur->setPrenom($tableauAssoc['prenom'] ?? null);
         $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);
+        $utilisateur->setPseudo($tableauAssoc['pseudo'] ?? null);
+        $utilisateur->setPhotoProfil($tableauAssoc['photoProfil'] ?? null);
         $utilisateur->setTentativesEchouees((int)($tableauAssoc['tentatives_echouees'] ?? 0));
         $utilisateur->setDateDernierEchecConnexion($tableauAssoc['date_dernier_echec_connexion'] ?? null);
         $utilisateur->setStatutCompte($tableauAssoc['statut_compte'] ?? 'actif');
@@ -81,6 +81,11 @@ class UtilisateurDAO
         return $utilisateur;
     }
 
+    public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur 
+                (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
+                VALUES 
+                (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
 
     public function supprimerUtilisateur($id_utilisateur): ?bool
     {
@@ -89,6 +94,15 @@ class UtilisateurDAO
         return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
     }
 
+        $reussite = $pdoStatement->execute([
+            'email'        => $utilisateur->getEmail(),
+            'estMaitre'    => $utilisateur->getEstMaitre(),
+            'estPromeneur' => $utilisateur->getEstPromeneur(),
+            'adresse'      => $utilisateur->getAdresse(),
+            'motDePasse'   => $utilisateur->getMotDePasse(),
+            'numTelephone' => $utilisateur->getNumTelephone(), 
+            'pseudo'       => $utilisateur->getPseudo(),
+            'photoProfil'  => $utilisateur->getPhotoProfil(),
     public function emailExist(string $email): bool
 {
     $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
@@ -257,3 +271,14 @@ public function authentification(string $email, string $motDePasse): bool
     }
 }
 
+    public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([
+            ':nouvelleValeur' => $nouvelleValeur,
+            ':id_utilisateur' => $id_utilisateur
+        ]);
+    }
+
+}

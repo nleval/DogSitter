@@ -17,75 +17,50 @@
                             </h4>
                         </div>
 
-                        <div class="card-body">
-                            <table class="table table-striped" style="background-color:#F8F4E8;">
-                                <tbody>
-                                    <tr>
-                                        <th style="width: 200px;">
-                                            ID
-                                        </th>
-                                        <td>
-                                            {{ utilisateur.id }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Email
-                                        </th>
-                                        <td>
-                                            {{ utilisateur.email }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Téléphone
-                                        </th>
-                                        <td>
-                                            {{ utilisateur.numTelephone }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Adresse
-                                        </th>
-                                        <td>
-                                            {{ utilisateur.adresse }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Mot de passe (hash)
-                                        </th>
-                                        <td>
-                                            {{ utilisateur.motDePasse }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Est maître ?
-                                        </th>
-                                        <td>
-                                            {% if utilisateur.estMaitre %}
-                                                <span class="badge bg-success">Oui</span>
-                                            {% else %}
-                                                <span class="badge bg-secondary">Non</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            Est promeneur ?
-                                        </th>
-                                        <td>
-                                            {% if utilisateur.estPromeneur %}
-                                                <span class="badge bg-success">Oui</span>
-                                            {% else %}
-                                                <span class="badge bg-secondary">Non</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <table class="table table-striped" style="background-color:#F8F4E8;">
+                        <tbody>
+                            <tr>
+                                <th style="width: 200px;">ID</th>
+                                <td>{{ utilisateur.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Pseudo</th>
+                                <td>{{ utilisateur.pseudo }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ utilisateur.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Téléphone</th>
+                                <td>{{ utilisateur.numTelephone }}</td>
+                            </tr>
+                            <tr>
+                                <th>Adresse</th>
+                                <td>{{ utilisateur.adresse }}</td>
+                            </tr>
+                            <tr>
+                                <th>Est maître ?</th>
+                                <td>
+                                    {% if utilisateur.estMaitre %}
+                                        <span class="badge bg-success">Oui</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Est promeneur ?</th>
+                                <td>
+                                    {% if utilisateur.estPromeneur %}
+                                        <span class="badge bg-success">Oui</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                             <div class="mt-3 d-flex">
                                 <a href="?controleur=Index&methode=render"
