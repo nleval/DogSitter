@@ -66,31 +66,13 @@ class ControllerUtilisateur extends Controller
     }
 
 
-    public function ajouterUtilisateur()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer les données du formulaire
-            $email        = $_POST['email'];
-            $estMaitre    = $_POST['estMaitre'];
-            $estPromeneur = $_POST['estPromeneur'];
-            $adresse      = $_POST['adresse'];
-            $motDePasse   = $_POST['motDePasse'];
-            $numTelephone = $_POST['numTelephone'];
-            $pseudo          = $_POST['pseudo'];
-            $photoProfil       = $_POST['photoProfil'];
-
-            // Créer un nouvel utilisateur
-            $nouvelUtilisateur = new Utilisateur(null, $email, $estMaitre, $estPromeneur, $adresse, $motDePasse, $numTelephone, $pseudo, $photoProfil);
-            // Enregistrer l'utilisateur dans la base de données
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
-            $managerutilisateur->ajouterUtilisateur($nouvelUtilisateur);
-{
+    public function ajouterUtilisateur(){
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Récupération des données du formulaire
         $donnees = [
-            'nom'          => $_POST['nom'] ?? '',
-            'prenom'       => $_POST['prenom'] ?? '',
+            'pseudo'       => $_POST['pseudo'] ?? '',
             'email'        => $_POST['email'] ?? '',
             'adresse'      => $_POST['adresse'] ?? '',
             'motDePasse'   => $_POST['motDePasse'] ?? '',
@@ -101,14 +83,7 @@ class ControllerUtilisateur extends Controller
 
         // RÈGLES DE VALIDATION
        $regles = [
-    'nom' => [
-        'obligatoire' => true,
-        'type' => 'string',
-        'longueur_min' => 2,
-        'longueur_max' => 70
-    ],
-
-    'prenom' => [
+    'pseudo' => [
         'obligatoire' => true,
         'type' => 'string',
         'longueur_min' => 2,
@@ -174,7 +149,37 @@ class ControllerUtilisateur extends Controller
             return;
         }
 
-        // CRÉATION DE L’OBJET UTILISATEUR
+        // TRAITEMENT DE L'UPLOAD DE LA PHOTO DE PROFIL (optionnelle)
+        $photoProfilFilename = null;
+        if (isset($_FILES['photoProfil']) && $_FILES['photoProfil']['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES['photoProfil']['tmp_name'];
+            // Vérifier que c'est bien une image
+            $imageInfo = @getimagesize($tmpName);
+            if ($imageInfo === false) {
+                $erreurs[] = "Le fichier téléchargé n'est pas une image valide.";
+                $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                return;
+            }
+
+            $originalName = $_FILES['photoProfil']['name'];
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $safeName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $extension;
+            $uploadDir = __DIR__ . '/../images/utilisateur/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $destination = $uploadDir . $safeName;
+            if (!move_uploaded_file($tmpName, $destination)) {
+                $erreurs[] = "Impossible d'enregistrer la photo de profil.";
+                $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                return;
+            }
+            $photoProfilFilename = $safeName;
+        }
+
+        // CRÉATION DE L’OBJET UTILISATEUR (note : ordre des paramètres correspond à Utilisateur::__construct)
         $nouvelUtilisateur = new Utilisateur(
             null,
             $donnees['email'],
@@ -182,9 +187,9 @@ class ControllerUtilisateur extends Controller
             $donnees['estPromeneur'],
             $donnees['adresse'],
             $donnees['motDePasse'],
-            $donnees['nom'],
-            $donnees['prenom'],
-            $donnees['numTelephone']
+            $donnees['numTelephone'],
+            $donnees['pseudo'],
+            $photoProfilFilename
         );
 
         // ENREGISTREMENT EN BDD
@@ -327,8 +332,8 @@ class ControllerUtilisateur extends Controller
                         'email' => $utilisateur->getEmail(),
                         'estMaitre' => $utilisateur->getEstMaitre(),
                         'estPromeneur' => $utilisateur->getEstPromeneur(),
-                        'prenom' => $utilisateur->getPrenom(),
-                        'nom' => $utilisateur->getNom()
+                        'pseudo' => $utilisateur->getPseudo(),
+                        'photoProfil' => $utilisateur->getPhotoProfil()
                     ];
 
                     header(

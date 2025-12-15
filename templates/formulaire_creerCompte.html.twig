@@ -15,34 +15,23 @@
 
                     <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
                         <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
-                            <form method="post" action="?controleur=Utilisateur&methode=ajouterUtilisateur">
-                                <!-- NOM -->
-                                <div class="mb-4">
-                                    <label for="nom" class="form-label fw-bold" style="color:#537031;">Nom</label>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="nom"
-                                        name="nom"
-                                        minlength="2"
-                                        maxlength="70"
-                                        placeholder="Veuillez saisir votre nom"
-                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
-                                        required />
-                                </div>
-
-                                <!-- PRENOM + EMAIL -->
+                            <form method="post"
+                                action="?controleur=Utilisateur&methode=ajouterUtilisateur"
+                                enctype="multipart/form-data">
+                                <!-- PSEUDO + EMAIL + PHOTO -->
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label for="prenom" class="form-label fw-bold" style="color:#537031;">
-                                            Prénom
+                                        <label for="pseudo" class="form-label fw-bold" style="color:#537031;">
+                                            Pseudo
                                         </label>
                                         <input type="text"
                                             class="form-control"
-                                            id="prenom"
-                                            name="prenom"
+                                            id="pseudo"
+                                            name="pseudo"
                                             minlength="2"
                                             maxlength="70"
-                                            placeholder="Veuillez saisir votre prénom"
+                                            placeholder="Choisissez un pseudo"
+                                            value="{{ old.pseudo|default('') }}"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
                                             required />
                                     </div>
@@ -56,9 +45,23 @@
                                             id="email"
                                             maxlength="100"
                                             name="email"
+                                            value="{{ old.email|default('') }}"
                                             placeholder="votreE-mail@example.org"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
                                             required />
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="photoProfil" class="form-label fw-bold" style="color:#537031;">
+                                            Photo de profil (optionnel)
+                                        </label>
+                                        <input type="file"
+                                            accept="image/*"
+                                            class="form-control"
+                                            id="photoProfil"
+                                            name="photoProfil" />
                                     </div>
                                 </div>
 
