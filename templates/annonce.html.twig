@@ -106,6 +106,7 @@
                                 <hr style="border-color: #DDA15E;" />
 
                                 <div class="d-flex justify-content-end align-items-center mt-4 gap-3">
+                                    {% if userConnecte.estPromeneur %}
                                     <a href="?controleur=Conversation&methode=afficherConversation&id_conversation={{
                                         conversationId
                                         }}"
@@ -126,6 +127,11 @@
                                         <button class="btn" style="background-color:#537031; color:white;" disabled>
                                             Statut: {{ annonce.status }}
                                         </button>
+                                    {% endif %}
+                                    {% else %}
+                                     <button class="btn" style="background-color:#ccc; color:white;" disabled>
+                                        Seuls les promeneurs peuvent postuler
+                                     </button>
                                     {% endif %}
                                 </div>
                             </div>

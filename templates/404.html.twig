@@ -1,33 +1,49 @@
 {% extends 'base_template.twig' %}
 
 {% block title %}
-    Page non trouvée — DogSitter
+    Annonce publiée avec succès – DogSitter
 {% endblock %}
 
-{% block content %}
-    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-6 col-lg-5">
-                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
-                        Page introuvable
-                    </h2>
-
-                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
-                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
-                            <p class="text-center" style="color:#537031; font-size:1.1rem;">
-                                {{ message|default("La page que vous recherchez n'existe pas.") }}
-                            </p>
-                            <div class="text-center mt-4">
-                                <a href="index.php"
-                                    class="btn fw-bold text-white"
-                                    style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
-                                    Retour à l'accueil
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+{% block body %}
+    <div class="container-fluid d-flex align-items-center justify-content-center"
+        style="background: linear-gradient(135deg, #FEFAE0, #FAEDCD); min-height:100vh;">
+        <div class="card shadow-lg p-5 text-center" style="max-width:520px; border:none; border-radius:20px;">
+            <!-- Icône validation -->
+            <div class="mb-4">
+                <div style="
+                width:80px;
+                height:80px;
+                margin:auto;
+                background-color:#A7C957;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:white;
+                font-size:40px;">
+                    ✓
                 </div>
+            </div>
+
+            <!-- Titre -->
+            <h2 class="fw-bold mb-3" style="color:#537031; font-family:'Poppins', sans-serif;">
+                Annonce publiée !
+            </h2>
+
+            <!-- Message -->
+            <p class="mb-4" style="color:#6B705C; font-size:1.05rem;">
+                Votre annonce a été créée avec succès et est désormais visible par les autres utilisateurs.
+            </p>
+
+            <!-- Boutons -->
+            <div class="d-grid gap-3">
+                <a href="index.php?controleur=annonce&methode=afficherAllAnnonces"
+                    class="btn text-white fw-bold"
+                    style="background-color:#BC6C25; border-radius:10px; padding:12px;">
+                    Voir les annonces
+                </a>
+
+                <a href="index.php" class="btn btn-outline-secondary" style="border-radius:10px;">Retour à l’accueil</a>
             </div>
         </div>
     </div>

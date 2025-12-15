@@ -12,6 +12,26 @@ class ControllerAnnonce extends Controller
      */
     public function afficherAnnonce($id_annonce = null)
     {
+       // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle maître peuvent créer des annonces
+    $sessionUser = $_SESSION['user'] ?? null;
+
+    // Si l'utilisateur en session est un tableau
+    if (is_array($sessionUser)) {
+        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+
+    // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
+    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+        $id_utilisateur = $sessionUser->getId();
+
+    } else {
+        // On considère qu'il n'y a pas d'utilisateur connecté
+        $id_utilisateur = null;
+    }
+    if (!$id_utilisateur) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();   
+    }
+
         // Vérifie si l'identifiant de l'annonce ($id_annonce) n'a pas été reçu en tant qu'argument
         if($id_annonce === null) {
             if (isset($_GET['id_annonce'])) {
@@ -47,7 +67,8 @@ class ControllerAnnonce extends Controller
         echo $template->render([
             'annonce' => $annonce,
             'chiens' => $chienConcernes,
-            'proprietaire' => $proprietaire
+            'proprietaire' => $proprietaire,
+            'userConnecte' => $sessionUser
             
         ]);
     }
@@ -211,7 +232,7 @@ public function creerAnnonce()
      
         if (!$valide) {
             $managerChien = new ChienDAO($this->getPDO());
-            $chiensUtilisateur = $managerChien->findAll(); // À remplacer par une méthode filtrant par utilisateur quand la connexion sera implémentée
+            $chiensUtilisateur = $managerChien->findByUtilisateur($id_utilisateur); 
 
             $template = $this->getTwig()->load('creer_annonce.html.twig');
             echo $template->render([
@@ -262,19 +283,28 @@ public function creerAnnonce()
             }
         }
 
-        echo "Annonce créée avec succès.";
-        return;
+        // Redirection vers un popup de confirmation
+        header('Location: index.php?controleur=annonce&methode=confirmationCreationAnnonce');
+        exit();
+        
     }
 
     // AFFICHAGE DU FORMULAIRE
     $managerChien = new ChienDAO($this->getPDO());
-    $chiensUtilisateur = $managerChien->findAll(); // À remplacer par une méthode filtrant par utilisateur quand la connexion sera implémentée
+    $chiensUtilisateur = $managerChien->findByUtilisateur($id_utilisateur); 
 
     $template = $this->getTwig()->load('creer_annonce.html.twig');
     echo $template->render([
         'chiens' => $chiensUtilisateur,
 
     ]);
+}
+
+public function confirmationCreationAnnonce()
+{
+    $template = $this->getTwig()->load('confirmation_creation_annonce.html.twig');
+    echo $template->render();
+
 }
 
 }
