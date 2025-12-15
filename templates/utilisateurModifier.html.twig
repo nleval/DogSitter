@@ -1,0 +1,158 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}Modifier un utilisateur — DogSitter{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8 col-xl-6">
+
+            <div class="card shadow-lg border-0 p-4" style="background-color:#FAF6E9; border-radius:12px;">
+
+                {# ===== AFFICHAGE DES ERREURS ===== #}
+                {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                    <div class="alert alert-danger rounded-3">
+                        <ul class="mb-0">
+                            {% for message in messagesErreurs %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <h2 class="fw-bold mb-4" style="color:#537031;">Modifier un utilisateur</h2>
+
+                {# ===== MODIFIER EMAIL ===== #}
+                <form method="post" class="mb-4" action="index.php?controleur=Utilisateur&methode=modifierEmail">
+                    <input type="hidden" name="champ" value="email">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Email</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" name="email" class="form-control"
+                               style="background-color:#F8F4E8; border-radius:10px;"
+                               value="{{ utilisateur.email }}" required>
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER PSEUDO ===== #}
+                <form method="post" class="mb-4">
+                    <input type="hidden" name="champ" value="pseudo">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Pseudo</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" name="pseudo" class="form-control"
+                            style="background-color:#F8F4E8; border-radius:10px;"
+                            value="{{ utilisateur.pseudo }}" required>
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER PHOTO DE PROFIL ===== #}
+                <form method="post" class="mb-4" enctype="multipart/form-data">
+                    <input type="hidden" name="champ" value="photo">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Photo de profil</label>
+
+                    {% if utilisateur.photo is not empty %}
+                        <div class="mb-2">
+                            <img src="uploads/{{ utilisateur.photo }}" alt="Photo de profil"
+                                class="rounded-circle" width="80" height="80">
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <input type="file" name="photo" class="form-control"
+                            accept="image/*"
+                            style="background-color:#F8F4E8; border-radius:10px;" required>
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER TÉLÉPHONE ===== #}
+                <form method="post" class="mb-4">
+                    <input type="hidden" name="champ" value="numTelephone">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Téléphone</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" name="numTelephone" class="form-control"
+                               style="background-color:#F8F4E8; border-radius:10px;"
+                               value="{{ utilisateur.numTelephone }}">
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER ADRESSE ===== #}
+                <form method="post" class="mb-4">
+                    <input type="hidden" name="champ" value="adresse">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Adresse</label>
+                    <div class="d-flex gap-2">
+                        <input type="text" name="adresse" class="form-control"
+                               style="background-color:#F8F4E8; border-radius:10px;"
+                               value="{{ utilisateur.adresse }}">
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER MOT DE PASSE ===== #}
+                <form method="post" class="mb-4">
+                    <input type="hidden" name="champ" value="motDePasse">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Mot de passe</label>
+                    <div class="d-flex gap-2">
+                        <input type="password" name="motDePasse" class="form-control"
+                               style="background-color:#F8F4E8; border-radius:10px;" required>
+                        <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                            Modifier
+                        </button>
+                    </div>
+                </form>
+
+                {# ===== MODIFIER RÔLES ===== #}
+                <form method="post" class="mb-4">
+                    <input type="hidden" name="champ" value="roles">
+
+                    <label class="form-label fw-semibold" style="color:#537031;">Rôles</label>
+
+                    <div class="row mb-2">
+                        <div class="col-6 form-check">
+                            <input class="form-check-input" type="checkbox" name="estMaitre"
+                                   {% if utilisateur.getEstMaitre %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" style="color:#537031;">Maître</label>
+                        </div>
+                        <div class="col-6 form-check">
+                            <input class="form-check-input" type="checkbox" name="estPromeneur"
+                                   {% if utilisateur.getEstPromeneur %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" style="color:#537031;">Promeneur</label>
+                        </div>
+                    </div>
+
+                    <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
+                        Modifier
+                    </button>
+                </form>
+
+                <div class="text-end">
+                    <a href="?controleur=Index&methode=render" class="btn px-4"
+                       style="background-color:#DDA15E; color:white; border-radius:10px;">
+                        Retour
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

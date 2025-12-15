@@ -8,11 +8,16 @@ class Utilisateur
     private ?bool $estPromeneur;
     private ?string $adresse;
     private ?string $motDePasse;
-    private ?string $nom;
-    private ?string $prenom;
     private ?string $numTelephone;
+    private ?string $pseudo;
+    private ?string $photoProfil;
+    private ?int $tentativesEchouees = 0;
+    private ?string $dateDernierEchecConnexion = null;
+    private ?string $statutCompte = 'actif';
 
-    public function __construct(?int $id_utilisateur = null, ?string $email = null, ?bool $estMaitre = null, ?bool $estPromeneur = null, ?string $adresse = null, ?string $motDePasse = null, ?string $nom = null, ?string $prenom = null, ?string $numTelephone = null)
+
+
+    public function __construct(?int $id_utilisateur = null, ?string $email = null, ?bool $estMaitre = null, ?bool $estPromeneur = null, ?string $adresse = null, ?string $motDePasse = null, ?string $numTelephone = null, ?string $pseudo = null, ?string $photoProfil = null)
     {
         $this->id_utilisateur = $id_utilisateur;
         $this->email = $email;
@@ -20,9 +25,11 @@ class Utilisateur
         $this->estPromeneur = $estPromeneur;
         $this->adresse = $adresse;
         $this->motDePasse = $motDePasse;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
         $this->numTelephone = $numTelephone;
+        $this->pseudo = $pseudo;
+        $this->photoProfil = $photoProfil;
+      
+        
     }
 
     //GETTEUR & SETTEUR
@@ -74,22 +81,6 @@ class Utilisateur
         $this->motDePasse = $motDePasse;
     }
 
-    // Nom
-    public function getNom() {
-        return $this->nom;
-    }
-    public function setNom($nom): void {
-        $this->nom = $nom;
-    }
-
-    // Prénom
-    public function getPrenom() {
-        return $this->prenom;
-    }
-    public function setPrenom($prenom): void {
-        $this->prenom = $prenom;
-    }
-
     // Téléphone
     public function getNumTelephone() {
         return $this->numTelephone;
@@ -97,4 +88,51 @@ class Utilisateur
     public function setNumTelephone($numTelephone): void {
         $this->numTelephone = $numTelephone;
     }
-}
+
+    // Pseudo
+    public function getPseudo() {
+        return $this->pseudo;
+    }
+    public function setPseudo($pseudo): void {
+        $this->pseudo = $pseudo;
+    }
+
+    // PhotoProfil
+    public function getPhotoProfil() {
+        return $this->photoProfil;
+    }
+    public function setPhotoProfil($photoProfil): void {
+        $this->photoProfil = $photoProfil;
+    }
+
+    public function getTentativesEchouees(): int
+    { 
+        return $this->tentativesEchouees ?? 0; 
+    }
+
+    public function setTentativesEchouees(int $tentatives): void 
+    { 
+        $this->tentativesEchouees = $tentatives; 
+    }
+
+    public function getDateDernierEchecConnexion(): ?string  
+    { 
+        return $this->dateDernierEchecConnexion; 
+    }
+
+    public function setDateDernierEchecConnexion(?string $date): void 
+    { 
+        $this->dateDernierEchecConnexion = $date; 
+    }
+
+    public function getStatutCompte(): string 
+    { 
+        return $this->statutCompte ?? 'actif'; 
+    }
+
+    public function setStatutCompte(string $statut): void 
+    { 
+        $this->statutCompte = $statut; 
+    }
+
+}   
