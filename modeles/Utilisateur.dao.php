@@ -96,4 +96,14 @@ class UtilisateurDAO
         return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
     }
 
+    public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([
+            ':nouvelleValeur' => $nouvelleValeur,
+            ':id_utilisateur' => $id_utilisateur
+        ]);
+    }
+
 }

@@ -77,32 +77,61 @@ class ControllerUtilisateur extends Controller
         exit();
     }
 
-    public function modifierUtilisateur()
+    public function afficherFormulaire()
     {
-        $id_utilisateur = $_GET['id_utilisateur'];
+        // Afficher le formulaire d'ajout d'utilisateur
+        $id_utilisateur = 1;
+
+        // Récupérer l'utilisateur depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateur = $managerutilisateur->findById($id_utilisateur);
 
+        $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur
+        ]);
+    }
+
+    public function modifierEmail()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer les données du formulaire
-            $nom = $_POST['nom'];
-            $email = $_POST['email'];
 
-            // Mettre à jour l'utilisateur
-            $utilisateurModifie = new Utilisateur($id_utilisateur, $nom, $email);
-            $managerutilisateur->update($utilisateurModifie);
+             $regles = [
+                'email' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 255,
+                'format' => FILTER_VALIDATE_EMAIL
+                ]
+            ];
 
-            // Rediriger vers la liste des utilisateurs
-            header('Location: index.php?action=afficherAllUtilisateurs');
+            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+
+            $id_utilisateur = 1;
+            $nouvelEmail = $_POST['email'];
+            $donnes = ['email' => $nouvelEmail];
+
+            $validator = new Validator($regles);
+            $valide = $validator->valider($donnes);
+
+            if (!$valide) {
+                $messagesErreurs = $validator->getMessagesErreurs();
+                // Rendre la vue avec les erreurs
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'messagesErreurs' => $messagesErreurs,
+                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
+                ]);
+                return;
+            }
+
+            // Mettre à jour l'email de l'utilisateur dans la base de données
+            $managerutilisateur->modifierChamp($id_utilisateur, 'email', $nouvelEmail);
+
+            // Rediriger vers la page de l'utilisateur
+            header('Location: index.php?action=afficherUtilisateur&id_utilisateur=' . $id_utilisateur);
             exit();
-        } else {
-            // Récupérer l'utilisateur à modifier
-            $utilisateur = $managerutilisateur->findById($id_utilisateur);
-
-            // Afficher le formulaire de modification avec les données existantes
-            $template = $this->getTwig()->load('modifier_utilisateur.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateur
-            ]);
         }
     }
 }
