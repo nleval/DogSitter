@@ -1,0 +1,94 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Connexion — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6 col-lg-5">
+                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
+                        Se connecter
+                    </h2>
+
+                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
+                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
+                            <form action="index.php?controleur=Utilisateur&methode=authentification" method="POST">
+                                <!-- EMAIL -->
+                                <div class="mb-4">
+                                    <label for="email" class="form-label fw-bold" style="color:#537031;">E-mail</label>
+                                    <input type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        value="{{ old.email|default('') }}"
+                                        maxlength="100"
+                                        placeholder="votreE-mail@example.org"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                        required />
+                                </div>
+
+                                <!-- MOT DE PASSE -->
+                                <div class="mb-4">
+                                    <label for="motDePasse" class="form-label fw-bold" style="color:#537031;">
+                                        Mot de passe
+                                    </label>
+                                    <input type="password"
+                                        class="form-control"
+                                        id="motDePasse"
+                                        name="motDePasse"
+                                        minlength="8"
+                                        maxlength="50"
+                                        placeholder="Veuillez saisir votre mot de passe"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                        required />
+                                </div>
+
+                                <!-- BOUTONS -->
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <a href="index.php"
+                                        class="btn btn-outline"
+                                        style="border-radius:8px; border-color:#537031; color:#537031;">
+                                        Annuler
+                                    </a>
+
+                                    <button type="submit"
+                                        class="btn fw-bold text-white"
+                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                        Se connecter
+                                    </button>
+                                </div>
+
+                                <!-- Lien vers inscription -->
+                                <div class="text-center mt-3">
+                                    <span style="color:#537031;">Vous n'avez pas de compte ?</span>
+                                    <a href="?controleur=Utilisateur&methode=ajouterUtilisateur"
+                                        style="color:#BC6C25; font-weight:bold;">
+                                        Créer un compte
+                                    </a>
+                                </div>
+
+                                {% if success is defined and success %}
+                                    <div class="alert alert-success mt-4">
+                                        {{ success }}
+                                    </div>
+                                {% endif %}
+                                {% if erreurs is defined and erreurs %}
+                                    <div class="alert alert-danger mt-4">
+                                        <ul class="mb-0">
+                                            {% for err in erreurs %}
+                                                <li>{{ err }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

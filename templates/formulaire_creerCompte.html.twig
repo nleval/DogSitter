@@ -1,0 +1,173 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Créer un compte — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
+                        Créer un compte
+                    </h2>
+
+                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
+                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
+                            <form method="post" action="?controleur=Utilisateur&methode=ajouterUtilisateur">
+                                <!-- NOM -->
+                                <div class="mb-4">
+                                    <label for="nom" class="form-label fw-bold" style="color:#537031;">Nom</label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="nom"
+                                        name="nom"
+                                        minlength="2"
+                                        maxlength="70"
+                                        placeholder="Veuillez saisir votre nom"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                        required />
+                                </div>
+
+                                <!-- PRENOM + EMAIL -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="prenom" class="form-label fw-bold" style="color:#537031;">
+                                            Prénom
+                                        </label>
+                                        <input type="text"
+                                            class="form-control"
+                                            id="prenom"
+                                            name="prenom"
+                                            minlength="2"
+                                            maxlength="70"
+                                            placeholder="Veuillez saisir votre prénom"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label fw-bold" style="color:#537031;">
+                                            E-mail
+                                        </label>
+                                        <input type="email"
+                                            class="form-control"
+                                            id="email"
+                                            maxlength="100"
+                                            name="email"
+                                            placeholder="votreE-mail@example.org"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+                                </div>
+
+                                <!-- ADRESSE + MDP -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold" style="color:#537031;">Adresse</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            id="adresse"
+                                            name="adresse"
+                                            minlength="5"
+                                            maxlength="120"
+                                            placeholder="123 Rue Exemple, Paris"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold" style="color:#537031;">Mot de passe</label>
+                                        <input type="password"
+                                            class="form-control"
+                                            id="motDePasse"
+                                            name="motDePasse"
+                                            minlength="8"
+                                            maxlength="50"
+                                            placeholder="Veuillez saisir un mot de passe"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                            required />
+                                    </div>
+                                </div>
+
+                                <!-- TELEPHONE -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold" style="color:#537031;">Numéro de téléphone</label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="numTelephone"
+                                        name="numTelephone"
+                                        placeholder="Ex : 0612345678"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
+                                        required />
+                                </div>
+
+                                <!-- ROLES -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold" style="color:#537031;">Rôle du compte</label>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            id="estMaitre"
+                                            name="estMaitre"
+                                            value="1"
+                                            style="border-color:#DDA15E;" />
+                                        <label class="form-check-label" for="estMaitre" style="color:#537031;">
+                                            Je suis maître de chien
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            id="estPromeneur"
+                                            name="estPromeneur"
+                                            value="1"
+                                            style="border-color:#DDA15E;" />
+                                        <label class="form-check-label" for="estPromeneur" style="color:#537031;">
+                                            Je suis promeneur
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- BOUTONS -->
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <a href="index.php"
+                                        class="btn btn-outline"
+                                        style="border-radius:8px; border-color: #537031; color: #537031;">
+                                        Annuler
+                                    </a>
+                                    <div>
+                                        <a href="?controleur=Utilisateur&methode=authentification"
+                                            class="btn btn-outline fw-bold me-2"
+                                            style="border-radius:8px; border-color:#537031; color:#537031;">
+                                            Se connecter
+                                        </a>
+
+                                        <button type="submit"
+                                            class="btn fw-bold text-white"
+                                            style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                            Créer mon compte
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            {% if erreurs is defined and erreurs %}
+                                <div class="alert alert-danger mt-4">
+                                    <ul class="mb-0">
+                                        {% for err in erreurs %}
+                                            <li>{{ err }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
