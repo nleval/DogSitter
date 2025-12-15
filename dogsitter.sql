@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 02 déc. 2025 à 16:33
+-- Généré le : lun. 15 déc. 2025 à 08:23
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -270,27 +270,27 @@ INSERT INTO `dog_répond` (`id_annonce`, `id_utilisateur`) VALUES
 
 DROP TABLE IF EXISTS `dog_utilisateur`;
 CREATE TABLE IF NOT EXISTS `dog_utilisateur` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id_utilisateur` int NOT NULL AUTO_INCREMENT,
   `email` varchar(191) NOT NULL,
   `estMaitre` tinyint(1) NOT NULL DEFAULT '0',
   `estPromeneur` tinyint(1) NOT NULL DEFAULT '0',
   `adresse` varchar(255) DEFAULT NULL,
   `motDePasse` varchar(255) NOT NULL,
-  `nom` varchar(100) NOT NULL,
-  `prenom` varchar(100) NOT NULL,
   `numTelephone` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `pseudo` varchar(50) NOT NULL,
+  `photoProfil` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `dog_utilisateur`
 --
 
-INSERT INTO `dog_utilisateur` (`id`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `nom`, `prenom`, `numTelephone`) VALUES
-(1, 'alice@example.com', 1, 0, '12 rue du Chien, Paris', 'oui', 'Durand', 'Alice', '0600000001'),
-(2, 'bob@example.com', 0, 1, '34 avenue des Promeneurs, Lyon', 'oui', 'Martin', 'Bob', '0600000002'),
-(3, 'carol@example.com', 1, 1, '56 boulevard des Chiens, Marseille', 'oui', 'Bernard', 'Carol', '0600000003');
+INSERT INTO `dog_utilisateur` (`id_utilisateur`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `numTelephone`, `pseudo`, `photoProfil`) VALUES
+(1, 'alice@example.com', 1, 0, '12 rue du Chien, Paris', 'oui', '0600000001', 'Alice', ''),
+(2, 'bob@example.com', 0, 1, '34 avenue des Promeneurs, Lyon', 'oui', '0600000002', 'Bob', ''),
+(3, 'carol@example.com', 1, 1, '56 boulevard des Chiens, Marseille', 'oui', '0600000003', 'Carol', '');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

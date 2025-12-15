@@ -38,30 +38,38 @@
                     </div>
                 </form>
 
-                {# ===== MODIFIER NOM ===== #}
+                {# ===== MODIFIER PSEUDO ===== #}
                 <form method="post" class="mb-4">
-                    <input type="hidden" name="champ" value="nom">
+                    <input type="hidden" name="champ" value="pseudo">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Nom</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Pseudo</label>
                     <div class="d-flex gap-2">
-                        <input type="text" name="nom" class="form-control"
-                               style="background-color:#F8F4E8; border-radius:10px;"
-                               value="{{ utilisateur.nom }}" required>
+                        <input type="text" name="pseudo" class="form-control"
+                            style="background-color:#F8F4E8; border-radius:10px;"
+                            value="{{ utilisateur.pseudo }}" required>
                         <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
                             Modifier
                         </button>
                     </div>
                 </form>
 
-                {# ===== MODIFIER PRÉNOM ===== #}
-                <form method="post" class="mb-4">
-                    <input type="hidden" name="champ" value="prenom">
+                {# ===== MODIFIER PHOTO DE PROFIL ===== #}
+                <form method="post" class="mb-4" enctype="multipart/form-data">
+                    <input type="hidden" name="champ" value="photo">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Prénom</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Photo de profil</label>
+
+                    {% if utilisateur.photo is not empty %}
+                        <div class="mb-2">
+                            <img src="uploads/{{ utilisateur.photo }}" alt="Photo de profil"
+                                class="rounded-circle" width="80" height="80">
+                        </div>
+                    {% endif %}
+
                     <div class="d-flex gap-2">
-                        <input type="text" name="prenom" class="form-control"
-                               style="background-color:#F8F4E8; border-radius:10px;"
-                               value="{{ utilisateur.prenom }}" required>
+                        <input type="file" name="photo" class="form-control"
+                            accept="image/*"
+                            style="background-color:#F8F4E8; border-radius:10px;" required>
                         <button class="btn" style="background-color:#537031; color:white; border-radius:10px;">
                             Modifier
                         </button>

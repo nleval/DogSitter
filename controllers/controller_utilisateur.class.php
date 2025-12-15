@@ -43,13 +43,12 @@ class ControllerUtilisateur extends Controller
             $estPromeneur = $_POST['estPromeneur'];
             $adresse      = $_POST['adresse'];
             $motDePasse   = $_POST['motDePasse'];
-            $nom          = $_POST['nom'];
-            $prenom       = $_POST['prenom'];
             $numTelephone = $_POST['numTelephone'];
+            $pseudo          = $_POST['pseudo'];
+            $photoProfil       = $_POST['photoProfil'];
 
             // Créer un nouvel utilisateur
-            $nouvelUtilisateur = new Utilisateur(null, $email, $estMaitre, $estPromeneur, $adresse, $motDePasse, $nom, $prenom, $numTelephone);
-
+            $nouvelUtilisateur = new Utilisateur(null, $email, $estMaitre, $estPromeneur, $adresse, $motDePasse, $numTelephone, $pseudo, $photoProfil);
             // Enregistrer l'utilisateur dans la base de données
             $managerutilisateur = new UtilisateurDAO($this->getPDO());
             $managerutilisateur->ajouterUtilisateur($nouvelUtilisateur);

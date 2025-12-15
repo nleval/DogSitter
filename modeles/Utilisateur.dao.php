@@ -60,18 +60,18 @@ class UtilisateurDAO
         $utilisateur->setEstPromeneur($tableauAssoc['estPromeneur'] ?? null);
         $utilisateur->setAdresse($tableauAssoc['adresse'] ?? null);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse'] ?? null);
-        $utilisateur->setNom($tableauAssoc['nom'] ?? null);
-        $utilisateur->setPrenom($tableauAssoc['prenom'] ?? null);
         $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);
+        $utilisateur->setPseudo($tableauAssoc['pseudo'] ?? null);
+        $utilisateur->setPhotoProfil($tableauAssoc['photoProfil'] ?? null);
 
         return $utilisateur;
     }
 
     public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur 
-                (email, estMaitre, estPromeneur, adresse, motDePasse, nom, prenom, numTelephone) 
+                (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
                 VALUES 
-                (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :nom, :prenom, :numTelephone)";
+                (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
 
         $pdoStatement = $this->pdo->prepare($sql);
 
@@ -81,9 +81,9 @@ class UtilisateurDAO
             'estPromeneur' => $utilisateur->getEstPromeneur(),
             'adresse'      => $utilisateur->getAdresse(),
             'motDePasse'   => $utilisateur->getMotDePasse(),
-            'nom'          => $utilisateur->getNom(),
-            'prenom'       => $utilisateur->getPrenom(),
-            'numTelephone' => $utilisateur->getNumTelephone()
+            'numTelephone' => $utilisateur->getNumTelephone(), 
+            'pseudo'       => $utilisateur->getPseudo(),
+            'photoProfil'  => $utilisateur->getPhotoProfil(),
         ]);
 
     return $reussite;
