@@ -93,8 +93,22 @@
                         </form>
                     </div>
 
-                    <!-- Icônes à droite -->
+                    <!-- Icônes à droite (minimal) -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                        {% if session is defined and session.user is defined %}
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="index.php?controleur=conversation&methode=afficherAllConversation" aria-label="Messages"
+                               style="color: #FEFAE0;">
+                                <i class="bi bi-chat-dots fs-5" style="color: #FEFAE0;"></i>
+                                <span class="visually-hidden">Messages</span>
+                            </a>
+                        </li>
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="index.php?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ session.user.id_utilisateur }}" aria-label="Mon profil" style="color: #FEFAE0; font-weight:600;">
+                                {{ session.user.prenom }}
+                            </a>
+                        </li>
+                        {% else %}
                         <li class="nav-item me-2">
                             <a class="nav-link" href="index.php?controleur=conversation&methode=afficherAllConversation" aria-label="Messages"
                                style="color: #FEFAE0;">
@@ -103,12 +117,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if menu=='auth' %}active{% endif %}" href="index.php?controleur=utilisateur&methode=afficherUtilisateur"
+                            <a class="nav-link {% if menu=='auth' %}active{% endif %}" href="index.php?controleur=utilisateur&methode=authentification" aria-label="Se connecter / S'inscrire"
                                style="color: #FEFAE0; display: flex; align-items: center;">
                                 <i class="bi bi-person-circle fs-5 me-2" style="color: #FEFAE0;"></i>
                                 <span class="visually-hidden">Se connecter / S'inscrire</span>
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
 
                 </div>

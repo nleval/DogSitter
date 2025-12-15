@@ -11,6 +11,11 @@ class Utilisateur
     private ?string $numTelephone;
     private ?string $pseudo;
     private ?string $photoProfil;
+    private ?int $tentativesEchouees = 0;
+    private ?string $dateDernierEchecConnexion = null;
+    private ?string $statutCompte = 'actif';
+
+
 
     public function __construct(?int $id_utilisateur = null, ?string $email = null, ?bool $estMaitre = null, ?bool $estPromeneur = null, ?string $adresse = null, ?string $motDePasse = null, ?string $numTelephone = null, ?string $pseudo = null, ?string $photoProfil = null)
     {
@@ -23,6 +28,8 @@ class Utilisateur
         $this->numTelephone = $numTelephone;
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
+      
+        
     }
 
     //GETTEUR & SETTEUR
@@ -97,4 +104,35 @@ class Utilisateur
     public function setPhotoProfil($photoProfil): void {
         $this->photoProfil = $photoProfil;
     }
-}
+
+    public function getTentativesEchouees(): int
+    { 
+        return $this->tentativesEchouees ?? 0; 
+    }
+
+    public function setTentativesEchouees(int $tentatives): void 
+    { 
+        $this->tentativesEchouees = $tentatives; 
+    }
+
+    public function getDateDernierEchecConnexion(): ?string  
+    { 
+        return $this->dateDernierEchecConnexion; 
+    }
+
+    public function setDateDernierEchecConnexion(?string $date): void 
+    { 
+        $this->dateDernierEchecConnexion = $date; 
+    }
+
+    public function getStatutCompte(): string 
+    { 
+        return $this->statutCompte ?? 'actif'; 
+    }
+
+    public function setStatutCompte(string $statut): void 
+    { 
+        $this->statutCompte = $statut; 
+    }
+
+}   
