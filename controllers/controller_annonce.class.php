@@ -105,29 +105,32 @@ class ControllerAnnonce extends Controller
     /**
      * Afficher toutes les annonces d’un utilisateur donné
      */
-    public function afficherAnnoncesParUtilisateur($id_utilisateur)
+    public function afficherAnnoncesParUtilisateur()
     {
-        $managerAnnonce = new AnnonceDAO($this->getPDO());
-        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
 
-        $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);
+        // Récupérer l'utilisateur connecté
+        $sessionUser = $_SESSION['user'] ?? null;
 
-        $annoncesEnrichies = [];
-
-        foreach ($annoncesListe as $annonce) {
-            // Récupérer l'objet Utilisateur
-            $utilisateur = $managerUtilisateur->findById($annonce->getIdUtilisateur());
-
-            $annoncesEnrichies[] = [
-                'annonce' => $annonce,
-                'utilisateur' => $utilisateur ? $utilisateur->getNumTelephone() : 'N/A'
-            ];
+        if (is_array($sessionUser)) {
+            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+            $id_utilisateur = $sessionUser->getId();
+        } else {
+            $id_utilisateur = null;
         }
 
-        $template = $this->getTwig()->load('annonces.html.twig');
+        if (!$id_utilisateur) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $managerAnnonce = new AnnonceDAO($this->getPDO());
+
+        $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);            
+
+        $template = $this->getTwig()->load('annonces_par_utilisateur.html.twig');
         echo $template->render([
             'annoncesListe' => $annoncesListe,
-            'id_utilisateur' => $id_utilisateur
         ]);
     }
 
@@ -307,7 +310,39 @@ public function confirmationCreationAnnonce()
 
 }
 
+public function supprimerAnnonce()
+{
+    $sessionUser = $_SESSION['user'] ?? null;
+    $id_annonce = $_GET['id_annonce'] ?? null;
+
+    if (is_array($sessionUser)) {
+        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+        $id_utilisateur = $sessionUser->getId();
+    } else {
+        $id_utilisateur = null;
+    }
+
+    if (!$id_utilisateur || !$id_annonce) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $annonce = $managerAnnonce->findById($id_annonce);
+
+    if (!$annonce || $annonce->getIdUtilisateur() != $id_utilisateur) {
+        $template = $this->getTwig()->load('403.html.twig');
+        echo $template->render(['message' => "Vous n'êtes pas autorisé à supprimer cette annonce."]);
+        return;
+    }
+
+    $managerAnnonce->supprimerAnnonce($id_annonce);
+
+    header('Location: index.php?controleur=annonce&methode=afficherAnnoncesParUtilisateur');
+    exit();
 }
 
 
+}
 

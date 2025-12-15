@@ -121,4 +121,11 @@ class AnnonceDAO
     );
 }
 
+public function supprimerAnnonce($id_annonce): bool
+{
+    $sql = "DELETE FROM " . PREFIXE_TABLE . "Annonce WHERE id_annonce = :id_annonce";
+    $pdoStatement=$this->pdo->prepare($sql);
+    return $pdoStatement->execute([':id_annonce' => $id_annonce]);
+
+}
 }
