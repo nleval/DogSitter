@@ -30,7 +30,7 @@ class UtilisateurDAO
 
     public function findAll(): array
     {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur";
         $pdoStatement  = $this->pdo->prepare($sql);
         $pdoStatement ->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -45,7 +45,7 @@ class UtilisateurDAO
             return null;
         }
 
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -82,7 +82,7 @@ class UtilisateurDAO
     }
 
     public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur 
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur 
                 (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
                 VALUES 
                 (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
@@ -104,14 +104,14 @@ class UtilisateurDAO
 
   public function supprimerUtilisateur($id_utilisateur): ?bool
     {
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
     }
 
     public function emailExist(string $email): bool
 {
-    $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
+    $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(':email', $email);
     $stmt->execute();
@@ -146,7 +146,7 @@ public function inscription(Utilisateur $utilisateur): bool
     $motDePasseHache = password_hash($utilisateur->getMotDePasse(), PASSWORD_BCRYPT);
     
     // Préparer et exécuter la requête d'insertion
-    $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
+    $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
             VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
     
     $stmt = $pdo->prepare($sql);
@@ -212,7 +212,7 @@ public function authentification(string $email, string $motDePasse): bool
     /** Récupère un utilisateur par email */
     public function findByEmail(string $email): ?Utilisateur
     {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE email = :email";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -230,12 +230,12 @@ public function authentification(string $email, string $motDePasse): bool
         $utilisateur->setDateDernierEchecConnexion($dateNow);
 
         if ($tentatives >= MAX_CONNEXIONS_ECHOUEES) {
-            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+            $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
                     SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = :date, statut_compte = 'desactive'
                     WHERE id_utilisateur = :id";
             $utilisateur->setStatutCompte('desactive');
         } else {
-            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+            $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
                     SET tentatives_echouees = :tentatives, date_dernier_echec_connexion = :date
                     WHERE id_utilisateur = :id";
         }
@@ -251,7 +251,7 @@ public function authentification(string $email, string $motDePasse): bool
     /** Réinitialise les tentatives après succès de connexion */
     public function reinitialiserTentatives(int $id): void
     {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
                 SET tentatives_echouees = 0, date_dernier_echec_connexion = NULL, statut_compte = 'actif'
                 WHERE id_utilisateur = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -261,7 +261,7 @@ public function authentification(string $email, string $motDePasse): bool
     /** Réactive un compte désactivé */
     public function reactiverCompte(int $id): void
     {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
                 SET statut_compte = 'actif', tentatives_echouees = 0, date_dernier_echec_connexion = NULL
                 WHERE id_utilisateur = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -278,7 +278,7 @@ public function authentification(string $email, string $motDePasse): bool
 
      public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
     {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         return $pdoStatement->execute([
             ':nouvelleValeur' => $nouvelleValeur,
