@@ -21,6 +21,9 @@ $twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/P
 //Ajouter l'extension debug
 $twig->addExtension(new \Twig\Extension\DebugExtension());
 
+// Exposer la session PHP à Twig comme variable globale 'session'
+$twig->addGlobal('session', isset($_SESSION) ? $_SESSION : []);
+
 //Ajout de l'extension d'internationalisation qui permet d'utiliser les filtres de date dans twig
 //$twig->addExtension(new IntlExtension());
 

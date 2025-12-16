@@ -1,0 +1,54 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Annonce validée — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid d-flex align-items-center justify-content-center"
+        style="background-color:#FEFAE0; min-height:calc(100vh - 120px);">
+        <div class="card shadow-sm text-center p-4"
+            style="max-width:420px; border:1px solid #DDA15E; border-radius:14px;">
+            <!-- Icône validation -->
+            <div class="mb-3">
+                <div style="
+                width:56px;
+                height:56px;
+                margin:auto;
+                background-color:#537031;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#FEFAE0;
+                font-size:26px;
+                font-weight:bold;">
+                    ✓
+                </div>
+            </div>
+
+            <!-- Titre -->
+            <h4 class="fw-bold mb-2" style="color:#537031; font-family:'Poppins', sans-serif;">
+                Annonce créée avec succès
+            </h4>
+
+            <!-- Texte -->
+            <p class="mb-3 text-muted" style="font-size:0.95rem;">
+                Votre annonce est maintenant en ligne et visible par les sitters.
+            </p>
+
+            <!-- Boutons -->
+            <div class="d-grid gap-2">
+                <a href="index.php?controleur=Annonce&methode=afficherAllAnnonces"
+                    class="btn fw-bold text-white"
+                    style="background-color:#BC6C25; border-radius:8px; padding:8px;">
+                    Voir les annonces
+                </a>
+
+                <a href="index.php" class="text-decoration-none fw-bold" style="color:#DDA15E; font-size:0.9rem;">
+                    Retour à l’accueil
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
