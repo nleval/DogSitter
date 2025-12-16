@@ -1,5 +1,13 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+use Symfony\Component\Yaml\Yaml;
+// Charger le YAML
+$config = Symfony\Component\Yaml\Yaml::parseFile(__DIR__ . '/../config/constantes.yaml');
+
+// Définir les constantes 
+defined('PREFIXE_TABLE') or define('PREFIXE_TABLE', $config['PREFIXE_TABLE']);
+
 class AvisDAO
 {
     private ?PDO $pdo;
@@ -19,64 +27,58 @@ class AvisDAO
 
     public function findAll(): array
     {
-        $avis = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis");
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($results as $row) {
-            $avis[] = new Avis(
-                $row['id_avis'],
-                $row['note'],
-                $row['texte_commentaire'],
-                $row['id_utilisateur'],
-                $row['id_promenade'],
-                $row['id_utilisateur_note']
-            );
-        }
-
-        return $avis;
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis";
+        $pdoStatement  = $this->pdo->prepare($sql);
+        $pdoStatement ->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $avis = $pdoStatement->fetchAll();
+        
+        return $this->hydrateAll($avis);
     }
 
     public function findById($id_avis): ?Avis
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis WHERE id_avis = :id_avis");
-        $stmt->bindParam(':id_avis', $id_avis, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row) {
-            return new Avis(
-                $row['id_avis'],
-                $row['note'],
-                $row['texte_commentaire'],
-                $row['id_utilisateur'],
-                $row['id_promenade'],
-                $row['id_utilisateur_note']
-            );
+        if ($id_avis === null) {
+            return null;
         }
 
-        return null;
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_avis = :id_avis";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':id_avis' => $id_avis]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $avis = $pdoStatement->fetch();
+
+        return $avis ? $this->hydrate($avis) : null;
     }
 
     public function findByIdUtilisateurNote($id_utilisateur_note): array
     {
-        $avis = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis WHERE id_utilisateur_note = :id_utilisateur_note");
-        $stmt->bindParam(':id_utilisateur_note', $id_utilisateur_note, PDO::PARAM_STR);
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_utilisateur_note =".$id_utilisateur_note;
+        $pdoStatement  = $this->pdo->prepare($sql);
+        $pdoStatement ->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $avis = $pdoStatement->fetchAll();
+        
+        return $this->hydrateAll($avis);
+    }
 
-        foreach ($results as $row) {
-            $avis[] = new Avis(
-                $row['id_avis'],
-                $row['note'],
-                $row['texte_commentaire'],
-                $row['id_utilisateur'],
-                $row['id_promenade'],
-                $row['id_utilisateur_note']
-            );
+    private function hydrateAll(array $result): array {
+        $avisListe = [];
+        foreach ($result as $ligne) {
+            $avisListe[] = $this->hydrate($ligne);
         }
+        return $avisListe;
+    }
+
+    private function hydrate(array $tableauAssoc): ?Avis {
+        $avis = new Avis();
+
+        $avis->setId($tableauAssoc['id_avis'] ?? null);
+        $avis->setNote($tableauAssoc['note'] ?? null);
+        $avis->setTexteCommentaire($tableauAssoc['texte_commentaire'] ?? null);
+        $avis->setIdUtilisateur($tableauAssoc['id_utilisateur'] ?? null);
+        $avis->setIdPromenade($tableauAssoc['id_promenade'] ?? null);
+        $avis->setIdUtilisateurNote($tableauAssoc['id_utilisateur_note'] ?? null);
 
         return $avis;
     }
