@@ -1,32 +1,141 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}Promenades — DogSitter{% endblock %}
+{% block title %}
+    Détails de la Promenade
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        {% if promenadesListe is defined and promenadesListe|length > 0 %}
-            <h2>Liste des Promenades :</h2>
-            {% for promenade in promenadesListe %}
-                <ul>
-                    <li>{{ promenade.id_promenade }} </li>
-                    <li>{{ promenade.statut }}</li>
-                </ul>
-            {% else %}
-                <p>Aucune promenade trouvée.</p>
-            {% endfor %}
+<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-11">
+            <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius:12px;">
+                
+                {# Tu peux décommenter ces lignes si tu veux voir le contenu brut pour le debug #}
+                {# {{ dump(chien) }} #}
+                {# {{ dump(promenade) }} #}
 
-        {% elseif promenade is defined %}
-            <h2>Une promenade :</h2>
-            <ul>
-                <li>{{ promenade.id_promenade }}</li>
-                <li>{{ promenade.statut }}</li>
-            </ul>
-        {% else %}
-            <p>Aucune promenade à afficher.</p>
-        {% endif %}
+                {% if chiens is not empty and promenade is not null %}
+                    <div class="row">
+                        
+                        <!-- ==========================
+                             COLONNE GAUCHE : CHIEN & PROPRIO (3/12)
+                             ========================== -->
+                        <div class="col-12 col-md-3 border-end border-secondary-subtle">
+                            <h4 class="fw-bold mb-3" style="color:#537031; font-size:1.1rem;">
+                                Le Chien
+                            </h4>
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
+                            {% for chien in chiens %}
+                                <div class="text-center mb-4">
+                                    <!-- Photo du chien -->
+                                    <div style="width: 120px; height: 120px; border: 2px solid #537031; background-color: #F0F0F0; margin-bottom: 10px;"
+                                         class="rounded-circle mx-auto d-flex align-items-center justify-content-center overflow-hidden shadow-sm">
+                                        {% if chien.getCheminPhoto() %}
+                                            <img src="{{ chien.getCheminPhoto() }}"
+                                                 alt="Photo de {{ chien.getNom_Chien() }}"
+                                                 class="img-fluid"
+                                                 style="width: 100%; height: 100%; object-fit: cover;" />
+                                        {% else %}
+                                            <i class="bi bi-person-circle" style="font-size: 3rem; color: #aaa;"></i>
+                                        {% endif %}
+                                    </div>
+
+                                    <p class="mb-1 fw-bold" style="color:#BC6C25; font-size:1.2rem;">
+                                        {{ chien.getNom_Chien() }}
+                                    </p>
+                                    
+                                    <!-- Caractéristiques -->
+                                    <ul class="list-unstyled text-center small mt-2 text-muted">
+                                        <li><strong>Race :</strong> {{ chien.getRace() }}</li>
+                                        <li><strong>Poids :</strong> {{ chien.getPoids() }}</li>
+                                        <li><strong>Taille :</strong> {{ chien.getTaille() }}</li>
+                                    </ul>
+                                </div>
+                            {% endfor %}
+
+                            <hr style="border-color: #DDA15E; width: 60%; margin: 15px auto;" />
+
+                            <!-- Info Propriétaire -->
+                            <div class="text-center">
+                                <p class="mb-0 small" style="color:#537031;"><strong>Propriétaire :</strong></p>
+                                <p class="mb-0">
+                                    {{ proprietaire.getPrenom()|default('Inconnu') }} {{ proprietaire.getNom() }}
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <!-- ==========================
+                             COLONNE MILIEU : DESCRIPTION (5/12)
+                             ========================== -->
+                        <div class="col-12 col-md-5 px-md-4">
+                            <h4 class="fw-bold mb-3" style="color:#537031; font-size:1.1rem;">
+                                Description
+                            </h4>
+                            
+                            <div class="p-3 border rounded shadow-sm"
+                                 style="background-color: #fffdf5; border-color: #e0d8b0 !important; font-size:1rem; min-height: 300px; max-height:500px; white-space:pre-line; overflow-wrap:anywhere; color: #4a4a4a;">
+                                {{ annonce.getDescription()|default('Aucune description fournie par le propriétaire.') | e | nl2br | raw }}
+                            </div>
+                            
+                            <div class="text-end mt-1">
+                                <span style="color:grey; font-size:0.7rem;">(max 500 caractères)</span>
+                            </div>
+                        </div>
+
+
+                        <!-- ==========================
+                             COLONNE DROITE : DETAILS PROM (4/12)
+                             ========================== -->
+                        <div class="col-12 col-md-4 ps-md-4 border-start border-secondary-subtle">
+                            <h3 class="fw-bold mb-4" style="color:#537031; font-size:1.3rem;">
+                                Détails de la sortie
+                            </h3>
+
+                            <div class="mb-4">
+                                <p class="mb-2" style="font-size:1.1rem;">
+                                    <i class="bi bi-calendar-event me-2" style="color:#BC6C25;"></i>
+                                    <strong>Date :</strong> {{ annonce.getDatePromenade() }}
+                                </p>
+                                <p class="mb-2" style="font-size:1.1rem;">
+                                    <i class="bi bi-clock me-2" style="color:#BC6C25;"></i>
+                                    <strong>Heure :</strong> {{ annonce.getHoraire() }}
+                                </p>
+                                <p class="mb-2" style="font-size:1.1rem;">
+                                    <i class="bi bi-geo-alt me-2" style="color:#BC6C25;"></i>
+                                    <strong>Lieu :</strong> {{ annonce.getEndroitPromenade() }}
+                                </p>
+                            </div>
+
+                            <hr style="border-color: #DDA15E;" />
+
+                            <div class="mb-3 mt-4">
+                                <h5 class="fw-bold mb-3" style="color:#537031;">Infos complémentaires</h5>
+                                <ul class="list-group list-group-flush bg-transparent">
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                        Tarif
+                                        <span class="badge rounded-pill bg-success" style="font-size: 1rem;">{{ annonce.getTarif() }} €</span>
+                                    </li>
+                                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 border-bottom-0">
+                                        Statut
+                                        <span class="badge border border-secondary text-secondary">{{ promenade.statut }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                {% else %}
+                    <!-- Si pas de promenade trouvée -->
+                    <div class="alert alert-warning text-center" role="alert" style="background-color: #F8F4E8; color: #BC6C25;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Les détails de cette promenade sont introuvables.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% block footer %}
-    {% endblock %}
+</div>
+
+{% block footer %}{% endblock %}
 {% endblock %}

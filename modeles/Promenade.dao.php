@@ -20,14 +20,18 @@ class PromenadeDAO
     public function findAll(): array
     {
         $promenades = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Promenade");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "promenade");
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $row) {
             $promenades[] = new Promenade(
                 $row['id_promenade'],
-                $row['statut']
+                $row['statut'],
+                $row['id_promeneur'],
+                $row['id_chien'],
+                $row['id_proprietaire'],
+                $row['id_annonce']
             );
         }
 
@@ -36,7 +40,7 @@ class PromenadeDAO
 
     public function findById($id_promenade): ?Promenade
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Promenade WHERE id_promenade = :id_promenade");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "promenade WHERE id_promenade = :id_promenade");
         $stmt->bindParam(':id_promenade', $id_promenade, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,7 +48,11 @@ class PromenadeDAO
         if ($row) {
             return new Promenade(
                 $row['id_promenade'],
-                $row['statut']
+                $row['statut'],
+                $row['id_promeneur'],
+                $row['id_chien'],
+                $row['id_proprietaire'],
+                $row['id_annonce']
             );
         }
 

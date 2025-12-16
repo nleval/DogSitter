@@ -19,7 +19,7 @@ class UtilisateurDAO
 
     public function findAll(): array
     {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement  = $this->pdo->prepare($sql);
         $pdoStatement ->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -34,7 +34,7 @@ class UtilisateurDAO
             $id_utilisateur = (int) $_GET['id_utilisateur'];
         }
 
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);

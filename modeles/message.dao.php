@@ -22,7 +22,7 @@ class MessageDAO
     public function findAll(): array
     {
         $messages = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Message");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "message");
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -41,7 +41,7 @@ class MessageDAO
 
     public function findById($idMessage): ?Message
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Message WHERE id_message = :idMessage");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "message WHERE id_message = :idMessage");
         $stmt->bindParam(':idMessage', $idMessage, PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `dog_annonce` (
   `id_utilisateur` int DEFAULT NULL,
   PRIMARY KEY (`id_annonce`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_annonce`
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `dog_avis` (
   KEY `id_utilisateur` (`id_utilisateur`),
   KEY `id_promenade` (`id_promenade`),
   KEY `id_utilisateur_1` (`id_utilisateur_1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_avis`
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `dog_chien` (
   `id_utilisateur` int DEFAULT NULL,
   PRIMARY KEY (`id_chien`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_chien`
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `dog_concerne` (
   `id_annonce` int NOT NULL,
   PRIMARY KEY (`id_chien`,`id_annonce`),
   KEY `id_annonce` (`id_annonce`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_concerne`
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `dog_conversation` (
   `id_conversation` int NOT NULL,
   `date_creation` varchar(50) NOT NULL,
   PRIMARY KEY (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_conversation`
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `dog_creer` (
   `id_conversation` int NOT NULL,
   PRIMARY KEY (`id_utilisateur`,`id_conversation`),
   KEY `id_conversation` (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_creer`
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `dog_message` (
   PRIMARY KEY (`id_message`),
   KEY `id_utilisateur` (`id_utilisateur`),
   KEY `id_conversation` (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_message`
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `dog_participe` (
   `id_promenade` int NOT NULL,
   PRIMARY KEY (`id_chien`,`id_promenade`),
   KEY `id_promenade` (`id_promenade`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_participe`
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `dog_promenade` (
   `id_promenade` int NOT NULL,
   `statut` varchar(50) NOT NULL,
   PRIMARY KEY (`id_promenade`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_promenade`
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `dog_répond` (
   `id_utilisateur` int NOT NULL,
   PRIMARY KEY (`id_annonce`,`id_utilisateur`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `dog_répond`
@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS `dog_utilisateur` (
   `numTelephone` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `dog_utilisateur`
