@@ -18,21 +18,26 @@ class PromenadeDAO
     }
 
     public function findAll(): array
-    {
-        $promenades = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Promenade");
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+{
+    $promenades = []; // 1. On initialise un tableau vide
+    $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Promenade");
+    $stmt->execute();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($results as $row) {
-            $promenades[] = new Promenade(
-                $row['id_promenade'],
-                $row['statut']
-            );
-        }
-
-        return $promenades;
+    foreach ($results as $row) {
+        // Attention à l'ordre des paramètres ici (comme vu précédemment)
+        $promenades[] = new Promenade(
+            $row['id_promenade'],
+            $row['statut'],
+            $row['id_promeneur'], 
+            $row['id_chien'],     
+            $row['id_proprietaire'],
+            $row['id_annonce']
+        );
     }
+
+    return $promenades; // 2. IMPORTANNNT : Il faut retourner le tableau ici !
+}
 
     public function findById($id_promenade): ?Promenade
     {
@@ -44,7 +49,11 @@ class PromenadeDAO
         if ($row) {
             return new Promenade(
                 $row['id_promenade'],
-                $row['statut']
+                $row['statut'],
+                $row['id_promeneur'],
+                $row['id_chien'],
+                $row['id_proprietaire'],
+                $row['id_annonce']
             );
         }
 
