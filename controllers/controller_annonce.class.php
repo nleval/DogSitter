@@ -343,6 +343,117 @@ public function supprimerAnnonce()
     exit();
 }
 
+public function modifierAnnonce($id_annonce = null)
+{
+    // ---------- SESSION ----------
+    $sessionUser = $_SESSION['user'] ?? null;
 
+    if (is_array($sessionUser)) {
+        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+        $id_utilisateur = $sessionUser->getId();
+    } else {
+        $id_utilisateur = null;
+    }
+
+    if (!$id_utilisateur) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    // ---------- ID ANNONCE ----------
+    if ($id_annonce === null) {
+        $id_annonce = $_GET['id_annonce'] ?? null;
+    }
+
+    if (!$id_annonce) {
+        http_response_code(404);
+        echo $this->getTwig()->render('404.html.twig');
+        return;
+    }
+
+    // ---------- ANNONCE ----------
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $annonce = $managerAnnonce->findById($id_annonce);
+
+    if (!$annonce || $annonce->getIdUtilisateur() != $id_utilisateur) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Accès interdit."
+        ]);
+        return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        $regles = [
+            'titre' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 10,
+                'longueur_max' => 100
+            ],
+            'datePromenade' => [
+                'obligatoire' => true,
+                'format' => '/^\d{4}-\d{2}-\d{2}$/'
+            ],
+            'horaire' => [
+                'obligatoire' => true,
+                'format' => '/^\d{2}:\d{2}$/'
+            ],
+            'duree' => [
+                'obligatoire' => true,
+                'type' => 'numeric',
+                'plage_min' => 15
+            ],
+            'tarif' => [
+                'obligatoire' => true,
+                'type' => 'numeric',
+                'plage_min' => 1
+            ],
+            'endroitPromenade' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 255
+            ],
+            'description' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 500
+            ]
+        ];
+
+        $validator = new Validator($regles);
+        $valide = $validator->valider($_POST);
+        $erreurs = $validator->getMessagesErreurs();
+
+        if (!$valide) {
+            echo $this->getTwig()->render('modifier_annonce.html.twig', [
+                'annonce' => $annonce,
+                'erreurs' => $erreurs,
+                'donnees' => $_POST
+            ]);
+            return;
+        }
+
+        $managerAnnonce->modifierChamp($id_annonce, 'titre', $_POST['titre']);
+        $managerAnnonce->modifierChamp($id_annonce, 'datePromenade', $_POST['datePromenade']);
+        $managerAnnonce->modifierChamp($id_annonce, 'horaire', $_POST['horaire']);
+        $managerAnnonce->modifierChamp($id_annonce, 'duree', $_POST['duree']);
+        $managerAnnonce->modifierChamp($id_annonce, 'tarif', $_POST['tarif']);
+        $managerAnnonce->modifierChamp($id_annonce, 'endroitPromenade', $_POST['endroitPromenade']);
+        $managerAnnonce->modifierChamp($id_annonce, 'description', $_POST['description']);
+
+        header('Location: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=' . $id_annonce);
+        exit();
+    }
+
+    echo $this->getTwig()->render('modifier_annonce.html.twig', [
+        'annonce' => $annonce
+    ]);
 }
 
+
+
+
+}

@@ -33,18 +33,9 @@
                                 </p>
 
                                 <div class="d-flex gap-2 mt-2">
-                                    <!-- Bouton Consulter -->
-                                    <a href="?controleur=Annonce&methode=afficherAnnonce&id_annonce={{
-                                        annonce.getIdAnnonce()
-                                        }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#537031; color:white; white-space:nowrap;">
-                                        Consulter
-                                    </a>
-
                                     <!-- Bouton Modifier -->
                                     <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{
-                                        annonce.id_annonce
+                                        annonce.getIdAnnonce
                                         }}"
                                         class="btn btn-sm"
                                         style="background-color:#BC6C25; color:white; white-space:nowrap;">
