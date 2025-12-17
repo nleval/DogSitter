@@ -7,3 +7,6 @@ DB_:
   USER: 
   PASS: 
 PREFIXE_TABLE: dog_
+
+max_connexions_echouees: 3
+delai_attente_connexion: 1800
