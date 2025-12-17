@@ -3,6 +3,7 @@
 class Annonce
 {
     private ?string $id_annonce;
+    private ?string $titre;
     private ?string $datePromenade;
     private ?string $horaire;
     private ?string $status;
@@ -14,6 +15,7 @@ class Annonce
 
     public function __construct(
         ?string $id_annonce = null,
+        ?string $titre = null,
         ?string $datePromenade = null,
         ?string $horaire = null,
         ?string $status = null,
@@ -24,6 +26,7 @@ class Annonce
         ?string $id_utilisateur = null
     ) {
         $this->id_annonce = $id_annonce;
+        $this->titre = $titre;
         $this->datePromenade = $datePromenade;
         $this->horaire = $horaire;
         $this->status = $status;
@@ -35,6 +38,12 @@ class Annonce
     }
 
     // GETTERS & SETTERS
+    public function getTitre(): ?string {
+        return $this->titre;
+    }
+    public function setTitre(?string $titre): void {
+        $this->titre = $titre;
+    }
 
     public function getIdAnnonce(): ?string {
         return $this->id_annonce;

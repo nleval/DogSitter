@@ -1,36 +1,92 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}Annonces{% endblock %}
+{% block title %}
+    Annonces
+{% endblock %}
 
 {% block content %}
+    <div class="container-fluid pt-4" style="background-color: #FEFAE0;">
+        <h2 class="fw-bold mb-4" style="color:#537031; font-family: 'Poppins', sans-serif;">
+            Les Annonces
+        </h2>
 
-{% if annoncesListe is defined and annoncesListe|length > 0 %}
-    {% if id_utilisateur is defined %}
-        <h2>Annonces publiées par l'utilisateur {{ id_utilisateur }}</h2>
-    {% else %}
-        <h2>Toutes les annonces</h2>
-    {% endif %}
+        <div class="card p-3 mb-4 shadow-sm border-0" style="background-color: #F8F4E8;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="villeCodePostal" class="form-label text-muted">Ville ou code postal</label>
+                    <input type="text" class="form-control" id="villeCodePostal" style="border: 1px solid #DDA15E;" />
+                </div>
+                <div class="col-md-3">
+                    <label for="disponibilites" class="form-label text-muted">Disponibilités</label>
+                    <input type="text" class="form-control" id="disponibilites" style="border: 1px solid #DDA15E;" />
+                </div>
+                <div class="col-md-3">
+                    <label for="dureePromenade" class="form-label text-muted">Durée de la promenade</label>
+                    <input type="text" class="form-control" id="dureePromenade" style="border: 1px solid #DDA15E;" />
+                </div>
+                <div class="col-md-2 d-flex justify-content-end">
+                    <button class="btn btn-sm" style="background-color: #BC6C25; color: white;">Autres options</button>
+                </div>
+            </div>
+        </div>
+        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
+            {% if id_utilisateur is defined %}
+                <h3 class="text-center mb-4" style="color:#537031;">
+                    Annonces publiées par l'utilisateur {{ id_utilisateur }}
+                </h3>
+            {% endif %}
 
-    <ul>
-        {% for annonce in annoncesListe %}
-            <li>
-                <strong>Date :</strong> {{ annonce.datePromenade }}<br>
-                <strong>Horaire :</strong> {{ annonce.horaire }}<br>
-                <strong>Durée :</strong> {{ annonce.duree }} minutes<br>
-                <strong>Endroit :</strong> {{ annonce.endroitPromenade }}<br>
-                <strong>Tarif :</strong> {{ annonce.tarif }} €<br>
-                <strong>Status :</strong> {{ annonce.status }}<br>
-                <strong>Description :</strong> {{ annonce.description }}<br>
-                <strong>ID Utilisateur :</strong> {{ annonce.idUtilisateur }}<br>
-            </li>
-            <br>
-        {% endfor %}
-    </ul>
+            <div class="d-grid gap-3">
+                {% for annonce in annoncesListe %}
+                    <div class="card shadow-lg border-0"
+                        style="background-color: #FAF6E9; border-left: 6px solid #9AAD5A;">
+                        <div class="card-body d-flex p-3">
+                            <div class="flex-shrink-0 me-3 d-flex align-items-center justify-content-center"
+                                style="width: 100px; height: 100px; background-color: #FAF6E9; 
+            border: 2px dashed #DDA15E; border-radius: 12px; font-size: 3rem;">
+                                🐶
+                            </div>
 
-{% else %}
-    <p>Aucune annonce trouvée.</p>
-{% endif %}
+                            <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                                <p class="mb-2" style="color:#537031; font-weight: bold;">
+                                    {{ annonce.titre }}
+                                </p>
+                                <p class="mb-2 text-muted">
+                                    {{ (annonce.description|slice(0, 150)) ~ '...' }} ({{ annonce.datePromenade }} à {{
+                                        annonce.endroitPromenade
+                                    }})
+                                </p>
 
-<a href="?controleur=Index&methode=render">Accueil</a>
+                                <div class="d-flex justify-content-between align-items-end mt-2">
+                                    <a href="tel:{{ annonce.telephone }}"
+                                        class="btn btn-sm"
+                                        style="background-color:#BC6C25; color:white; white-space:nowrap;">
+                                        <i class="bi bi-telephone-fill me-1"></i>{{ annonce.telephone }}
+                                    </a>
 
+                                    <a href="?controleur=Annonce&methode=afficherAnnonce&id_annonce={{
+                                        annonce.idAnnonce
+                                        }}"
+                                        class="btn"
+                                        style="background-color:#537031; color:white; white-space:nowrap;">
+                                        Consulter l'annonce
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert" style="background-color: #DDA15E; color: white;">
+                <p>
+                    Aucune annonce trouvée.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% block footer %}
+
+    {% endblock %}
 {% endblock %}

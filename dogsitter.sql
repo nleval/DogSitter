@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 05 nov. 2025 à 15:13
+-- Généré le : lun. 15 déc. 2025 à 08:23
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `dog_annonce` (
   `id_utilisateur` int DEFAULT NULL,
   PRIMARY KEY (`id_annonce`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_annonce`
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `dog_avis` (
   KEY `id_utilisateur` (`id_utilisateur`),
   KEY `id_promenade` (`id_promenade`),
   KEY `id_utilisateur_1` (`id_utilisateur_1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_avis`
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `dog_chien` (
   `id_utilisateur` int DEFAULT NULL,
   PRIMARY KEY (`id_chien`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_chien`
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `dog_concerne` (
   `id_annonce` int NOT NULL,
   PRIMARY KEY (`id_chien`,`id_annonce`),
   KEY `id_annonce` (`id_annonce`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_concerne`
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `dog_conversation` (
   `id_conversation` int NOT NULL,
   `date_creation` varchar(50) NOT NULL,
   PRIMARY KEY (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_conversation`
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `dog_creer` (
   `id_conversation` int NOT NULL,
   PRIMARY KEY (`id_utilisateur`,`id_conversation`),
   KEY `id_conversation` (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_creer`
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `dog_message` (
   PRIMARY KEY (`id_message`),
   KEY `id_utilisateur` (`id_utilisateur`),
   KEY `id_conversation` (`id_conversation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_message`
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `dog_participe` (
   `id_promenade` int NOT NULL,
   PRIMARY KEY (`id_chien`,`id_promenade`),
   KEY `id_promenade` (`id_promenade`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_participe`
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `dog_promenade` (
   `id_promenade` int NOT NULL,
   `statut` varchar(50) NOT NULL,
   PRIMARY KEY (`id_promenade`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
 
 --
 -- Déchargement des données de la table `dog_promenade`
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `dog_répond` (
   `id_utilisateur` int NOT NULL,
   PRIMARY KEY (`id_annonce`,`id_utilisateur`),
   KEY `id_utilisateur` (`id_utilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `dog_répond`
@@ -270,27 +270,27 @@ INSERT INTO `dog_répond` (`id_annonce`, `id_utilisateur`) VALUES
 
 DROP TABLE IF EXISTS `dog_utilisateur`;
 CREATE TABLE IF NOT EXISTS `dog_utilisateur` (
-  `id_utilisateur` int NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `estMaitre` tinyint(1) NOT NULL,
-  `estPromeneur` tinyint(1) NOT NULL,
-  `adresse` varchar(50) DEFAULT NULL,
-  `motDePasse` varchar(50) NOT NULL,
-  `nom` varchar(50) NOT NULL,
-  `prenom` varchar(50) NOT NULL,
-  `numTelephone` varchar(50) DEFAULT NULL,
+  `id_utilisateur` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) NOT NULL,
+  `estMaitre` tinyint(1) NOT NULL DEFAULT '0',
+  `estPromeneur` tinyint(1) NOT NULL DEFAULT '0',
+  `adresse` varchar(255) DEFAULT NULL,
+  `motDePasse` varchar(255) NOT NULL,
+  `numTelephone` varchar(20) DEFAULT NULL,
+  `pseudo` varchar(50) NOT NULL,
+  `photoProfil` varchar(255) NOT NULL,
   PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `dog_utilisateur`
 --
 
-INSERT INTO `dog_utilisateur` (`id_utilisateur`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `nom`, `prenom`, `numTelephone`) VALUES
-(1, 'utilisateur1@example.com', 1, 1, '123 Rue A, Paris', 'motdepasse1', 'Dupont', 'Jean', '0123456789'),
-(2, 'utilisateur2@example.com', 0, 1, '456 Rue B, Lyon', 'motdepasse2', 'Martin', 'Sophie', '0987654321'),
-(3, 'utilisateur3@example.com', 1, 0, '789 Rue C, Marseille', 'motdepasse3', 'Lemoine', 'Paul', '0234567890');
+INSERT INTO `dog_utilisateur` (`id_utilisateur`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `numTelephone`, `pseudo`, `photoProfil`) VALUES
+(1, 'alice@example.com', 1, 0, '12 rue du Chien, Paris', 'oui', '0600000001', 'Alice', ''),
+(2, 'bob@example.com', 0, 1, '34 avenue des Promeneurs, Lyon', 'oui', '0600000002', 'Bob', ''),
+(3, 'carol@example.com', 1, 1, '56 boulevard des Chiens, Marseille', 'oui', '0600000003', 'Carol', '');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
