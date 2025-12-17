@@ -82,7 +82,7 @@ class UtilisateurDAO
     }
 
     public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur 
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur 
                 (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
                 VALUES 
                 (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
@@ -104,7 +104,7 @@ class UtilisateurDAO
 
   public function supprimerUtilisateur($id_utilisateur): ?bool
     {
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
     }
@@ -278,7 +278,7 @@ public function authentification(string $email, string $motDePasse): bool
 
      public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
     {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
+        $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         return $pdoStatement->execute([
             ':nouvelleValeur' => $nouvelleValeur,
