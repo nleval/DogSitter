@@ -1,14 +1,58 @@
 <?php
 
+/**
+ * @class Avis
+ * @details Cette classe permet de gérer les avis
+ */
 class Avis
 {
+    /**
+     * @brief Identifiant de l'avis
+     * @var int|null
+     */
     private ?int $id_avis;
+
+    /**
+     * @brief Note de l'avis
+     * @var string|null
+     */
     private ?string $note;
+
+    /**
+     * @brief Commentaire de l'avis
+     * @var string|null
+     */
     private ?string $texte_commentaire;
+
+    /**
+     * @brief Identifiant de l'utilisateur ayant posté l'avis
+     * @var int|null
+     */
     private ?int $id_utilisateur;
+
+    /**
+     * @brief Identifiant de la promenade
+     * @var int|null
+     */
     private ?int $id_promenade;
+
+    /**
+     * @brief Identifiant de l'utilisateur noté par l'avis
+     * @var int|null
+     */
     private ?int $id_utilisateur_note;
 
+    /**
+     * @constructor Constructeur de la classe Categorie
+     * @details Ce constructeur permet de créer une nouvelle catégorie
+     * @param int|null $id_avis
+     * @param string|null $note
+     * @param string|null $texte_commentaire
+     * @param int|null $id_utilisateur
+     * @param int|null $id_promenade
+     * @param int|null $id_utilisateur_note
+     * @return void
+     */
     public function __construct(
         ?int $id_avis = null, 
         $note = null, 
@@ -25,51 +69,118 @@ class Avis
         $this->id_utilisateur_note = $id_utilisateur_note;
     }
 
-    //GETTEUR & SETTEUR
-    // ID
+    //ENCAPSULATION
+    
+    /**
+     * @function getId
+     * @details Cette fonction permet de récupérer l'identifiant de l'avis
+     * @return int|null
+     */
     public function getId(): ?int {
         return $this->id_avis;
     }
+
+    /**
+     * @function setId
+     * @details Cette fonction permet de définir l'identifiant de l'avis
+     * @param int|null $id_avis
+     * @return void
+     */
     public function setId(?int $id_avis): void {
         $this->id_avis = $id_avis;
     }
 
-    // Note
+    /**
+     * @function getNote
+     * @details Cette fonction permet de récupérer la note de l'avis
+     * @return string|null
+     */
     public function getNote(): ?string {
         return $this->note;
     }
+
+    /**
+     * @function setNote
+     * @details Cette fonction permet de définir la note de l'avis
+     * @param string|null $note
+     * @return void
+     */
     public function setNote(?string $note): void {
         $this->note = $note;
     }
 
-    // Texte commentaire
+    /**
+     * @function getTexteCommentaire
+     * @details Cette fonction permet de récupérer le commentaire l'avis
+     * @return string|null
+     */
     public function getTexteCommentaire(): ?string {
         return $this->texte_commentaire;
     }
+
+    /**
+     * @function setTexteCommentaire
+     * @details Cette fonction permet de définir le commentaire de l'avis
+     * @param string|null $texte_commentaire
+     * @return void
+     */
     public function setTexteCommentaire(?string $texte_commentaire): void {
         $this->texte_commentaire = $texte_commentaire;
     }
 
-    // Id utilisateur
+    /**
+     * @function getIdUtilisateur
+     * @details Cette fonction permet de récupérer l'identifiant de l'utilisateur ayant posté l'avis
+     * @return int|null
+     */
     public function getIdUtilisateur(): ?int {
         return $this->id_utilisateur;
     }
+
+    /**
+     * @function setIdUtilisateur
+     * @details Cette fonction permet de définir l'identifiant de l'utilisateur ayant posté l'avis
+     * @param int|null $id_utilisateur
+     * @return void
+     */
     public function setIdUtilisateur(?int $id_utilisateur): void {
         $this->id_utilisateur = $id_utilisateur;
     }
 
-    // Id promenade
+    /**
+     * @function getIdPromenade
+     * @details Cette fonction permet de récupérer l'identifiant de la promenade concernée par l'avis
+     * @return int|null
+     */
     public function getIdPromenade(): ?int {
         return $this->id_promenade;
     }
+
+    /**
+     * @function setIdPromenade
+     * @details Cette fonction permet de définir l'identifiant de la promenade concernée par l'avis
+     * @param int|null $id_promenade
+     * @return void
+     */
     public function setIdPromenade(?int $id_promenade): void {
         $this->id_promenade = $id_promenade;
     }
 
-    // Id utilisateur note
+    /**
+     * @function getIdUtilisateurNote
+     * @details Cette fonction permet de récupérer l'identifiant de l'utilisateur étant noté par l'avis
+     * @return int|null
+     */
     public function getIdUtilisateurNote(): ?int {
         return $this->id_utilisateur_note;
     }
+
+    /**
+     * @function setIdUtilisateurNote
+     * @details Cette fonction permet de définir l'identifiant de l'utilisateur étant noté par l'avis
+     * @param int|null $id_utilisateur_note
+     * @return void
+     */
     public function setIdUtilisateurNote(?int $id_utilisateur_note): void {
         $this->id_utilisateur_note = $id_utilisateur_note;
     }

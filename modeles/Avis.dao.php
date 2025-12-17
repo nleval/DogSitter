@@ -8,23 +8,52 @@ $config = Symfony\Component\Yaml\Yaml::parseFile(__DIR__ . '/../config/constante
 // Définir les constantes 
 defined('PREFIXE_TABLE') or define('PREFIXE_TABLE', $config['PREFIXE_TABLE']);
 
+/**
+ * @Class AvisDAO
+ * @details Permet de lier la classe Avis à la base de données
+ */
 class AvisDAO
 {
+    /**
+     * @var PDO|null
+     */
     private ?PDO $pdo;
 
+    /**
+     * @constructor CategorieDao
+     * @param PDO|null $pdo
+     * @return void
+     */
     public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
+
+    /**
+     * @function getPDO
+     * @return PDO|null
+     */
     public function getPdo(): ?PDO
     {
         return $this->pdo;
     }
+
+    /**
+     * @function setPDO 
+     * @param PDO|null $pdo
+     * @return void
+     */
     public function setPdo(?PDO $pdo): void
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * @function findAll
+     * @details Cette fonction permet de récupérer tous les avis en base de données
+     * @uses hydrateAll
+     * @return array
+     */
     public function findAll(): array
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis";
@@ -36,6 +65,12 @@ class AvisDAO
         return $this->hydrateAll($avis);
     }
 
+    /**
+     * @function findById
+     * @details Cette fonction permet de récupérer l'avis en base de données dont l'ID est donné en paramètre
+     * @param Avis|null $id_avis
+     * @return array
+     */
     public function findById($id_avis): ?Avis
     {
         if ($id_avis === null) {
@@ -51,6 +86,12 @@ class AvisDAO
         return $avis ? $this->hydrate($avis) : null;
     }
 
+    /**
+     * @function findByIdUtilisateurNote
+     * @details Cette fonction permet de récupérer tous les avis en base de données dont l'ID de l'utilisateur noté est donné en paramètre
+     * @param int $id_utilisateur_note
+     * @return array
+     */
     public function findByIdUtilisateurNote($id_utilisateur_note): array
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_utilisateur_note =".$id_utilisateur_note;
@@ -62,6 +103,13 @@ class AvisDAO
         return $this->hydrateAll($avis);
     }
 
+    /**
+     * function hydrateAll
+     * @details Cette fonction permet d'hydrater un tableau de données en objets Avis
+     * @param array $result
+     * @uses hydrate
+     * @return array
+     */
     private function hydrateAll(array $result): array {
         $avisListe = [];
         foreach ($result as $ligne) {
@@ -70,6 +118,12 @@ class AvisDAO
         return $avisListe;
     }
 
+    /**
+     * @function hydrate
+     * @details Cette fonction permet d'hydrater un avis en base de données
+     * @param array $tableauAssoc
+     * @return Avis
+     */
     private function hydrate(array $tableauAssoc): ?Avis {
         $avis = new Avis();
 
