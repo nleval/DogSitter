@@ -25,7 +25,7 @@ class AnnonceDAO
     public function findAll(): array
     {
         $annonces = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "annonce");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Annonce");
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -41,7 +41,7 @@ class AnnonceDAO
      */
     public function findById($id_annonce): ?Annonce
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "annonce WHERE id_annonce = :id_annonce");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Annonce WHERE id_annonce = :id_annonce");
         $stmt->bindParam(':id_annonce', $id_annonce);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -70,7 +70,7 @@ class AnnonceDAO
     public function findByUtilisateur($id_utilisateur): array
     {
         $annonces = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "annonce WHERE id_utilisateur = :id_utilisateur");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Annonce WHERE id_utilisateur = :id_utilisateur");
         $stmt->bindParam(':id_utilisateur', $id_utilisateur, PDO::PARAM_STR);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

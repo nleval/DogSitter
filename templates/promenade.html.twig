@@ -59,7 +59,7 @@
                             <div class="text-center">
                                 <p class="mb-0 small" style="color:#537031;"><strong>Propriétaire :</strong></p>
                                 <p class="mb-0">
-                                    {{ proprietaire.getPrenom()|default('Inconnu') }} {{ proprietaire.getNom() }}
+                                    {{ proprietaire.getPseudo()|default('Inconnu') }}
                                 </p>
                             </div>
                         </div>
@@ -114,11 +114,15 @@
                                 <ul class="list-group list-group-flush bg-transparent">
                                     <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
                                         Tarif
-                                        <span class="badge rounded-pill bg-success" style="font-size: 1rem;">{{ annonce.getTarif() }} €</span>
+                                        <span class="badge rounded-pill bg-success">
+                                        {{ annonce.getTarif()|default('Non défini') }} €
+                                        </span>
                                     </li>
                                     <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 border-bottom-0">
                                         Statut
-                                        <span class="badge border border-secondary text-secondary">{{ promenade.statut }}</span>
+                                        <span class="badge border border-secondary text-secondary">
+                                        {{ promenade.getStatut() }}
+                                        </span>
                                     </li>
                                 </ul>
                             </div>

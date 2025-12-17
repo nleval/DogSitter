@@ -20,7 +20,7 @@ class AvisDAO
     public function findAll(): array
     {
         $avis = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Avis");
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -40,7 +40,7 @@ class AvisDAO
 
     public function findById($id_avis): ?Avis
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis WHERE id_avis = :id_avis");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_avis = :id_avis");
         $stmt->bindParam(':id_avis', $id_avis, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ class AvisDAO
     public function findByIdUtilisateurNote($id_utilisateur_note): array
     {
         $avis = [];
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "avis WHERE id_utilisateur_note = :id_utilisateur_note");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_utilisateur_note = :id_utilisateur_note");
         $stmt->bindParam(':id_utilisateur_note', $id_utilisateur_note, PDO::PARAM_STR);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

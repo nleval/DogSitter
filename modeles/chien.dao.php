@@ -15,7 +15,7 @@ class ChienDAO{
     }
 
     public function findById(?int $id_chien): ?Chien{
-        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "chien WHERE id_chien = :id_chien");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Chien WHERE id_chien = :id_chien");
         $stmt->bindParam(':id_chien', $id_chien, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,7 +36,7 @@ class ChienDAO{
 
     public function findAll(){
         $chiens = [];
-        $pdoStatement = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "chien");
+        $pdoStatement = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Chien");
         $pdoStatement->execute();
         $results = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as $row) {
@@ -57,8 +57,8 @@ class ChienDAO{
 {
     $chiens = [];
     // Jointure entre dog_chien (c) et dog_concerne (co) pour filtrer par id_annonce
-    $sql = "SELECT c.* FROM " . PREFIXE_TABLE . "chien c 
-            JOIN " . PREFIXE_TABLE . "concerne co ON c.id_chien = co.id_chien 
+    $sql = "SELECT c.* FROM " . PREFIXE_TABLE . "Chien c 
+            JOIN " . PREFIXE_TABLE . "Concerne co ON c.id_chien = co.id_chien 
             WHERE co.id_annonce = :id_annonce";
             
     $stmt = $this->pdo->prepare($sql);
@@ -85,7 +85,7 @@ public function findByUtilisateur(int $id_utilisateur): array
 {
     $stmt = $this->pdo->prepare("
         SELECT *
-        FROM " . PREFIXE_TABLE . "chien
+        FROM " . PREFIXE_TABLE . "Chien
         WHERE id_utilisateur = :id_utilisateur
     ");
 
