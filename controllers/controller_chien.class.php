@@ -1,11 +1,26 @@
 <?php
-
+/**
+ * @file controller_chien.class.php
+ * @author Thyes Lilian
+ * @brief Gère les opérations liées aux chiens
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class ControllerChien extends Controller
 {
+    /**
+     * @brief Constructeur du contrôleur de chien.
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * @brief Afficher un chien spécifique
+     * @param int $id_chien Identifiant du chien à afficher
+     */
     public function afficherChien()
     {
         // Récupérer un chien spécifique depuis la base de données
@@ -20,6 +35,9 @@ class ControllerChien extends Controller
         ]);
     }
 
+    /**
+     * @brief Afficher tous les chiens
+     */
     public function afficherAllChiens()
     {
         // Récupérer tous les chiens depuis la base de données
