@@ -1,6 +1,6 @@
 <?php
 /**
- * @file controller_annonce.class.php
+ * @file chien.dao.php
  * @author Thyes Lilian
  * @brief Gestion de la base de donees pour les chiens
  * @version 1.0
