@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @file controller_annonce.class.php
+ * @author Lalanne Victor
+ * @brief Gestion de la base de donnees pour les annonces
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class AnnonceDAO
 {
     /**
