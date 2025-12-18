@@ -1,24 +1,53 @@
 <?php
-
+/**
+ * @file message.dao.php
+ * @author Pigeon Aymeric
+ * @brief Gestion de la base de donees pour les messages
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class MessageDAO
 {
+    /**
+     * @brief ?PDO $pdo Instance PDO pour accéder à la base de données.
+     */
     private ?PDO $pdo;
 
+    /**
+     * @brief Constructeur du DAO Message.
+     *
+     * @param ?PDO $pdo Connexion PDO (optionnelle).
+     */
     public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * @brief Récupère l'objet PDO.
+     *
+     * @return ?PDO Connexion PDO.
+     */
     public function getPdo(): ?PDO
     {
         return $this->pdo;
     }
 
+    /**
+     * @brief Définit l'objet PDO.
+     *
+     * @param ?PDO $pdo Connexion PDO.
+     */
     public function setPdo(?PDO $pdo): void
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * @brief Récupère tous les messages.
+     *
+     * @return Message[] Tableau d'objets Message.
+     */
     public function findAll(): array
     {
         $messages = [];
@@ -39,6 +68,12 @@ class MessageDAO
         return $messages;
     }
 
+    /**
+     * @brief Recherche un message par son identifiant.
+     *
+     * @param int|string $idMessage Identifiant du message.
+     * @return ?Message Objet Message ou null si non trouvé.
+     */
     public function findById($idMessage): ?Message
     {
         $stmt = $this->pdo->prepare("SELECT * FROM " . PREFIXE_TABLE . "Message WHERE id_message = :idMessage");

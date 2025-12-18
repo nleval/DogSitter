@@ -1,0 +1,25 @@
+var class_chien =
+[
+    [ "__construct", "class_chien.html#a3322631a47ffb2f5154936177bf818d4", null ],
+    [ "getCheminPhoto", "class_chien.html#a5f5326bcbaa50304fec8d8ed2216abf5", null ],
+    [ "getId_Chien", "class_chien.html#a79bed228b609c5a2ea493522c4631d67", null ],
+    [ "getid_Utilisateur", "class_chien.html#a7b66ff30061353401d36c4b052293925", null ],
+    [ "getNom_Chien", "class_chien.html#ad0ec7a0d1aec629b7578fe08cbb3ba40", null ],
+    [ "getPoids", "class_chien.html#a5e44f83942c8feacd2efb896b38492b3", null ],
+    [ "getRace", "class_chien.html#a1f0ecee81f84b5f9949cc620a4066726", null ],
+    [ "getTaille", "class_chien.html#a530b2fe182c343f8df4c3f6609f0d0c2", null ],
+    [ "setCheminPhoto", "class_chien.html#a7eb7692e27916bf6312a289a6243b1a9", null ],
+    [ "setId_Chien", "class_chien.html#a641019a344631a563df01e647be3df18", null ],
+    [ "setid_Utilisateur", "class_chien.html#af05d3e3e1025678d67f169e982b6706a", null ],
+    [ "setNom_Chien", "class_chien.html#a18793cf91b950fc1ef0c166ac36c1587", null ],
+    [ "setPoids", "class_chien.html#a9338d5cd1bfae917caedc08b51505bec", null ],
+    [ "setRace", "class_chien.html#a9f05d9e850dd2213c47042fafe64b0e6", null ],
+    [ "setTaille", "class_chien.html#a0113063723843d5d75a5465ee7ee90f3", null ],
+    [ "$cheminPhoto", "class_chien.html#adfb8075f9e64f044b892bbaa396399aa", null ],
+    [ "$id_chien", "class_chien.html#ab76a9ae89591da20ab466086850abb83", null ],
+    [ "$id_utilisateur", "class_chien.html#a72db0caaaa4e0b6e9004507e69b4464e", null ],
+    [ "$nom_chien", "class_chien.html#aef5810416da66dc3f6fd214752531daa", null ],
+    [ "$poids", "class_chien.html#a01816e884d9cfd5fd7829c01ef08a892", null ],
+    [ "$race", "class_chien.html#ad194d24ee0ae8379f81e59c2bccb901f", null ],
+    [ "$taille", "class_chien.html#a0f8d6b774e41c17db7601c9a78b7c52f", null ]
+];

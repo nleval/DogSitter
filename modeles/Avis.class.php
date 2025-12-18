@@ -1,8 +1,10 @@
 <?php
-
 /**
- * @class Avis
- * @details Cette classe permet de gérer les avis
+ * @file Avis.class.php
+ * @author Campistron Jullian
+ * @brief Classe représentant un avis
+ * @version 1.0
+ * @date 2025-12-18
  */
 class Avis
 {

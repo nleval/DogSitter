@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file utilisateur.dao.php
+ * @author Léval Noah
+ * @brief Gestion de la base de donees pour les utilisateurs
+ * @version 1.0
+ * @date 2025-12-18
+ */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 use Symfony\Component\Yaml\Yaml;
@@ -12,33 +19,58 @@ defined('DELAI_ATTENTE_CONNEXION') or define('DELAI_ATTENTE_CONNEXION', $config[
 
 class UtilisateurDAO
 {
-    private ?PDO $pdo;
-    
+    /**
+     * @brief ?PDO $pdo Instance PDO pour la connexion à la base de données.
+     */
+    private ?PDO $pdo;    
 
+    /**
+     * @brief Constructeur du DAO.
+     * @param ?PDO $pdo Connexion PDO optionnelle.
+     */
     public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
+
+    /**
+     * @brief Récupère l'objet PDO.
+     * @return ?PDO
+     */
     public function getPdo(): ?PDO
     {
         return $this->pdo;
     }
+
+    /**
+     * @brief Définit l'objet PDO.
+     * @param ?PDO $pdo
+     */
     public function setPdo(?PDO $pdo): void
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * @brief Récupère tous les utilisateurs.
+     * @return Utilisateur[] Tableau d'objets Utilisateur.
+     */
     public function findAll(): array
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur";
-        $pdoStatement  = $this->pdo->prepare($sql);
-        $pdoStatement ->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $utilisateur = $pdoStatement->fetchAll();
+        $stmt  = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateurs = $stmt->fetchAll();
         
-        return $this->hydrateAll($utilisateur);
+        return $this->hydrateAll($utilisateurs);
     }
 
+    /**
+     * @brief Récupère un utilisateur par son ID.
+     * @param int $id_utilisateur
+     * @return ?Utilisateur
+     */
     public function findById($id_utilisateur): ?Utilisateur
     {
         if ($id_utilisateur === null) {
@@ -46,15 +78,21 @@ class UtilisateurDAO
         }
 
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $utilisateur = $pdoStatement->fetch();
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id_utilisateur' => $id_utilisateur]);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $stmt->fetch();
 
         return $utilisateur ? $this->hydrate($utilisateur) : null;
     }
 
-    private function hydrateAll(array $resul): array {
+    /**
+     * @brief Hydrate un tableau de résultats en objets Utilisateur.
+     * @param array $resul
+     * @return Utilisateur[]
+     */
+    private function hydrateAll(array $resul): array
+    {
         $utilisateurListe = [];
         foreach ($resul as $ligne) {
             $utilisateurListe[] = $this->hydrate($ligne);
@@ -62,9 +100,14 @@ class UtilisateurDAO
         return $utilisateurListe;
     }
 
-    private function hydrate(array $tableauAssoc): ?Utilisateur {
+    /**
+     * @brief Hydrate un tableau associatif en objet Utilisateur.
+     * @param array $tableauAssoc
+     * @return ?Utilisateur
+     */
+    private function hydrate(array $tableauAssoc): ?Utilisateur
+    {
         $utilisateur = new Utilisateur();
-
         $utilisateur->setId($tableauAssoc['id_utilisateur'] ?? null);
         $utilisateur->setEmail($tableauAssoc['email'] ?? null);
         $utilisateur->setEstMaitre($tableauAssoc['estMaitre'] ?? null);
@@ -81,14 +124,19 @@ class UtilisateurDAO
         return $utilisateur;
     }
 
-    public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool {
+    /**
+     * @brief Ajoute un nouvel utilisateur dans la base.
+     * @param Utilisateur $utilisateur
+     * @return ?bool
+     */
+    public function ajouterUtilisateur(?Utilisateur $utilisateur): ?bool
+    {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur 
                 (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
-                VALUES 
-                (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
+                VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
 
-        $pdoStatement = $this->pdo->prepare($sql);
-        $reussite = $pdoStatement->execute([
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
             'email'        => $utilisateur->getEmail(),
             'estMaitre'    => $utilisateur->getEstMaitre(),
             'estPromeneur' => $utilisateur->getEstPromeneur(),
@@ -97,119 +145,116 @@ class UtilisateurDAO
             'numTelephone' => $utilisateur->getNumTelephone(), 
             'pseudo'       => $utilisateur->getPseudo(),
             'photoProfil'  => $utilisateur->getPhotoProfil(),
-
         ]);
-        return $reussite;
     }
 
-  public function supprimerUtilisateur($id_utilisateur): ?bool
+    /**
+     * @brief Supprime un utilisateur par ID.
+     * @param int $id_utilisateur
+     * @return ?bool
+     */
+    public function supprimerUtilisateur($id_utilisateur): ?bool
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "Utilisateur WHERE id_utilisateur = :id_utilisateur";
-        $pdoStatement = $this->pdo->prepare($sql);
-        return $pdoStatement->execute([':id_utilisateur' => $id_utilisateur]);
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':id_utilisateur' => $id_utilisateur]);
     }
 
+    /**
+     * @brief Vérifie si un email existe déjà.
+     * @param string $email
+     * @return bool
+     */
     public function emailExist(string $email): bool
-{
-    $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue(':email', $email);
-    $stmt->execute();
-
-    return $stmt->fetchColumn() > 0;
-}
-
-public function estRobuste(string $motDePasse): bool
-{
-    $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-
-    // La fonction preg_match retourne 1 si le motif correspond, 0 sinon
-    return preg_match($regex, $motDePasse) === 1;
-}
-
-public function inscription(Utilisateur $utilisateur): bool
-{
-    // Vérifier si le mdp est robuste
-    if (!$this->estRobuste($utilisateur->getMotDePasse())) {
-        throw new Exception("Le mot de passe n'est pas assez robuste.");
+    {
+        $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 
-    // Vérifier si l'email existe déjà
-    if ($this->emailExist($utilisateur->getEmail())) {
-        throw new Exception("L'email existe déjà.");
+    /**
+     * @brief Vérifie si un mot de passe est robuste.
+     * @param string $motDePasse
+     * @return bool
+     */
+    public function estRobuste(string $motDePasse): bool
+    {
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+        return preg_match($regex, $motDePasse) === 1;
     }
 
-    // Connexion avec la base de données
-    $pdo = Bd::getInstance()->getConnexion();
-
-    // Hacher le mot de passe avant de l'enregistrer
-    $motDePasseHache = password_hash($utilisateur->getMotDePasse(), PASSWORD_BCRYPT);
-    
-    // Préparer et exécuter la requête d'insertion
-    $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
-            VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
-    
-    $stmt = $pdo->prepare($sql);
-    return $stmt->execute([
-        ':email'        => $utilisateur->getEmail(),
-        ':estMaitre'    => $utilisateur->getEstMaitre(),
-        ':estPromeneur' => $utilisateur->getEstPromeneur(),
-        ':adresse'      => $utilisateur->getAdresse(),
-        ':motDePasse'   => $motDePasseHache,
-        ':numTelephone' => $utilisateur->getNumTelephone(),
-        ':pseudo'       => $utilisateur->getPseudo(),
-        ':photoProfil'  => $utilisateur->getPhotoProfil()
-    ]);
-
-}
-
-public function authentification(string $email, string $motDePasse): bool
-{
-    // Récupération utilisateur
-    $utilisateur = $this->findByEmail($email);
-
-    if (!$utilisateur) {
-        return false; // Email inexistant
-    }
-
-    // Vérification si le compte est temporairement désactivé 
-    $compteDesactive = ($utilisateur->getStatutCompte() === 'desactive');
-    $derniereTentative = $utilisateur->getDateDernierEchecConnexion();
-
-    if ($compteDesactive && $derniereTentative) {
-
-        $tempsRestant = $this->tempsRestantAvantReactivationCompte($derniereTentative);
-
-        if ($tempsRestant > 0) {
-            // Toujours bloqué → on stoppe l’authentification
-            throw new Exception("compte_desactive");
+    /**
+     * @brief Inscription d'un utilisateur avec vérification email et robustesse mot de passe.
+     * @param Utilisateur $utilisateur
+     * @return bool
+     * @throws Exception
+     */
+    public function inscription(Utilisateur $utilisateur): bool
+    {
+        if (!$this->estRobuste($utilisateur->getMotDePasse())) {
+            throw new Exception("Le mot de passe n'est pas assez robuste.");
+        }
+        if ($this->emailExist($utilisateur->getEmail())) {
+            throw new Exception("L'email existe déjà.");
         }
 
-        // Si le temps est expiré → on réactive le compte
-        $this->reactiverCompte($utilisateur->getId());
-        $utilisateur->setTentativesEchouees(0);
+        $pdo = Bd::getInstance()->getConnexion();
+        $motDePasseHache = password_hash($utilisateur->getMotDePasse(), PASSWORD_BCRYPT);
+
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "Utilisateur 
+                (email, estMaitre, estPromeneur, adresse, motDePasse, numTelephone, pseudo, photoProfil) 
+                VALUES (:email, :estMaitre, :estPromeneur, :adresse, :motDePasse, :numTelephone, :pseudo, :photoProfil)";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            ':email'        => $utilisateur->getEmail(),
+            ':estMaitre'    => $utilisateur->getEstMaitre(),
+            ':estPromeneur' => $utilisateur->getEstPromeneur(),
+            ':adresse'      => $utilisateur->getAdresse(),
+            ':motDePasse'   => $motDePasseHache,
+            ':numTelephone' => $utilisateur->getNumTelephone(),
+            ':pseudo'       => $utilisateur->getPseudo(),
+            ':photoProfil'  => $utilisateur->getPhotoProfil()
+        ]);
     }
 
-    // Vérification du mot de passe 
-    $mdpCorrect = password_verify($motDePasse, $utilisateur->getMotDePasse());
+    /**
+     * @brief Authentification d'un utilisateur.
+     * @param string $email
+     * @param string $motDePasse
+     * @return bool
+     * @throws Exception
+     */
+    public function authentification(string $email, string $motDePasse): bool
+    {
+        $utilisateur = $this->findByEmail($email);
+        if (!$utilisateur) return false;
 
-    if ($mdpCorrect) {
+        $compteDesactive = ($utilisateur->getStatutCompte() === 'desactive');
+        $derniereTentative = $utilisateur->getDateDernierEchecConnexion();
 
-        // Si l'utilisateur avait des tentatives enregistrées → on les remet à 0
-        if ($utilisateur->getTentativesEchouees() > 0) {
-            $this->reinitialiserTentatives($utilisateur->getId());
+        if ($compteDesactive && $derniereTentative) {
+            $tempsRestant = $this->tempsRestantAvantReactivationCompte($derniereTentative);
+            if ($tempsRestant > 0) throw new Exception("compte_desactive");
+            $this->reactiverCompte($utilisateur->getId());
+            $utilisateur->setTentativesEchouees(0);
         }
 
-        return true;
+        if (password_verify($motDePasse, $utilisateur->getMotDePasse())) {
+            if ($utilisateur->getTentativesEchouees() > 0) $this->reinitialiserTentatives($utilisateur->getId());
+            return true;
+        }
+
+        $this->incrementerTentatives($utilisateur);
+        return false;
     }
 
-    // Mauvais mot de passe : on incrémente les tentatives 
-    $this->incrementerTentatives($utilisateur);
-
-    return false;
-}
-
-    /** Récupère un utilisateur par email */
+    /**
+     * @brief Récupère un utilisateur par email.
+     * @param string $email
+     * @return ?Utilisateur
+     */
     public function findByEmail(string $email): ?Utilisateur
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
@@ -219,13 +264,14 @@ public function authentification(string $email, string $motDePasse): bool
         return $result ? $this->hydrate($result) : null;
     }
 
-    /** Incrémente les tentatives échouées */
+    /**
+     * @brief Incrémente les tentatives échouées et désactive le compte si nécessaire.
+     * @param Utilisateur $utilisateur
+     */
     public function incrementerTentatives(Utilisateur $utilisateur): void
     {
         $tentatives = $utilisateur->getTentativesEchouees() + 1;
         $utilisateur->setTentativesEchouees($tentatives);
-
-        // On met à jour la date de la dernière tentative dans l'objet
         $dateNow = date('Y-m-d H:i:s');
         $utilisateur->setDateDernierEchecConnexion($dateNow);
 
@@ -243,12 +289,15 @@ public function authentification(string $email, string $motDePasse): bool
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':tentatives' => $tentatives,
-            ':date' => $dateNow,
-            ':id' => $utilisateur->getId()
+            ':date'       => $dateNow,
+            ':id'         => $utilisateur->getId()
         ]);
     }
 
-    /** Réinitialise les tentatives après succès de connexion */
+    /**
+     * @brief Réinitialise les tentatives après succès de connexion.
+     * @param int $id
+     */
     public function reinitialiserTentatives(int $id): void
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
@@ -258,7 +307,10 @@ public function authentification(string $email, string $motDePasse): bool
         $stmt->execute([':id' => $id]);
     }
 
-    /** Réactive un compte désactivé */
+    /**
+     * @brief Réactive un compte désactivé.
+     * @param int $id
+     */
     public function reactiverCompte(int $id): void
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur
@@ -268,7 +320,11 @@ public function authentification(string $email, string $motDePasse): bool
         $stmt->execute([':id' => $id]);
     }
 
-    /** Calcule le temps restant avant réactivation */
+    /**
+     * @brief Calcule le temps restant avant réactivation du compte.
+     * @param string $dateDernierEchec
+     * @return int Temps restant en secondes
+     */
     public function tempsRestantAvantReactivationCompte(string $dateDernierEchec): int
     {
         $tempsEcoule = time() - strtotime($dateDernierEchec);
@@ -276,11 +332,18 @@ public function authentification(string $email, string $motDePasse): bool
         return $tempsRestant > 0 ? $tempsRestant : 0;
     }
 
-     public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
+    /**
+     * @brief Modifie un champ spécifique d'un utilisateur.
+     * @param int $id_utilisateur
+     * @param string $champ
+     * @param mixed $nouvelleValeur
+     * @return ?bool
+     */
+    public function modifierChamp($id_utilisateur, $champ, $nouvelleValeur): ?bool
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "Utilisateur SET $champ = :nouvelleValeur WHERE id_utilisateur = :id_utilisateur";
-        $pdoStatement = $this->pdo->prepare($sql);
-        return $pdoStatement->execute([
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
             ':nouvelleValeur' => $nouvelleValeur,
             ':id_utilisateur' => $id_utilisateur
         ]);

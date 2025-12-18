@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file controller_annonce.class.php
+ * @author Campistron Julian
+ * @brief Gestion de la base de donnees pour les avis
+ * @version 1.0
+ * @date 2025-12-18
+ */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 use Symfony\Component\Yaml\Yaml;
