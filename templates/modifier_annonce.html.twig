@@ -18,7 +18,9 @@
                             <form method="post">
                                 <!-- TITRE -->
                                 <div class="mb-4">
-                                    <label for="titre" class="form-label fw-bold" style="color:#537031;">Titre</label>
+                                    <label for="titre" class="form-label fw-bold" style="color:#537031;">
+                                        Titre <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
                                     <input type="text"
                                         class="form-control"
                                         id="titre"
@@ -35,7 +37,7 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label for="datePromenade" class="form-label fw-bold" style="color:#537031;">
-                                            Date
+                                            Date <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="date"
                                             class="form-control"
@@ -49,7 +51,7 @@
 
                                     <div class="col-md-6">
                                         <label for="horaire" class="form-label fw-bold" style="color:#537031;">
-                                            Horaire
+                                            Horaire <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="time"
                                             class="form-control"
@@ -65,7 +67,7 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label for="duree" class="form-label fw-bold" style="color:#537031;">
-                                            Durée (minutes)
+                                            Durée (minutes) <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="number"
                                             class="form-control"
@@ -81,7 +83,7 @@
 
                                     <div class="col-md-6">
                                         <label for="tarif" class="form-label fw-bold" style="color:#537031;">
-                                            Tarif (€)
+                                            Tarif (€) <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="number"
                                             class="form-control"
@@ -123,7 +125,7 @@
                                         maxlength="500"
                                         placeholder="Donnez des détails (comportement du chien, préférences...)"
                                         style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px; resize:vertical;">
-                                        {{ donnees.description|default(annonce.description) }}
+                                        {{ donnees.description|default(annonce.description)|trim }}
                                     </textarea>
                                 </div>
 

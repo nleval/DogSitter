@@ -18,7 +18,9 @@
                             <form action="index.php?controleur=Utilisateur&methode=authentification" method="POST">
                                 <!-- EMAIL -->
                                 <div class="mb-4">
-                                    <label for="email" class="form-label fw-bold" style="color:#537031;">E-mail</label>
+                                    <label for="email" class="form-label fw-bold" style="color:#537031;">
+                                        E-mail <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
                                     <input type="email"
                                         class="form-control"
                                         id="email"
@@ -33,7 +35,7 @@
                                 <!-- MOT DE PASSE -->
                                 <div class="mb-4">
                                     <label for="motDePasse" class="form-label fw-bold" style="color:#537031;">
-                                        Mot de passe
+                                        Mot de passe <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                     </label>
                                     <input type="password"
                                         class="form-control"
