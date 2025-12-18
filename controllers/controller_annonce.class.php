@@ -2,7 +2,7 @@
 /**
  * @file controller_annonce.class.php
  * @author Lalanne Victor
- * @brief Gère les opérations liées aux annonces dans la base de données.
+ * @brief Gère les opérations liées aux annonces
  * @version 1.0
  * @date 2025-12-18
  */

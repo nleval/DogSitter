@@ -1,12 +1,27 @@
 <?php
-
+/**
+ * @file controller_promenade.class.php
+ * @author Boisseau Robin
+ * @brief Gère les opérations liées aux promenades
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class ControllerPromenade extends Controller
-{
+{    
+    /**
+     * @brief Constructeur du contrôleur de promenades.
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * @brief Afficher une promenade spécifique
+     * @param int $id_promenade Identifiant de la promenade à afficher
+     */
     public function afficherPromenade($id_promenade = null)
     {
 
@@ -73,6 +88,10 @@ class ControllerPromenade extends Controller
             'proprietaire'=> $proprietaire
         ]);
     }
+
+    /**
+     * @brief Afficher toutes les promenades
+     */
     public function afficherAllPromenades()
     {
         $promenadeDAO   = new PromenadeDAO($this->getPDO());
