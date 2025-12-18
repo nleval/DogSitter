@@ -1,17 +1,37 @@
 <?php
-
+/**
+ * @file controller_annonce.class.php
+ * @author Lalanne Victor
+ * @brief Gere la validation des données de formulaire
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class Validator
 {
+    /**
+     * @brief array $regles Règles de validation pour chaque champ du formulaire.
+     */
     private array $regles;
+
+    /**
+     * @brief array $messagesErreurs Messages d'erreur générés lors de la validation.
+     */
     private array $messagesErreurs = [];
 
-    // On reçoit un tableau de règles pour le formulaire
+    /**
+     * @brief Constructeur de la classe Validator 
+     * @param array $regles : règles de validation
+     */
     public function __construct(array $regles)
     {
         $this->regles = $regles;
     }
 
-    // Valide toutes les données du formulaire
+    /**
+     * @brief Valider les données d'un formulaire avec les règles de validation
+     * @param array $donnees : données du formulaire
+     * @return bool : true si les données sont valides, false sinon
+     */
     public function valider(array $donnees): bool
     {
         $this->messagesErreurs = [];
@@ -28,7 +48,13 @@ class Validator
         return $toutValide;
     }
 
-    // Valide un seul champ selon ses règles
+    /**
+     * @brief Valider un champ d'un formulaire
+     * @param string $champ : nom du champ
+     * @param mixed $valeur : valeur du champ
+     * @param array $regleChamp : règles de validation du champ
+     * @return bool : true si le champ est valide, false sinon
+     */
     private function validerChamp(string $champ, mixed $valeur, array $regles): bool
     {
         $ok = true;
@@ -119,7 +145,10 @@ class Validator
         return $ok;
     }
 
-    // Récupère toutes les erreurs
+    /** 
+     * @brief Obtenir les messages d'erreurs
+     * @return array
+     */
     public function getMessagesErreurs(): array
     {
         return $this->messagesErreurs;
