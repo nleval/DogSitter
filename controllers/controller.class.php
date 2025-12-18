@@ -8,16 +8,28 @@
  */
 class Controller{
     /** 
-     * @var PDO $pdo Instance de la classe PDO pour la gestion de la base de données.
-     * @var \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
-     * @var \Twig\Environment $twig Moteur de templates Twig.
-     * @var ?array $get Données GET reçues.
-     * @var ?array $post Données POST reçues.
-     * */
+     * @brief PDO $pdo Instance de la classe PDO pour la gestion de la base de données.
+     */
     private PDO $pdo;
+
+     /** 
+      * @brief \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+      */
     private \Twig\Loader\FilesystemLoader $loader;
+
+     /** 
+      * @brief \Twig\Environment $twig Moteur de templates Twig.
+      */
     private \Twig\Environment $twig;  
+
+     /** 
+      * @brief ?array $get Données GET reçues.
+      */
     private ?array $get = null;
+
+     /** 
+      * @brief ?array $post Données POST reçues.
+     */
     private ?array $post = null;
 
     /**
