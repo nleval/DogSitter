@@ -30,12 +30,6 @@
             </div>
         </div>
         {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
-            {% if id_utilisateur is defined %}
-                <h3 class="text-center mb-4" style="color:#537031;">
-                    Annonces publiées par l'utilisateur {{ id_utilisateur }}
-                </h3>
-            {% endif %}
-
             <div class="d-grid gap-3">
                 {% for annonce in annoncesListe %}
                     <div class="card shadow-lg border-0"

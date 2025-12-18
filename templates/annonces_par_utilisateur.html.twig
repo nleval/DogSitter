@@ -1,0 +1,68 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Mes Annonces
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid pt-4" style="background-color: #FEFAE0; min-height: 100vh;">
+        <h2 class="fw-bold mb-4 text-center" style="color:#537031; font-family: 'Poppins', sans-serif;">
+            Mes Annonces
+        </h2>
+
+        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
+            <div class="d-grid gap-3">
+                {% for annonce in annoncesListe %}
+                    <div class="card shadow-lg border-0"
+                        style="background-color: #FEFAE0; border-left: 6px solid #9AAD5A;">
+                        <div class="card-body d-flex p-3">
+                            <div class="flex-shrink-0 me-3 d-flex align-items-center justify-content-center"
+                                style="width: 100px; height: 100px; background-color: #FEFAE0; 
+                                    border: 2px dashed #DDA15E; border-radius: 12px; font-size: 3rem;">
+                                🐶
+                            </div>
+
+                            <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                                <p class="mb-2" style="color:#537031; font-weight: bold;">
+                                    {{ annonce.titre }}
+                                </p>
+                                <p class="mb-2 text-muted">
+                                    {{ (annonce.description|slice(0, 150)) ~ '...' }} ({{ annonce.datePromenade }} à {{
+                                        annonce.endroitPromenade
+                                    }})
+                                </p>
+
+                                <div class="d-flex gap-2 mt-2">
+                                    <!-- Bouton Modifier -->
+                                    <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{
+                                        annonce.getIdAnnonce
+                                        }}"
+                                        class="btn btn-sm"
+                                        style="background-color:#BC6C25; color:white; white-space:nowrap;">
+                                        Modifier
+                                    </a>
+
+                                    <!-- Bouton Supprimer -->
+                                    <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{
+                                        annonce.getIdAnnonce
+                                        }}"
+                                        class="btn btn-sm"
+                                        style="background-color:#D00000; color:white; white-space:nowrap;"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
+                                        Supprimer
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert text-center"
+                role="alert"
+                style="background-color: #DDA15E; color: white; font-weight:bold;">
+                Vous n'avez aucune annonce pour le moment.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

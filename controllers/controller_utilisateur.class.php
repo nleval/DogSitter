@@ -87,13 +87,20 @@ class ControllerUtilisateur extends Controller
         'obligatoire' => true,
         'type' => 'string',
         'longueur_min' => 2,
-        'longueur_max' => 70
+        'longueur_max' => 30
     ],
 
     'email' => [
         'obligatoire' => true,
         'format' => FILTER_VALIDATE_EMAIL,  
-        'longueur_max' => 255
+        'longueur_max' => 100
+    ],
+
+    'photoProfil' => [
+        'obligatoire' => false,
+        'type' => 'file',
+        'formats_acceptes' => ['image/jpeg', 'image/png', 'image/gif'],
+        'taille_max' => 2 * 1024 * 1024 // 2MB
     ],
 
     'adresse' => [
@@ -313,6 +320,20 @@ class ControllerUtilisateur extends Controller
 
         $email = trim($_POST['email'] ?? '');
         $motDePasse = $_POST['motDePasse'] ?? '';
+
+        $regles = [
+            'email' => [
+                'obligatoire' => true,
+                'format' => FILTER_VALIDATE_EMAIL,
+                'longueur_max' => 100
+            ],
+            'motDePasse' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 8,
+                'longueur_max' => 50
+            ]
+        ];
 
         $manager = new UtilisateurDAO($this->getPDO());
 

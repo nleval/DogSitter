@@ -27,7 +27,7 @@
                 <form method="post" class="mb-4" action="index.php?controleur=Utilisateur&methode=modifierEmail">
                     <input type="hidden" name="champ" value="email">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Email</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Email <span class="required-star" aria-hidden="true" title="Champ requis">★</span></label>
                     <div class="d-flex gap-2">
                         <input type="text" name="email" class="form-control"
                                style="background-color:#F8F4E8; border-radius:10px;"
@@ -42,7 +42,7 @@
                 <form method="post" class="mb-4">
                     <input type="hidden" name="champ" value="pseudo">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Pseudo</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Pseudo <span class="required-star" aria-hidden="true" title="Champ requis">★</span></label>
                     <div class="d-flex gap-2">
                         <input type="text" name="pseudo" class="form-control"
                             style="background-color:#F8F4E8; border-radius:10px;"
@@ -57,7 +57,7 @@
                 <form method="post" class="mb-4" enctype="multipart/form-data">
                     <input type="hidden" name="champ" value="photo">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Photo de profil</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Photo de profil <span class="required-star" aria-hidden="true" title="Champ requis">★</span></label>
 
                     {% if utilisateur.photo is not empty %}
                         <div class="mb-2">
@@ -110,7 +110,7 @@
                 <form method="post" class="mb-4">
                     <input type="hidden" name="champ" value="motDePasse">
 
-                    <label class="form-label fw-semibold" style="color:#537031;">Mot de passe</label>
+                    <label class="form-label fw-semibold" style="color:#537031;">Mot de passe <span class="required-star" aria-hidden="true" title="Champ requis">★</span></label>
                     <div class="d-flex gap-2">
                         <input type="password" name="motDePasse" class="form-control"
                                style="background-color:#F8F4E8; border-radius:10px;" required>

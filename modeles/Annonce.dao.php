@@ -121,4 +121,21 @@ class AnnonceDAO
     );
 }
 
+public function supprimerAnnonce($id_annonce): bool
+{
+    $sql = "DELETE FROM " . PREFIXE_TABLE . "Annonce WHERE id_annonce = :id_annonce";
+    $pdoStatement=$this->pdo->prepare($sql);
+    return $pdoStatement->execute([':id_annonce' => $id_annonce]);
+
+}
+
+   public function modifierChamp($id_annonce, $champ, $nouvelleValeur): ?bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "annonce SET $champ = :nouvelleValeur WHERE id_annonce = :id_annonce";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([
+            ':nouvelleValeur' => $nouvelleValeur,
+            ':id_annonce' => $id_annonce
+        ]);
+    }
 }
