@@ -1,0 +1,165 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Modifier l'annonce — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
+                        Modifier l'annonce
+                    </h2>
+
+                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
+                        <div style="background-color:#FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
+                            <form method="post">
+                                <!-- TITRE -->
+                                <div class="mb-4">
+                                    <label for="titre" class="form-label fw-bold" style="color:#537031;">
+                                        Titre <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="titre"
+                                        name="titre"
+                                        value="{{ donnees.titre|default(annonce.titre) }}"
+                                        minlength="10"
+                                        maxlength="100"
+                                        required
+                                        placeholder="Ex : Promenade matinale au parc"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                </div>
+
+                                <!-- DATE / HEURE -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="datePromenade" class="form-label fw-bold" style="color:#537031;">
+                                            Date <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
+                                        <input type="date"
+                                            class="form-control"
+                                            id="datePromenade"
+                                            name="datePromenade"
+                                            value="{{ donnees.datePromenade|default(annonce.datePromenade) }}"
+                                            min="{{ 'now'|date_modify('+1 day')|date('Y-m-d') }}"
+                                            required
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="horaire" class="form-label fw-bold" style="color:#537031;">
+                                            Horaire <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
+                                        <input type="time"
+                                            class="form-control"
+                                            id="horaire"
+                                            name="horaire"
+                                            value="{{ donnees.horaire|default(annonce.horaire) }}"
+                                            required
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                    </div>
+                                </div>
+
+                                <!-- DURÉE / TARIF -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="duree" class="form-label fw-bold" style="color:#537031;">
+                                            Durée (minutes) <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
+                                        <input type="number"
+                                            class="form-control"
+                                            id="duree"
+                                            name="duree"
+                                            value="{{ donnees.duree|default(annonce.duree) }}"
+                                            min="15"
+                                            step="15"
+                                            required
+                                            placeholder="Ex : 60"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="tarif" class="form-label fw-bold" style="color:#537031;">
+                                            Tarif (€) <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
+                                        <input type="number"
+                                            class="form-control"
+                                            id="tarif"
+                                            name="tarif"
+                                            value="{{ donnees.tarif|default(annonce.tarif) }}"
+                                            min="1"
+                                            step="0.01"
+                                            required
+                                            placeholder="Ex : 20"
+                                            style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                    </div>
+                                </div>
+
+                                <!-- LIEU -->
+                                <div class="mb-4">
+                                    <label for="endroitPromenade" class="form-label fw-bold" style="color:#537031;">
+                                        Lieu
+                                    </label>
+                                    <input type="text"
+                                        class="form-control"
+                                        id="endroitPromenade"
+                                        name="endroitPromenade"
+                                        value="{{ donnees.endroitPromenade|default(annonce.endroitPromenade) }}"
+                                        maxlength="255"
+                                        placeholder="Ex : Parc du Bois"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;" />
+                                </div>
+
+                                <!-- DESCRIPTION -->
+                                <div class="mb-4">
+                                    <label for="description" class="form-label fw-bold" style="color:#537031;">
+                                        Description
+                                    </label>
+                                    <textarea class="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="4"
+                                        maxlength="500"
+                                        placeholder="Donnez des détails (comportement du chien, préférences...)"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px; resize:vertical;">
+                                        {{ donnees.description|default(annonce.description)|trim }}
+                                    </textarea>
+                                </div>
+
+                                <!-- ACTIONS -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{
+                                        annonce.idAnnonce
+                                        }}"
+                                        class="btn btn-outline"
+                                        style="border-radius:8px; border-color:#537031; color:#537031;">
+                                        Annuler
+                                    </a>
+
+                                    <button type="submit"
+                                        class="btn fw-bold text-white"
+                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                        Enregistrer les modifications
+                                    </button>
+                                </div>
+                            </form>
+
+                            {% if erreurs is defined and erreurs %}
+                                <div class="alert alert-danger mt-4">
+                                    <ul class="mb-0">
+                                        {% for err in erreurs %}
+                                            <li>{{ err }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -16,6 +16,13 @@
                                 <img src="images/utilisateur/{{ utilisateur.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
                             {% endif %}
                             <h4 class="mb-0">{{ utilisateur.pseudo }}</h4>
+                            {% if utilisateur.estMaitre %}
+                            <a href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateur.id }}"
+                                class="btn btn-outline-light btn-sm ms-auto"
+                                title="Voir les annonces de {{ utilisateur.pseudo }}">
+                                Mes annonces
+                            </a>
+                            {% endif %}
                         </div>
 
                     <table class="table table-striped" style="background-color:#F8F4E8;">

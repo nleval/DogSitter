@@ -3,58 +3,76 @@
 {% block title %}Avis — DogSitter{% endblock %}
 
 {% block content %}
-
+<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
     <div class="container my-4">
         {% if avisListe is defined and avisListe|length > 0 %}
-            <h2>Liste des avis :</h2>
+            <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis :</h2>
             <ul>
                 {% for avis in avisListe %}
-                    <li><strong>ID :</strong> {{ avis.id }}<br>
-                        <strong>Note :</strong> {{ avis.note }}<br>
-                        <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
-                        <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
-                        <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
-                        <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
-                    </li>
+                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
+                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                        <h4 class="mb-0">Nom d'utilisateur</h4>
+                    </div>
+                    <div class="p-4">
+                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
+                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
+                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
+                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
+                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
+                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                    </div>
+                </div>
                 {% else %}
-                    <li>Aucun avis trouvé.</li>
+                    <h3>Aucun avis trouvé.</h3>
                 {% endfor %}
             </ul>
 
         {% elseif avis is defined %}
-            <h2>Un avis :</h2>
+            <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Un avis :</h2>
             <ul>
-                <li><strong>ID :</strong> {{ avis.id }}<br>
-                    <strong>Note :</strong> {{ avis.note }}<br>
-                    <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
-                    <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
-                    <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
-                    <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br>
-                </li>
+                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
+                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                        <h4 class="mb-0">Nom d'utilisateur</h4>
+                    </div>
+                    <div class="p-4">
+                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
+                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
+                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
+                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
+                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
+                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                    </div>
+                </div>
             </ul>
 
         {% elseif avisUtilisateurNote is defined %}
-           <h2>Liste des avis donnés à l'utilisateur {{ id_utilisateur_note }} :</h2>
+           <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis donnés à l'utilisateur {{ id_utilisateur_note }} :</h2>
             <ul>
                 {% for avis in avisUtilisateurNote %}
-                    <li><strong>ID :</strong> {{ avis.id }}<br>
-                        <strong>Note :</strong> {{ avis.note }}<br>
-                        <strong>Commentaire :</strong> {{ avis.textecommentaire }}<br>
-                        <strong>ID de l'utilisateur maître :</strong> {{ avis.idutilisateur }}<br>
-                        <strong>ID de la promenade :</strong> {{ avis.idpromenade }}<br>
-                        <strong>ID du promeneur :</strong> {{ avis.idutilisateurnote }}<br><br>
-                    </li>
+                    <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
+                        <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                            <h4 class="mb-0">Nom d'utilisateur</h4>
+                        </div>
+                        <div class="p-4">
+                            <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
+                            <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
+                            <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
+                            <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
+                            <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
+                            <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                        </div>
+                    </div>
                 {% else %}
-                    <li>Aucun avis trouvé.</li>
+                    <h3>Aucun avis trouvé.</h3>
                 {% endfor %}
             </ul>
         {% else %}
             <p>Aucun avis à afficher.</p>
         {% endif %}
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
+        <a href="?controleur=Index&methode=render" class="btn px-4" style="background-color:#DDA15E; color:white;">Accueil</a>
     </div>
-
+</div>
     {% block footer %}
     {% endblock %}
 {% endblock %}

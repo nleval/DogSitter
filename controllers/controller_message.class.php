@@ -1,11 +1,26 @@
 <?php
-
+/**
+ * @file controller_message.class.php
+ * @author Pigeon Aymeric
+ * @brief Gère les opérations liées aux messages
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class ControllerMessage extends Controller
-{
+{   
+    /**
+     * @brief Constructeur du contrôleur de messages
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * @brief Afficher un message spécifique
+     * @param int $id_message Identifiant du message à afficher
+     */
     public function afficherMessage()
     {
         // Récupérer un utilisateur spécifique depuis la base de données
@@ -19,6 +34,9 @@ class ControllerMessage extends Controller
         ]);
     }
 
+    /**
+     * @brief Afficher tous les messages
+     */
     public function afficherAllMessage()
     {
         // Récupérer tous les utilisateurs depuis la base de données

@@ -22,14 +22,14 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label for="pseudo" class="form-label fw-bold" style="color:#537031;">
-                                            Pseudo
+                                            Pseudo <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="text"
                                             class="form-control"
                                             id="pseudo"
                                             name="pseudo"
                                             minlength="2"
-                                            maxlength="70"
+                                            maxlength="30"
                                             placeholder="Choisissez un pseudo"
                                             value="{{ old.pseudo|default('') }}"
                                             style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
@@ -38,7 +38,7 @@
 
                                     <div class="col-md-6">
                                         <label for="email" class="form-label fw-bold" style="color:#537031;">
-                                            E-mail
+                                            E-mail <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                         </label>
                                         <input type="email"
                                             class="form-control"
@@ -68,7 +68,9 @@
                                 <!-- ADRESSE + MDP -->
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold" style="color:#537031;">Adresse</label>
+                                        <label class="form-label fw-bold" style="color:#537031;">
+                                            Adresse <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
                                         <input type="text"
                                             class="form-control"
                                             id="adresse"
@@ -81,7 +83,9 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold" style="color:#537031;">Mot de passe</label>
+                                        <label class="form-label fw-bold" style="color:#537031;">
+                                            Mot de passe <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                        </label>
                                         <input type="password"
                                             class="form-control"
                                             id="motDePasse"
@@ -96,7 +100,9 @@
 
                                 <!-- TELEPHONE -->
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold" style="color:#537031;">Numéro de téléphone</label>
+                                    <label class="form-label fw-bold" style="color:#537031;">
+                                        Numéro de téléphone <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
                                     <input type="text"
                                         class="form-control"
                                         id="numTelephone"
@@ -108,7 +114,9 @@
 
                                 <!-- ROLES -->
                                 <div class="mb-4">
-                                    <label class="form-label fw-bold" style="color:#537031;">Rôle du compte</label>
+                                    <label class="form-label fw-bold" style="color:#537031;">
+                                        Rôle du compte <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
 
                                     <div class="form-check">
                                         <input class="form-check-input"

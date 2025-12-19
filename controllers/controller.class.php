@@ -1,12 +1,42 @@
 <?php
-
+/**
+ * @file controller.class.php
+ * @author Léval Noah
+ * @brief Gère les opérations liées aux annonces
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class Controller{
+    /** 
+     * @brief PDO $pdo Instance de la classe PDO pour la gestion de la base de données.
+     */
     private PDO $pdo;
+
+     /** 
+      * @brief \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+      */
     private \Twig\Loader\FilesystemLoader $loader;
+
+     /** 
+      * @brief \Twig\Environment $twig Moteur de templates Twig.
+      */
     private \Twig\Environment $twig;  
+
+     /** 
+      * @brief ?array $get Données GET reçues.
+      */
     private ?array $get = null;
+
+     /** 
+      * @brief ?array $post Données POST reçues.
+     */
     private ?array $post = null;
 
+    /**
+     * @brief Constructeur du contrôleur
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         $db = Bd::getInstance();
         $this->pdo = $db->getConnexion();
@@ -22,6 +52,10 @@ class Controller{
         }
     }
 
+    /**
+     * @brief Appelle une méthode du contrôleur de manière dynamique.
+     * @param string $methode Nom de la methode à appeler.
+     */
     public function call(string $methode): mixed {
         if (!method_exists($this, $methode)){
             throw new Exception("La méthode $methode n'existe pas dans le controller " . __CLASS__ ); 
@@ -32,7 +66,7 @@ class Controller{
 
 
     /**
-     * Get the value of pdo
+     * @brief Get the value of pdo
      */ 
     public function getPdo(): ?PDO
     {
@@ -40,8 +74,8 @@ class Controller{
     }
 
     /**
-     * Set the value of pdo
-     *
+     * @brief Set the value of pdo
+     * @param PDO $pdo Instance de la classe PDO pour la gestion de la base de données.
      */ 
     public function setPdo(?PDO $pdo):void
     {
@@ -51,7 +85,7 @@ class Controller{
     }
 
     /**
-     * Get the value of loader
+     * @brief Get the value of loader
      */ 
     public function getLoader(): \Twig\Loader\FilesystemLoader
     {
@@ -59,8 +93,8 @@ class Controller{
     }
 
     /**
-     * Set the value of loader
-     *
+     * @brief Set the value of loader
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
      */ 
     public function setLoader(\Twig\Loader\FilesystemLoader $loader) :void
     {
@@ -71,7 +105,7 @@ class Controller{
     
 
     /**
-     * Get the value of twig
+     * @brief Get the value of twig
      */ 
     public function getTwig(): \Twig\Environment
     {
@@ -79,8 +113,8 @@ class Controller{
     }
 
     /**
-     * Set the value of twig
-     *
+     * @brief Set the value of twig
+     * @param \Twig\Environment $twig Moteur de templates Twig.
      */ 
     public function setTwig(\Twig\Environment $twig): void
     {
@@ -91,7 +125,7 @@ class Controller{
     
 
     /**
-     * Get the value of get
+     * @brief Get the value of get
      */ 
     public function getGet(): ?array
     {
@@ -99,8 +133,8 @@ class Controller{
     }
 
     /**
-     * Set the value of get
-     *
+     * @brief Set the value of get
+     * @param ?array $get Données GET reçues.
      */ 
     public function setGet(?array $get): void
     {
@@ -109,7 +143,7 @@ class Controller{
     }
 
     /**
-     * Get the value of post
+     * @brief Get the value of post
      */ 
     public function getPost(): ?array
     {
@@ -117,9 +151,8 @@ class Controller{
     }
 
     /**
-     * Set the value of post
-     *
-
+     * @brief Set the value of post
+     * @param ?array $post Données POST reçues.
      */ 
     public function setPost(?array $post): void
     {

@@ -1,11 +1,25 @@
 <?php
-
+/**
+ * @file controller_utilisateur.class.php
+ * @author Léval Noah
+ * @brief Gère les opérations liées aux utilisateurs
+ * @version 1.0
+ * @date 2025-12-18
+ */
 class ControllerUtilisateur extends Controller
-{
+{    
+    /**
+     * @brief Constructeur du contrôleur d'utilisateur.
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * @brief Deconnecte l'utilsateur
+     */
     public function deconnexion()
     {
         // Détruire la session et rediriger
@@ -17,6 +31,10 @@ class ControllerUtilisateur extends Controller
         exit();
     }
 
+    /**
+     * @brief Afficher un utilisateur spécifique
+     * @param int $id_utilisateur Identifiant de l'utilisateur à afficher
+     */
     public function afficherUtilisateur()
     {
         // Vérifier que l'utilisateur est connecté
@@ -52,6 +70,9 @@ class ControllerUtilisateur extends Controller
         ]);
     }
 
+    /**
+     * @brief Afficher tous les utilisateurs
+     */
     public function afficherAllUtilisateurs()
     {
         // Récupérer tous les utilisateurs depuis la base de données
@@ -66,173 +87,184 @@ class ControllerUtilisateur extends Controller
     }
 
 
-    public function ajouterUtilisateur(){
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    /**
+     * @brief Creer un utilisateur
+     */
+    public function ajouterUtilisateur()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Récupération des données du formulaire
-        $donnees = [
-            'pseudo'       => $_POST['pseudo'] ?? '',
-            'email'        => $_POST['email'] ?? '',
-            'adresse'      => $_POST['adresse'] ?? '',
-            'motDePasse'   => $_POST['motDePasse'] ?? '',
-            'numTelephone' => $_POST['numTelephone'] ?? '',
-            'estMaitre'    => isset($_POST['estMaitre']) ? 1 : 0,
-            'estPromeneur' => isset($_POST['estPromeneur']) ? 1 : 0
-        ];
+            // Récupération des données du formulaire
+            $donnees = [
+                'pseudo'       => $_POST['pseudo'] ?? '',
+                'email'        => $_POST['email'] ?? '',
+                'adresse'      => $_POST['adresse'] ?? '',
+                'motDePasse'   => $_POST['motDePasse'] ?? '',
+                'numTelephone' => $_POST['numTelephone'] ?? '',
+                'estMaitre'    => isset($_POST['estMaitre']) ? 1 : 0,
+                'estPromeneur' => isset($_POST['estPromeneur']) ? 1 : 0
+            ];
 
-        // RÈGLES DE VALIDATION
-       $regles = [
-    'pseudo' => [
-        'obligatoire' => true,
-        'type' => 'string',
-        'longueur_min' => 2,
-        'longueur_max' => 70
-    ],
+            // RÈGLES DE VALIDATION
+            $regles = [
+                'pseudo' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 2,
+                    'longueur_max' => 30
+                ],
 
-    'email' => [
-        'obligatoire' => true,
-        'format' => FILTER_VALIDATE_EMAIL,  
-        'longueur_max' => 255
-    ],
+                'email' => [
+                    'obligatoire' => true,
+                    'format' => FILTER_VALIDATE_EMAIL,  
+                    'longueur_max' => 100
+                ],
 
-    'adresse' => [
-        'obligatoire' => true,
-        'type' => 'string',
-        'longueur_min' => 5,
-        'longueur_max' => 120
-    ],
+                'photoProfil' => [
+                    'obligatoire' => false,
+                    'type' => 'file',
+                    'formats_acceptes' => ['image/jpeg', 'image/png', 'image/gif'],
+                    'taille_max' => 2 * 1024 * 1024 // 2MB
+                ],
 
-    'motDePasse' => [
-        'obligatoire' => true,
-        'type' => 'string',
-        'longueur_min' => 8,
-        'longueur_max' => 50
-    ],
+                'adresse' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 5,
+                    'longueur_max' => 120
+                ],
 
-    'numTelephone' => [
-        'obligatoire' => true,
-        'type' => 'string',
-        'format' => '/^0[1-9](\d{2}){4}$/'
-    ],
+                'motDePasse' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 8,
+                    'longueur_max' => 50
+                ],
 
-    'estMaitre' => [
-        'obligatoire' => false,   // checkbox non obligatoire
-        'type' => 'numeric'       
-    ],
+                'numTelephone' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'format' => '/^0[1-9](\d{2}){4}$/'
+                ],
 
-    'estPromeneur' => [
-        'obligatoire' => false,
-        'type' => 'numeric'
-    ]
-];
+                'estMaitre' => [
+                    'obligatoire' => false,   // checkbox non obligatoire
+                    'type' => 'numeric'       
+                ],
 
-    
+                'estPromeneur' => [
+                    'obligatoire' => false,
+                    'type' => 'numeric'
+                ]
+            ];
 
-        $validator = new Validator($regles);
-        $valide = $validator->valider($donnees);
-        $erreurs = $validator->getMessagesErreurs();
+            $validator = new Validator($regles);
+            $valide = $validator->valider($donnees);
+            $erreurs = $validator->getMessagesErreurs();
 
-        // VALIDATION SPÉCIALE : au moins un rôle
-        if (!$donnees['estMaitre'] && !$donnees['estPromeneur']) {
-            $erreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
-            $valide = false;
-        }
+            // VALIDATION SPÉCIALE : au moins un rôle
+            if (!$donnees['estMaitre'] && !$donnees['estPromeneur']) {
+                $erreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
+                $valide = false;
+            }
 
-        // SI ERREURS on réaffichage le formulaire
-        if (!$valide) {
-            $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
-            echo $template->render([
-                'erreurs' => $erreurs,
-                'old' => $donnees
-            ]);
-            return;
-        }
-
-        // TRAITEMENT DE L'UPLOAD DE LA PHOTO DE PROFIL (optionnelle)
-        $photoProfilFilename = null;
-        if (isset($_FILES['photoProfil']) && $_FILES['photoProfil']['error'] === UPLOAD_ERR_OK) {
-            $tmpName = $_FILES['photoProfil']['tmp_name'];
-            // Vérifier que c'est bien une image
-            $imageInfo = @getimagesize($tmpName);
-            if ($imageInfo === false) {
-                $erreurs[] = "Le fichier téléchargé n'est pas une image valide.";
+            // SI ERREURS on réaffichage le formulaire
+            if (!$valide) {
                 $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
-                echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                echo $template->render([
+                    'erreurs' => $erreurs,
+                    'old' => $donnees
+                ]);
                 return;
             }
 
-            $originalName = $_FILES['photoProfil']['name'];
-            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-            $safeName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $extension;
-            $uploadDir = __DIR__ . '/../images/utilisateur/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+            // TRAITEMENT DE L'UPLOAD DE LA PHOTO DE PROFIL (optionnelle)
+            $photoProfilFilename = null;
+            if (isset($_FILES['photoProfil']) && $_FILES['photoProfil']['error'] === UPLOAD_ERR_OK) {
+                $tmpName = $_FILES['photoProfil']['tmp_name'];
+                // Vérifier que c'est bien une image
+                $imageInfo = @getimagesize($tmpName);
+                if ($imageInfo === false) {
+                    $erreurs[] = "Le fichier téléchargé n'est pas une image valide.";
+                    $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                    echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                    return;
+                }
+
+                $originalName = $_FILES['photoProfil']['name'];
+                $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+                $safeName = time() . '_' . bin2hex(random_bytes(6)) . '.' . $extension;
+                $uploadDir = __DIR__ . '/../images/utilisateur/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                $destination = $uploadDir . $safeName;
+                if (!move_uploaded_file($tmpName, $destination)) {
+                    $erreurs[] = "Impossible d'enregistrer la photo de profil.";
+                    $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                    echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                    return;
+                }
+                $photoProfilFilename = $safeName;
             }
-            $destination = $uploadDir . $safeName;
-            if (!move_uploaded_file($tmpName, $destination)) {
-                $erreurs[] = "Impossible d'enregistrer la photo de profil.";
+
+            // CRÉATION DE L’OBJET UTILISATEUR (note : ordre des paramètres correspond à Utilisateur::__construct)
+            $nouvelUtilisateur = new Utilisateur(
+                null,
+                $donnees['email'],
+                $donnees['estMaitre'],
+                $donnees['estPromeneur'],
+                $donnees['adresse'],
+                $donnees['motDePasse'],
+                $donnees['numTelephone'],
+                $donnees['pseudo'],
+                $photoProfilFilename
+            );
+
+            // ENREGISTREMENT EN BDD
+            $manager = new UtilisateurDAO($this->getPDO());
+
+            try{
+
+                $manager->inscription($nouvelUtilisateur);
+                // Ne pas connecter automatiquement l'utilisateur : le rediriger vers la page d'authentification
+                header('Location: index.php?controleur=utilisateur&methode=authentification&inscription=success');
+                exit();
+            }
+            catch (Exception $e) {
+                $erreurs = [];
+
+                // Switch sur le message de l'exception
+                switch ($e->getMessage()) {
+                    case 'Le mot de passe n\'est pas assez robuste.':
+                        $erreurs[] = "Votre mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
+                        break;
+
+                    case 'L\'email existe déjà.':
+                        $erreurs[] = "Cette adresse email est déjà utilisée. Veuillez en choisir une autre.";
+                        break;
+
+                    default:
+                        $erreurs[] = "Une erreur inattendue est survenue : " . $e->getMessage();
+                        break;
+                }
+
                 $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
-                echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
+                echo $template->render([
+                    'erreurs' => $erreurs,
+                    'old' => $donnees
+                ]);
                 return;
             }
-            $photoProfilFilename = $safeName;
         }
 
-        // CRÉATION DE L’OBJET UTILISATEUR (note : ordre des paramètres correspond à Utilisateur::__construct)
-        $nouvelUtilisateur = new Utilisateur(
-            null,
-            $donnees['email'],
-            $donnees['estMaitre'],
-            $donnees['estPromeneur'],
-            $donnees['adresse'],
-            $donnees['motDePasse'],
-            $donnees['numTelephone'],
-            $donnees['pseudo'],
-            $photoProfilFilename
-        );
-
-        // ENREGISTREMENT EN BDD
-        $manager = new UtilisateurDAO($this->getPDO());
-
-        try{
-
-            $manager->inscription($nouvelUtilisateur);
-            // Ne pas connecter automatiquement l'utilisateur : le rediriger vers la page d'authentification
-            header('Location: index.php?controleur=utilisateur&methode=authentification&inscription=success');
-            exit();
-        }
-        catch (Exception $e) {
-            $erreurs = [];
-
-            // Switch sur le message de l'exception
-            switch ($e->getMessage()) {
-                case 'Le mot de passe n\'est pas assez robuste.':
-                    $erreurs[] = "Votre mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
-                    break;
-
-                case 'L\'email existe déjà.':
-                    $erreurs[] = "Cette adresse email est déjà utilisée. Veuillez en choisir une autre.";
-                    break;
-
-                default:
-                    $erreurs[] = "Une erreur inattendue est survenue : " . $e->getMessage();
-                    break;
-            }
-
-            $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
-            echo $template->render([
-                'erreurs' => $erreurs,
-                'old' => $donnees
-            ]);
-            return;
-        }
+        $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+        echo $template->render();
     }
-
-    $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
-    echo $template->render();
-}
-        
+       
+    /**
+     * @brief Supprime un utilisateur
+     */
     public function supprimerUtilisateur()
     {
         $id_utilisateur = $_GET['id_utilisateur'];
@@ -245,7 +277,10 @@ class ControllerUtilisateur extends Controller
         header('Location: index.php?action=afficherAllUtilisateurs');
         exit();
     }
-
+       
+    /**
+     * @brief Affiche le formulaire de modification d'un utilisateur
+     */
     public function afficherFormulaire()
     {
         // Afficher le formulaire d'ajout d'utilisateur
@@ -260,7 +295,10 @@ class ControllerUtilisateur extends Controller
             'utilisateur' => $utilisateur
         ]);
     }
-
+       
+    /**
+     * @brief Modifie l'email d'un utilisateur
+     */
     public function modifierEmail()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -303,92 +341,109 @@ class ControllerUtilisateur extends Controller
             exit();
         }
     }
-
+       
+    /**
+     * @brief Permet l'authentification d'un utilisateur
+     */
     public function authentification()
-{
-    $erreurs = [];
+    {
+        $erreurs = [];
 
-    // === Si formulaire envoyé ===
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // === Si formulaire envoyé ===
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $email = trim($_POST['email'] ?? '');
-        $motDePasse = $_POST['motDePasse'] ?? '';
+            $email = trim($_POST['email'] ?? '');
+            $motDePasse = $_POST['motDePasse'] ?? '';
 
-        $manager = new UtilisateurDAO($this->getPDO());
+            $regles = [
+                'email' => [
+                    'obligatoire' => true,
+                    'format' => FILTER_VALIDATE_EMAIL,
+                    'longueur_max' => 100
+                ],
+                'motDePasse' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 8,
+                    'longueur_max' => 50
+                ]
+            ];
 
-        try {
-            // Tentative d’authentification
-            if ($manager->authentification($email, $motDePasse)) {
+            $manager = new UtilisateurDAO($this->getPDO());
 
-                // Récupération des données utilisateur
-                $utilisateur = $manager->findByEmail($email);
+            try {
+                // Tentative d’authentification
+                if ($manager->authentification($email, $motDePasse)) {
 
-                if ($utilisateur) {
-                    // On évite de stocker le mot de passe en session
-                    $utilisateur->setMotDePasse(null);
+                    // Récupération des données utilisateur
+                    $utilisateur = $manager->findByEmail($email);
 
-                    $_SESSION['user'] = [
-                        'id_utilisateur' => $utilisateur->getId(),
-                        'email' => $utilisateur->getEmail(),
-                        'estMaitre' => $utilisateur->getEstMaitre(),
-                        'estPromeneur' => $utilisateur->getEstPromeneur(),
-                        'pseudo' => $utilisateur->getPseudo(),
-                        'photoProfil' => $utilisateur->getPhotoProfil()
-                    ];
+                    if ($utilisateur) {
+                        // On évite de stocker le mot de passe en session
+                        $utilisateur->setMotDePasse(null);
 
-                    header(
-                        'Location: index.php?controleur=utilisateur&methode=afficherUtilisateur'
-                    );
-                    exit();
+                        $_SESSION['user'] = [
+                            'id_utilisateur' => $utilisateur->getId(),
+                            'email' => $utilisateur->getEmail(),
+                            'estMaitre' => $utilisateur->getEstMaitre(),
+                            'estPromeneur' => $utilisateur->getEstPromeneur(),
+                            'pseudo' => $utilisateur->getPseudo(),
+                            'photoProfil' => $utilisateur->getPhotoProfil()
+                        ];
+
+                        header(
+                            'Location: index.php?controleur=utilisateur&methode=afficherUtilisateur'
+                        );
+                        exit();
+                    }
+
+                } else {
+                    // Email ou mot de passe incorrect
+                    $erreurs[] = "Email ou mot de passe incorrect.";
                 }
 
-            } else {
-                // Email ou mot de passe incorrect
-                $erreurs[] = "Email ou mot de passe incorrect.";
+            } catch (Exception $e) {
+
+                // Gestion du cas où le compte est temporairement désactivé
+                if ($e->getMessage() === "compte_desactive") {
+
+                    $utilisateur = $manager->findByEmail($email);
+                    $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
+                    $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
+
+                    $minutes = floor($tempsRestant / 60);
+                    $secondes = $tempsRestant % 60;
+
+                    $erreurs[] = "Votre compte est temporairement désactivé. 
+                                Réessayez dans {$minutes} minutes et {$secondes} secondes.";
+                } 
+                else {
+                    // Erreur inattendue
+                    $erreurs[] = "Erreur inattendue : " . $e->getMessage();
+                }
             }
 
-        } catch (Exception $e) {
+            // Réaffichage du formulaire avec erreurs et valeurs précédentes
+            $template = $this->getTwig()->load('formulaire_authentification.html.twig');
+            echo $template->render([
+                'erreurs' => $erreurs,
+                'old' => ['email' => $email]
+            ]);
 
-            // Gestion du cas où le compte est temporairement désactivé
-            if ($e->getMessage() === "compte_desactive") {
-
-                $utilisateur = $manager->findByEmail($email);
-                $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
-                $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
-
-                $minutes = floor($tempsRestant / 60);
-                $secondes = $tempsRestant % 60;
-
-                $erreurs[] = "Votre compte est temporairement désactivé. 
-                              Réessayez dans {$minutes} minutes et {$secondes} secondes.";
-            } 
-            else {
-                // Erreur inattendue
-                $erreurs[] = "Erreur inattendue : " . $e->getMessage();
-            }
+            return;
         }
 
-        // Réaffichage du formulaire avec erreurs et valeurs précédentes
+        // Si le formulaire n’est pas envoyé : affichage simple
+        $success = null;
+
+        if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
+            $success = 'Votre compte a bien été créé. Veuillez vous connecter.';
+        }
+
         $template = $this->getTwig()->load('formulaire_authentification.html.twig');
         echo $template->render([
-            'erreurs' => $erreurs,
-            'old' => ['email' => $email]
+            'erreurs' => [],
+            'success' => $success
         ]);
-
-        return;
     }
-
-    // Si le formulaire n’est pas envoyé : affichage simple
-    $success = null;
-
-    if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
-        $success = 'Votre compte a bien été créé. Veuillez vous connecter.';
-    }
-
-    $template = $this->getTwig()->load('formulaire_authentification.html.twig');
-    echo $template->render([
-        'erreurs' => [],
-        'success' => $success
-    ]);
-}
 }
