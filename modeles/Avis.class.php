@@ -1,7 +1,7 @@
 <?php
 /**
  * @file Avis.class.php
- * @author Campistron Jullian
+ * @author Campistron Julian
  * @brief Classe représentant un avis
  * @version 1.0
  * @date 2025-12-18
