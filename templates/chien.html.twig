@@ -1,49 +1,74 @@
-
 {% extends 'base_template.twig' %}
 
-{% block title %}Chiens — DogSitter{% endblock %}
+{% block title %}Chiens — DogSitter
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        {% if chiensListe is defined and chiensListe|length > 0 %}
-            <h2>Liste des chiens :</h2>
-            <ul>
-                {% for chien in chiensListe %}
-                    <li><strong>ID :</strong> {{chien.id_chien}}<br>
-                        <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                        <strong>Poids :</strong> {{chien.poids}}<br>
-                        <strong>Taille :</strong> {{chien.taille}}<br>
-                        <strong>Race :</strong> {{chien.race}}<br>
-                        <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
-                        <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
-                    </li>
-                    <a href="?controleur=Chien&methode=afficherChien&id_chien={{chien.id_chien}}">Voir les détails</a><br>
-                    <br>
-                {% else %}
-                    <li>Aucun chien trouvé.</li>
-                {% endfor %}
-            </ul>
+	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: calc(100vh - 155px);">
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-11">
+				<div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
+					{% if chien is defined %}
+						<div class="container py-5 shadow" style="background-color:#fffbe0; border-radius:15px; max-width:900px;">
+							<h2 class="fw-bold mb-4" style="color:#537031;">Détails du chien {{chien.nom_chien}}</h2>
 
-        {% elseif chien is defined %}
-            <h2>Détails du chien {{chien.id_chien}}:</h2>
-            <ul>
-                <li><strong>ID :</strong> {{chien.id_chien}}<br>
-                    <strong>Nom :</strong> {{chien.nom_chien}}<br>
-                    <strong>Poids :</strong> {{chien.poids}}<br>
-                    <strong>Taille :</strong> {{chien.taille}}<br>
-                    <strong>Race :</strong> {{chien.race}}<br>
-                    <strong>chemin_photo :</strong> {{chien.cheminPhoto}}<br>
-                    <strong>ID Utilisateur :</strong> {{chien.id_utilisateur}}<br>
-                </li>
-                <br>
-            </ul>
-        {% else %}
-            <p>Aucun chien trouvé.</p>
-        {% endif %}
+							<div
+								class="row align-items-center">
+								<!-- Photo du chien -->
+								<div class="col-md-5 mb-4 mb-md-0">
+									<img src="./{{chien.cheminPhoto}}" class="img-fluid rounded shadow" style="object-fit: cover; width:100%; height:100%;" alt="Photo de {{chien.nom_chien}}">
+								</div>
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
-    </div>
+								<!-- Infos du chien -->
+								<div class="col-md-7">
+									<h3 class="fw-bold" style="color:#9aad5a;">{{chien.nom_chien}}</h3>
 
-    {% block footer %}
-    {% endblock %}
-{% endblock %}
+									<ul class="list-unstyled fs-5 mb-4">
+										<li>
+											<strong style="color:#537031;">Propriétaire :</strong>
+											{{proprietaire.pseudo}}</li>
+										<li>
+											<strong style="color:#537031;">Poids :</strong>
+											{{chien.poids}}
+											kg</li>
+										<li>
+											<strong style="color:#537031;">Taille :</strong>
+											{{chien.taille}}
+											cm</li>
+										<li>
+											<strong style="color:#537031;">Race :</strong>
+											{{chien.race}}</li>
+									</ul>
+
+									<div class="d-flex gap-2 flex-wrap">
+										<span class="badge" style="background-color:#dda15e; color:#fff; font-size:1rem;">
+											ID Utilisateur :
+											{{chien.id_utilisateur}}
+										</span>
+										<span class="badge" style="background-color:#fcf8de; color:#537031; font-size:1rem;">
+											ID Chien :
+											{{chien.id_chien}}
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="mt-4">
+							<a href="?controleur=Chien&methode=afficherAllChiens" class="btn px-4" style="background-color:#DDA15E; color:white;">
+								Retour
+							</a>
+						</div>
+					</div>
+					<br>
+				</div>
+			
+			{% else %}
+				<div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
+					Aucun chien trouvé.
+				</div>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+		{% endblock %}
