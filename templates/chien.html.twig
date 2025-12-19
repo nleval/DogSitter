@@ -4,116 +4,71 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
-
+	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: calc(100vh - 155px);">
 		<div class="row justify-content-center">
-
 			<div class="col-12 col-lg-11">
-
 				<div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
+					{% if chien is defined %}
+						<div class="container py-5 shadow" style="background-color:#fffbe0; border-radius:15px; max-width:900px;">
+							<h2 class="fw-bold mb-4" style="color:#537031;">Détails du chien {{chien.nom_chien}}</h2>
 
-					{% if chiensListe is defined and chiensListe|length > 0 %}
+							<div
+								class="row align-items-center">
+								<!-- Photo du chien -->
+								<div class="col-md-5 mb-4 mb-md-0">
+									<img src="./{{chien.cheminPhoto}}" class="img-fluid rounded shadow" style="object-fit: cover; width:100%; height:100%;" alt="Photo de {{chien.nom_chien}}">
+								</div>
 
-					<h2 class="fw-bold mb-4" style="color:#537031;">Liste des chiens</h2>
+								<!-- Infos du chien -->
+								<div class="col-md-7">
+									<h3 class="fw-bold" style="color:#9aad5a;">{{chien.nom_chien}}</h3>
 
-					
+									<ul class="list-unstyled fs-5 mb-4">
+										<li>
+											<strong style="color:#537031;">Propriétaire :</strong>
+											{{proprietaire.pseudo}}</li>
+										<li>
+											<strong style="color:#537031;">Poids :</strong>
+											{{chien.poids}}
+											kg</li>
+										<li>
+											<strong style="color:#537031;">Taille :</strong>
+											{{chien.taille}}
+											cm</li>
+										<li>
+											<strong style="color:#537031;">Race :</strong>
+											{{chien.race}}</li>
+									</ul>
 
-						<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-
-							{% for chien in chiensListe %}
-								<div class="col">
-									<div class="card h-100 shadow border-0" style="background-color:#F8F4E8; border-radius:12px;">
-
-										<div class="card-body">
-
-											<h5 class="fw-bold" style="color:#BC6C25;">
-												{{ chien.nom_chien }}
-											</h5>
-
-											<p class="mb-2" style="font-size:0.95rem;">
-												<strong>Race :</strong>
-												{{ chien.race }}<br>
-												<strong>Propriétaire (ID) :</strong>
-												{{ chien.id_utilisateur }}
-											</p>
-
-											{# Bouton pour aller sur la page chien seul #}
-											<div class="mt-3">
-												<a href="?controleur=Chien&methode=afficherChien&id_chien={{ chien.id_chien }}" class="btn btn-sm" style="background-color:#537031; color:white;">
-													Voir les détails
-												</a>
-											</div>
-
-										</div>
-
-										<div class="card-footer text-end" style="background-color:#FAF6E9;">
-											<small style="color:#537031;">ID Chien :
-												{{ chien.id_chien }}</small>
-										</div>
-
+									<div class="d-flex gap-2 flex-wrap">
+										<span class="badge" style="background-color:#dda15e; color:#fff; font-size:1rem;">
+											ID Utilisateur :
+											{{chien.id_utilisateur}}
+										</span>
+										<span class="badge" style="background-color:#fcf8de; color:#537031; font-size:1rem;">
+											ID Chien :
+											{{chien.id_chien}}
+										</span>
 									</div>
 								</div>
-							{% endfor %}
-
+							</div>
 						</div>
-
 
 						<div class="mt-4">
-							<a href="?controleur=Index&methode=render" class="btn px-4" style="background-color:#DDA15E; color:white;">
-								Retour à l’accueil
+							<a href="?controleur=Chien&methode=afficherAllChiens" class="btn px-4" style="background-color:#DDA15E; color:white;">
+								Retour
 							</a>
 						</div>
-
 					</div>
-
+					<br>
 				</div>
+			
+			{% else %}
+				<div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
+					Aucun chien trouvé.
+				</div>
+			{% endif %}
 			</div>
 		</div>
-
-	{% elseif chien is defined %}
-		<h2 class="fw-bold mb-4" style="color:#537031;">Détails du chien
-			{{chien.id_chien}}:</h2>
-		<div class="card mb-3" style="max-width: 540px;">
-			<div class="row g-0">
-				<div class="col-md-4">
-					<img src="./{{chien.cheminPhoto}}" class="img-fluid rounded-start object-fit-cover w-100 h-100" alt="{{chien.cheminPhoto}}">
-				</div>
-				<div class="col-md-8">
-					<div class="card-body ">
-						<h5 class="card-title">{{chien.nom_chien}}</h5>
-						<p class="card-text">
-							<strong>Propriétaire :</strong>
-							{{proprietaire.nom}}
-							<br>
-							<strong>Poids :</strong>
-							{{chien.poids}}
-							<br>
-							<strong>Taille :</strong>
-							{{chien.taille}}
-							cm<br>
-							<strong>Race :</strong>
-							{{chien.race}}<br></p>
-						<p class="card-text" style="color: #DDA15E">
-							<small>ID Utilisateur :
-								{{chien.id_utilisateur}}</small>
-							<br><small>ID Chien :
-								{{chien.id_chien}}</small>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="mt-4">
-			<a href="?controleur=Chien&methode=afficherAllChiens" class="btn px-4" style="background-color:#DDA15E; color:white;">
-				Retour à la liste des chiens
-			</a>
-		</div>
-		</div>
-		<br>
-	{% else %}
-		<div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
-			Aucun chien trouvé.
-		</div>
-	{% endif %}
-
-</div>{% endblock %}
+	</div>
+		{% endblock %}

@@ -13,16 +13,16 @@ class ControllerChien extends Controller
         $id_chien = isset($_GET['id_chien']) ? (int)$_GET['id_chien'] : null;
         $chien = $managerchien->findById($id_chien); // Exemple avec l'ID 1
 
-        // $managerutilisateur = new UtilisateurDAO($this->getPDO());
-        // $propriétaire = $managerutilisateur->findById(1); // Exemple avec l'ID 1
-        // var_dump($propriétaire);
+        $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $propriétaire = $managerutilisateur->findById($chien->getId_Utilisateur()); // Exemple avec l'ID 1
+        
         
 
         // Rendre la vue avec le chien
         $template = $this->getTwig()->load('chien.html.twig');
         echo $template->render([
             'chien' => $chien,
-            // 'proprietaire' => $propriétaire
+            'proprietaire' => $propriétaire
         ]);
     }
 
@@ -33,7 +33,7 @@ class ControllerChien extends Controller
         $chiensListe = $managerchien->findAll();
 
         // Rendre la vue avec les chiens
-        $template = $this->getTwig()->load('chien.html.twig');
+        $template = $this->getTwig()->load('chiens.html.twig');
         echo $template->render([
             'chiensListe' => $chiensListe
         ]);
