@@ -87,5 +87,36 @@ class ConversationDAO
 
         return null;
     }
+
+/**
+ * Récupère les conversations auxquelles participe un utilisateur
+ */
+public function findByUtilisateur(int $idUtilisateur): array
+{
+    $conversations = [];
+
+    $sql = "
+        SELECT DISTINCT c.*
+        FROM " . PREFIXE_TABLE . "Conversation c
+        JOIN " . PREFIXE_TABLE . "Message m
+            ON c.id_conversation = m.id_conversation
+        WHERE m.id_utilisateur = :idUtilisateur
+        ORDER BY c.date_creation DESC
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':idUtilisateur', $idUtilisateur, PDO::PARAM_INT);
+    $stmt->execute();
+
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $conversations[] = new Conversation(
+            $row['id_conversation'],
+            $row['date_creation']
+        );
+    }
+
+    return $conversations;
+}
+
 }
 ?>

@@ -1,113 +1,98 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}Messages — DogSitter{% endblock %}
+{% block title %}Messagerie — DogSitter{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
 
     <div class="row justify-content-center">
-
         <div class="col-12 col-lg-11">
 
             <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
 
-                <h2 class="fw-bold mb-4" style="color:#537031;">Liste des conversations</h2>
+                {% if conversationListe is defined and conversationListe|length > 0 %}
 
-                {# ===== LISTE DES MESSAGES ===== #}
-                {% if messageListe is defined and messageListe|length > 0 %}
+                    <h2 class="fw-bold mb-4" style="color:#537031;">Mes conversations</h2>
 
                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-                        {% for message in messageListe %}
+                        {% for conversation in conversationListe %}
                             <div class="col">
-                                <div class="card h-100 shadow border-0"
-                                     style="background-color:#F8F4E8; border-radius:12px;">
+                                <a href="?controleur=Message&methode=afficherParConversation&id_conversation={{ conversation.idConversation }}"
+                                   class="text-decoration-none">
 
-                                    <div class="card-body">
+                                    <div class="card h-100 shadow border-0"
+                                         style="background-color:#F8F4E8; border-radius:12px; transition:0.2s;">
 
-                                        <h6 class="fw-bold mb-2" style="color:#BC6C25;">
-                                            Message #{{ message.idMessage }}
-                                        </h6>
+                                        <div class="card-body">
 
-                                        <p class="mb-2" style="font-size:0.95rem;">
-                                            {{ message.contenu }}
-                                        </p>
+                                            <h6 class="fw-bold mb-2" style="color:#BC6C25;">
+                                                Conversation #{{ conversation.idConversation }}
+                                            </h6>
 
-                                        <p class="mb-1 small">
-                                            <strong>Date :</strong> {{ message.DateHeureMessage }}
-                                        </p>
+                                            <p class="small mb-0">
+                                                Créée le : {{ conversation.dateCreation }}
+                                            </p>
 
-                                        <p class="small mb-0">
-                                            <strong>Utilisateur :</strong> {{ message.idUtilisateur }}<br>
-                                            <strong>Conversation :</strong> {{ message.idConversation }}
-                                        </p>
+                                            <p class="mt-3 text-end">
+                                                <span class="badge bg-success">Ouvrir</span>
+                                            </p>
+
+                                        </div>
 
                                     </div>
 
-                                    <div class="card-footer text-end"
-                                         style="background-color:#FAF6E9;">
-                                        <small style="color:#537031;">
-                                            ID : {{ message.idMessage }}
-                                        </small>
-                                    </div>
-
-                                </div>
+                                </a>
                             </div>
                         {% endfor %}
 
                     </div>
 
-                {# ===== MESSAGE UNIQUE ===== #}
-                {% elseif message is defined %}
+                {% elseif messageListe is defined and messageListe|length > 0 %}
 
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
+                    <h2 class="fw-bold mb-4" style="color:#537031;">Messages</h2>
 
-                            <div class="card shadow border-0"
+                    <div class="d-flex flex-column gap-3 mb-4">
+
+                        {% for message in messageListe %}
+                            <div class="card shadow-sm border-0"
                                  style="background-color:#F8F4E8; border-radius:12px;">
 
                                 <div class="card-body">
 
-                                    <h5 class="fw-bold mb-3" style="color:#BC6C25;">
-                                        Message #{{ message.idMessage }}
-                                    </h5>
-
-                                    <p class="mb-3">
+                                    <p class="mb-1">
                                         {{ message.contenu }}
                                     </p>
 
-                                    <p class="small">
-                                        <strong>Date :</strong> {{ message.DateHeureMessage }}<br>
-                                        <strong>Utilisateur :</strong> {{ message.idUtilisateur }}<br>
-                                        <strong>Conversation :</strong> {{ message.idConversation }}
-                                    </p>
-
-                                </div>
-
-                                <div class="card-footer text-end"
-                                     style="background-color:#FAF6E9;">
-                                    <small style="color:#537031;">
-                                        ID : {{ message.idMessage }}
+                                    <small class="text-muted">
+                                        {{ message.DateHeureMessage }} — Utilisateur #{{ message.idUtilisateur }}
                                     </small>
+
                                 </div>
 
                             </div>
+                        {% endfor %}
 
-                        </div>
                     </div>
+
+                    <a href="?controleur=Conversation&methode=afficherMesConversations"
+                       class="btn px-4"
+                       style="background-color:#DDA15E; color:white;">
+                        ← Retour aux conversations
+                    </a>
 
                 {% else %}
                     <div class="alert alert-warning text-center"
                          style="background-color:#F8F4E8; color:#BC6C25;">
-                        Aucun message trouvé.
+                        Aucune conversation trouvée.
                     </div>
                 {% endif %}
 
                 <div class="mt-4">
                     <a href="?controleur=Index&methode=render"
                        class="btn px-4"
-                       style="background-color:#DDA15E; color:white;">
-                        Retour à l’accueil
+                       style="background-color:#537031; color:white;">
+                        Accueil
                     </a>
                 </div>
 
@@ -117,6 +102,5 @@
     </div>
 </div>
 
-{% block footer %}
-{% endblock %}
+{% block footer %}{% endblock %}
 {% endblock %}

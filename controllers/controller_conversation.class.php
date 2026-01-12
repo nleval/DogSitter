@@ -49,4 +49,23 @@ class ControllerConversation extends Controller
             'conversationListe' => $conversationListe
         ]);
     }
+
+    public function afficherMesConversations()
+    {
+        if (!isset($_SESSION['id_utilisateur'])) {
+            header("Location: ?controleur=Index&methode=render");
+            exit;
+        }
+    
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+    
+        $managerConversation = new ConversationDAO($this->getPdo());
+        $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
+    
+        echo $this->getTwig()->render('messages.html.twig', [
+            'conversationListe' => $conversationListe
+        ]);
+    }
+    
+
 }
