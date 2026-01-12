@@ -103,7 +103,7 @@ class ControllerAnnonce extends Controller
             // Récupérer l'objet Utilisateur
             $utilisateur = $managerUtilisateur->findById($annonce->getIdUtilisateur());
 
-            $annonce->telephone = $utilisateur ? $utilisateur->getNumTelephone() : 'N/A';
+            $annonce->setTelephone($utilisateur ? $utilisateur->getNumTelephone() : 'N/A');
             $annoncesEnrichies[] = $annonce;
         }
             
