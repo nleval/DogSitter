@@ -49,4 +49,56 @@ class ControllerMessage extends Controller
             'messageListe' => $messageListe
         ]);
     }
+
+    /**
+ * Afficher tous les messages d'une conversation
+ */
+public function afficherParConversation($id_conversation = null)
+{
+    /* ===============================
+       Vérification utilisateur connecté
+    =============================== */
+    $sessionUser = $_SESSION['user'] ?? null;
+    $id_utilisateur = null;
+
+    if (is_array($sessionUser)) {
+        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+        $id_utilisateur = $sessionUser->getId();
+    }
+
+    if (!$id_utilisateur) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit;
+    }
+
+    /* ===============================
+       Récupération id conversation
+    =============================== */
+    if ($id_conversation === null) {
+        $id_conversation = isset($_GET['id_conversation'])
+            ? (int) $_GET['id_conversation']
+            : null;
+    }
+
+    if (!$id_conversation) {
+        http_response_code(404);
+        echo $this->getTwig()->render('404.html.twig', [
+            'message' => 'Conversation non trouvée.'
+        ]);
+        return;
+    }
+
+    /* ===============================
+       Récupération messages
+    =============================== */
+    $messageDAO = new MessageDAO($this->getPDO());
+    $messageListe = $messageDAO->findByConversation($id_conversation);
+
+    echo $this->getTwig()->render('messages.html.twig', [
+        'messageListe'   => $messageListe,
+        'idConversation' => $id_conversation
+    ]);
+}
+
 }

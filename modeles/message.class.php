@@ -144,5 +144,39 @@ class Message {
     public function setIdConversation(?string $idConversation): void {
         $this->idConversation = $idConversation;
     }
+
+/**
+ * Récupère tous les messages d'une conversation
+ *
+ * @param int $idConversation
+ * @return Message[]
+ */
+public function findByConversation(int $idConversation): array
+{
+    $messages = [];
+
+    $stmt = $this->pdo->prepare("
+        SELECT * FROM " . PREFIXE_TABLE . "Message
+        WHERE id_conversation = :idConversation
+        ORDER BY DateHeureMessage ASC
+    ");
+    $stmt->bindParam(':idConversation', $idConversation, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($results as $row) {
+        $messages[] = new Message(
+            $row['id_message'],
+            $row['contenu'],
+            $row['DateHeureMessage'],
+            $row['id_utilisateur'],
+            $row['id_conversation']
+        );
+    }
+
+    return $messages;
+}
+
 }
 ?>
