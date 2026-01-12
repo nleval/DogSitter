@@ -1,16 +1,20 @@
 <?php
 
 /**
+ * @file controller_avis.class.php
  * @class ControllerAvis
  * @extends parent<Controller>
- * @details Permet de gérer les actions liées aux pages concernant les avis
+ * @brief Permet de gérer les actions liées aux pages concernant les avis
+ * @author Campistron Julian
+ * @version 1.0
+ * @date 2025-12-19
  */
 
 class ControllerAvis extends Controller
 {
     /**
      * @constructor ControllerAvis
-     * @details Constructeur de la classe ControllerAvis
+     * @brief Constructeur de la classe ControllerAvis
      * @param Twig\Environment $twig
      * @param Twig\Loader\FilesystemLoader $loader
      * @return void
@@ -21,7 +25,7 @@ class ControllerAvis extends Controller
 
     /**
      * @function afficherAvis
-     * @details Fonction permettant d'afficher un avis dont l'ID est 1
+     * @brief Fonction permettant d'afficher un avis dont l'ID est 1
      * @uses AvisDao
      * @uses getPDO
      * @uses findById
@@ -42,7 +46,7 @@ class ControllerAvis extends Controller
 
     /**
      * @function afficherAllAvis
-     * @details Fonction permettant d'afficher tous les avis
+     * @brief Fonction permettant d'afficher tous les avis
      * @uses AvisDao
      * @uses getPDO
      * @uses findAll
@@ -63,7 +67,7 @@ class ControllerAvis extends Controller
 
     /**
      * @function afficherAvisParIdUtilisateurNote
-     * @details Fonction permettant d'afficher tous les avis notant l'utilisateur dont l'ID est 2
+     * @brief Fonction permettant d'afficher tous les avis notant l'utilisateur dont l'ID est 2
      * @uses AvisDao
      * @uses getPDO
      * @uses findByIdUtilisateurNote
