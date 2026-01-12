@@ -23,11 +23,11 @@ class ControllerConversation extends Controller
      */
     public function afficherConversation()
     {
-        // Récupérer un utilisateur spécifique depuis la base de données
+        // Récupérer une conversation spécifique depuis la base de données
         $managerconversation = new ConversationDAO($this->getPDO());
         $conversation = $managerconversation->findById(1); // Exemple avec l'ID 1
 
-        // Rendre la vue avec l'utilisateur
+        // Rendre la vue avec la conversation
         $template = $this->getTwig()->load('conversation.html.twig');
         echo $template->render([
             'conversation' => $conversation
@@ -49,4 +49,23 @@ class ControllerConversation extends Controller
             'conversationListe' => $conversationListe
         ]);
     }
+
+    public function afficherMesConversations()
+    {
+        if (!isset($_SESSION['id_utilisateur'])) {
+            header("Location: ?controleur=Index&methode=render");
+            exit;
+        }
+    
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+    
+        $managerConversation = new ConversationDAO($this->getPdo());
+        $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
+    
+        echo $this->getTwig()->render('messages.html.twig', [
+            'conversationListe' => $conversationListe
+        ]);
+    }
+    
+
 }

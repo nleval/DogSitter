@@ -3,38 +3,118 @@
 {% block title %}Messages — DogSitter{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        {% if messageListe is defined and messageListe|length > 0 %}
-            <h2>Liste des messages :</h2>
-            <ul>
-                {% for message in messageListe %}
-                    <li><strong>ID :</strong> {{message.idMessage}}<br>
-                        <strong>Contenu :</strong> {{message.contenu}}<br>
-                        <strong>Date :</strong> {{message.DateHeureMessage}}<br>
-                        <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
-                        <strong>ID Conversation :</strong> {{message.idConversation}}<br>
-                    </li>
+<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-lg-11">
+
+            <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
+
+                <h2 class="fw-bold mb-4" style="color:#537031;">Liste des messages</h2>
+
+                {% if messageListe is defined and messageListe|length > 0 %}
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        {% for message in messageListe %}
+                            <div class="col">
+                                <div class="card h-100 shadow border-0"
+                                     style="background-color:#F8F4E8; border-radius:12px;">
+
+                                    <div class="card-body">
+
+                                        <h6 class="fw-bold mb-2" style="color:#BC6C25;">
+                                            Message #{{ message.idMessage }}
+                                        </h6>
+
+                                        <p class="mb-2" style="font-size:0.95rem;">
+                                            {{ message.contenu }}
+                                        </p>
+
+                                        <p class="small mb-1">
+                                            <strong>Date :</strong> {{ message.DateHeureMessage }}
+                                        </p>
+
+                                        <p class="small mb-0">
+                                            <strong>Utilisateur :</strong> {{ message.idUtilisateur }}<br>
+                                            <strong>Conversation :</strong> {{ message.idConversation }}
+                                        </p>
+
+                                    </div>
+
+                                    <div class="card-footer text-end"
+                                         style="background-color:#FAF6E9;">
+                                        <small style="color:#537031;">
+                                            ID : {{ message.idMessage }}
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                {% elseif message is defined %}
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+
+                            <div class="card shadow border-0"
+                                 style="background-color:#F8F4E8; border-radius:12px;">
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold mb-3" style="color:#BC6C25;">
+                                        Message #{{ message.idMessage }}
+                                    </h5>
+
+                                    <p class="mb-3">
+                                        {{ message.contenu }}
+                                    </p>
+
+                                    <p class="small">
+                                        <strong>Date :</strong> {{ message.DateHeureMessage }}<br>
+                                        <strong>Utilisateur :</strong> {{ message.idUtilisateur }}<br>
+                                        <strong>Conversation :</strong> {{ message.idConversation }}
+                                    </p>
+
+                                </div>
+
+                                <div class="card-footer text-end"
+                                     style="background-color:#FAF6E9;">
+                                    <small style="color:#537031;">
+                                        ID : {{ message.idMessage }}
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
                 {% else %}
-                    <li>Aucun message trouvé.</li>
-                {% endfor %}
-            </ul>
+                    <div class="alert alert-warning text-center"
+                         style="background-color:#F8F4E8; color:#BC6C25;">
+                        Aucun message trouvé.
+                    </div>
+                {% endif %}
 
-        {% elseif message is defined %}
-            <h2>Détails du message :</h2>
-            <ul>
-                <li><strong>ID :</strong> {{message.idMessage}}<br>
-                    <strong>Contenu :</strong> {{message.contenu}}<br>
-                    <strong>Date :</strong> {{message.DateHeureMessage}}<br>
-                    <strong>ID Utilisateur :</strong> {{message.idUtilisateur}}<br>
-                    <strong>ID Conversation :</strong> {{message.idConversation}}<br>
-                </li>
-            </ul>
-        {% else %}
-            <p>Aucun message trouvé.</p>
-        {% endif %}
+                <div class="mt-4">
+                    <a href="?controleur=Index&methode=render"
+                       class="btn px-4"
+                       style="background-color:#DDA15E; color:white;">
+                        Retour à l’accueil
+                    </a>
+                </div>
 
-        <a href="?controleur=Index&methode=render">Accueil</a>
+            </div>
+
+        </div>
     </div>
-    {% block footer %}
-    {% endblock %}
+</div>
+
+{% block footer %}
+{% endblock %}
 {% endblock %}
