@@ -36,11 +36,16 @@ class ControllerAvis extends Controller
         // Récupérer un avis spécifique depuis la base de données
         $manageravis = new AvisDAO($this->getPDO());
         $avis = $manageravis->findById(1); // Exemple avec l'ID 1
+        
+        // Récupérer l'utilisateur ayant publié l'avis
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO()); 
+            $proprietaire = $managerUtilisateur->findById($avis->getIdUtilisateur());
 
         // Rendre la vue avec l'avis
         $template = $this->getTwig()->load('avis.html.twig');
         echo $template->render([
-            'avis' => $avis
+            'avis' => $avis,
+            'proprietaire' => $proprietaire
         ]);
     }
 
@@ -54,16 +59,27 @@ class ControllerAvis extends Controller
      */
     public function afficherAllAvis()
     {
-        // Récupérer tous les avis depuis la base de données
-        $manageravis = new AvisDAO($this->getPDO());
-        $avisListe = $manageravis->findAll();
+        $managerAvis = new AvisDAO($this->getPDO());
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
 
-        // Rendre la vue avec les avis
+        $avisListe = $managerAvis->findAll();
+        $avisEnrichis = [];
+
+        foreach ($avisListe as $avis) {
+            $proprietaire = $managerUtilisateur->findById($avis->getIdUtilisateur());
+
+            $avisEnrichis[] = [
+                'avis' => $avis,
+                'proprietaire' => $proprietaire
+            ];
+        }
+
         $template = $this->getTwig()->load('avis.html.twig');
         echo $template->render([
-            'avisListe' => $avisListe
+            'avisListe' => $avisEnrichis
         ]);
     }
+
 
     /**
      * @function afficherAvisParIdUtilisateurNote
@@ -75,13 +91,26 @@ class ControllerAvis extends Controller
      */
     public function afficherAvisParIdUtilisateurNote($id_utilisateur_note = 2)
     {
-        $manageravis = new AvisDAO($this->getPDO());
-        $avisUtilisateurNote = $manageravis->findByIdUtilisateurNote($id_utilisateur_note);
+        $managerAvis = new AvisDAO($this->getPDO());
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+
+        $avisUtilisateurNote = $managerAvis->findByIdUtilisateurNote($id_utilisateur_note);
+        $avisEnrichis = [];
+
+        foreach ($avisUtilisateurNote as $avis) {
+            $proprietaire = $managerUtilisateur->findById($avis->getIdUtilisateur());
+
+            $avisEnrichis[] = [
+                'avis' => $avis,
+                'proprietaire' => $proprietaire
+            ];
+        }
 
         $template = $this->getTwig()->load('avis.html.twig');
         echo $template->render([
-            'avisUtilisateurNote' => $avisUtilisateurNote,
+            'avisUtilisateurNote' => $avisEnrichis,
             'id_utilisateur_note' => $id_utilisateur_note
         ]);
     }
+
 }
