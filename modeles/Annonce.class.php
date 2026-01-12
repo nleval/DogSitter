@@ -59,6 +59,11 @@ class Annonce
     private ?string $id_utilisateur;
 
     /**
+     * @brief ?string $telephone Téléphone de l'utilisateur ayant créé l'annonce.
+     */
+    private ?string $telephone;
+
+    /**
      * @brief Constructeur de la classe Annonce.
      *
      * @param ?string $id_annonce Identifiant unique de l'annonce.
@@ -71,6 +76,7 @@ class Annonce
      * @param ?string $endroitPromenade Lieu où se déroule la promenade.
      * @param ?int    $duree Durée de la promenade en minutes.
      * @param ?string $id_utilisateur Identifiant de l'utilisateur ayant créé l'annonce.
+     * @param ?string $telephone Téléphone de l'utilisateur ayant créé l'annonce.
      */
     public function __construct(
         ?string $id_annonce = null,
@@ -82,7 +88,8 @@ class Annonce
         ?string $description = null,
         ?string $endroitPromenade = null,
         ?int $duree = null,
-        ?string $id_utilisateur = null
+        ?string $id_utilisateur = null,
+        ?string $telephone = null
     ) {
         $this->id_annonce = $id_annonce;
         $this->titre = $titre;
@@ -94,6 +101,7 @@ class Annonce
         $this->endroitPromenade = $endroitPromenade;
         $this->duree = $duree;
         $this->id_utilisateur = $id_utilisateur;
+        $this->telephone = $telephone;
     }
 
     // GETTERS & SETTERS
@@ -275,6 +283,24 @@ class Annonce
      */
     public function setIdUtilisateur(?string $id_utilisateur): void {
         $this->id_utilisateur = $id_utilisateur;
+    }
+
+    /**
+     * @brief Récupère le téléphone de l'utilisateur.
+     *
+     * @return ?string Téléphone de l'utilisateur.
+     */
+    public function getTelephone(): ?string {
+        return $this->telephone;
+    }
+
+    /**
+     * @brief Définit le téléphone de l'utilisateur.
+     *
+     * @param ?string $telephone Téléphone de l'utilisateur.
+     */
+    public function setTelephone(?string $telephone): void {
+        $this->telephone = $telephone;
     }
 
 }
