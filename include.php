@@ -33,6 +33,7 @@ require_once 'controllers/controller_annonce.class.php';
 require_once 'controllers/controller_chien.class.php';
 require_once 'controllers/controller_message.class.php';
 require_once 'controllers/controller_conversation.class.php';
+require_once 'controllers/controller_newsletter.class.php';
 
 //Ajout des modèles
 require_once 'modeles/Bd.class.php';
