@@ -11,24 +11,6 @@
             <div class="card shadow-lg border-0 p-4"
                  style="background-color:#FAF6E9; border-radius:12px;">
 
-                {# ===== MESSAGE DE SUCCÈS ===== #}
-                {% if success is defined %}
-                    <div class="alert alert-success rounded-3">
-                        Merci pour votre inscription à la newsletter 🌿
-                    </div>
-                {% endif %}
-
-                {# ===== ERREURS ===== #}
-                {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
-                    <div class="alert alert-danger rounded-3">
-                        <ul class="mb-0">
-                            {% for message in messagesErreurs %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-
                 <h2 class="fw-bold mb-3" style="color:#537031;">
                     Inscription à la newsletter
                 </h2>
@@ -60,13 +42,7 @@
                     </button>
 
                     <p class="small text-muted mb-0">
-                        🔒 En vous inscrivant, vous acceptez notre
-                        <a href="index.php?controleur=Index&methode=privacy"
-                           class="fw-semibold"
-                           style="color:#537031;">
-                            politique de confidentialité
-                        </a>.
-                        <br>
+                        🔒 En vous inscrivant, vous acceptez notre <strong>politique de confidentialité</strong> </br>
                         Vous pouvez vous désinscrire à tout moment.
                     </p>
                 </form>
