@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "bootstrap": "^5.3.8",
-    "npm": "^11.7.0",
     "tarteaucitronjs": "^1.29.0"
   },
   "devDependencies": {
