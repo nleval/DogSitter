@@ -16,6 +16,30 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Tarte au citron -->
+    <script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
+
+    <script>
+    tarteaucitron.init({
+        highPrivacy: true, // Mode "Consentement fort"
+        AcceptAllCta: true,
+        DenyAllCta: true,
+        privacyUrl: "", // page de politique, à implanter
+        orientation: "bottom", // où apparaît la bannière
+        showAlertSmall: false, // bannière petite
+        cookieslist: true, // liste des cookies
+    });
+
+    // Ajouter Google Analytics
+    tarteaucitron.user.gajsUa = 'G-F2W0X2M53T'; // Remplace par ton UA ou G-ID
+    tarteaucitron.user.gajsMore = function () { 
+        /* code additionnel GA si nécessaire */
+    };
+    tarteaucitron.job = tarteaucitron.job || [];
+    tarteaucitron.job.push('gajs');
+    </script>
+
+
     <style>
         html, body {
             height: 100%;
@@ -105,7 +129,6 @@
     </nav>
 
     {% block breadcrumb %}
-    {# breadcrumb optionnel comme VHS #}
     {% if breadcrumb is defined %}
         <nav class="container-fluid" style="background:#2b3b17;">
             <ol class="breadcrumb m-0 py-2">
@@ -179,13 +202,13 @@
                         <h6 class="fw-bold">1. Données collectées</h6>
                         <p>
                             DogSynergie collecte uniquement les données nécessaires au bon
-                            fonctionnement du service (compte utilisateur, contacts, annonces).
+                            fonctionnement du service (compte utilisateur, mails, annonces).
                         </p>
 
                         <h6 class="fw-bold">2. Utilisation des données</h6>
                         <p>
                             Les données sont utilisées exclusivement dans le cadre de la
-                            mise en relation entre maîtres et dog sitters.
+                            mise en relation entre maîtres et promeneurs.
                         </p>
 
                         <h6 class="fw-bold">3. Conservation</h6>
@@ -198,12 +221,6 @@
                             Conformément au RGPD, chaque utilisateur dispose d’un droit
                             d’accès, de rectification et de suppression de ses données.
                         </p>
-
-                        <h6 class="fw-bold">5. Contact</h6>
-                        <p>
-                            Pour toute question : <strong>contact@dogsynergie.fr</strong>
-                        </p>
-
                     </div>
 
                     <div class="modal-footer">
