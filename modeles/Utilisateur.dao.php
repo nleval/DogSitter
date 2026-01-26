@@ -174,6 +174,16 @@ class UtilisateurDAO
         return $stmt->fetchColumn() > 0;
     }
 
+    public function estActif(string $mail): bool
+    {
+        $sql = "SELECT statut_compte FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :mail";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':mail', $mail);
+        $stmt->execute();
+        $status = $stmt->fetchColumn();
+        return $status === 'actif';
+    }
+
     /**
      * @brief Vérifie si un mot de passe est robuste.
      * @param string $motDePasse

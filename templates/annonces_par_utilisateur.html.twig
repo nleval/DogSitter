@@ -58,11 +58,17 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="alert text-center"
-                role="alert"
-                style="background-color: #DDA15E; color: white; font-weight:bold;">
-                Vous n'avez aucune annonce pour le moment.
-            </div>
+            {% if id_utilisateur == utilisateurConnecte.id %}
+                <div class="alert text-center"
+                    role="alert"
+                    style="background-color: #DDA15E; color: white; font-weight:bold;">
+                    Vous n'avez aucune annonce pour le moment.
+                </div>
+            {% else %}
+                <div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
+                    Cet utilisateur n'a aucune annonce pour le moment.
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
