@@ -262,36 +262,6 @@ INSERT INTO `dog_Participe` (`id_chien`, `id_promenade`) VALUES
 (9, 9),
 (10, 10);
 
--- --------------------------------------------------------
-
---
--- Structure de la table `dog_Promenade`
---
-
-CREATE TABLE `dog_Promenade` (
-  `id_promenade` int(11) NOT NULL,
-  `statut` varchar(50) NOT NULL,
-  `id_chien` int(11) NOT NULL,
-  `id_promeneur` int(11) NOT NULL,
-  `id_proprietaire` int(11) NOT NULL,
-  `id_annonce` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Déchargement des données de la table `dog_Promenade`
---
-
-INSERT INTO `dog_Promenade` (`id_promenade`, `statut`, `id_chien`, `id_promeneur`, `id_proprietaire`, `id_annonce`) VALUES
-(1, 'Active', 7, 16, 6, 3),
-(2, 'Terminé', 3, 11, 14, 9),
-(3, 'En cours', 5, 10, 19, 10),
-(4, 'Active', 6, 11, 14, 23),
-(5, 'En cours', 5, 18, 1, 12),
-(6, 'Active', 1, 7, 4, 16),
-(7, 'Terminé', 10, 6, 7, 18),
-(8, 'Active', 8, 21, 23, 16),
-(9, 'En cours', 2, 22, 24, 4),
-(10, 'Active', 2, 22, 21, 17);
 
 -- --------------------------------------------------------
 
