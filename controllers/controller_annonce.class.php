@@ -289,7 +289,7 @@ class ControllerAnnonce extends Controller
             // INSERT chiens associés
             if (!empty($chiens)) {
                 $stmtChien = $pdo->prepare("
-                    INSERT INTO " . PREFIXE_TABLE . "concerne (id_annonce, id_chien)
+                    INSERT INTO " . PREFIXE_TABLE . "Concerne (id_annonce, id_chien)
                     VALUES (:id_annonce, :id_chien)
                 ");
 

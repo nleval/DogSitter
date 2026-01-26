@@ -113,4 +113,116 @@ class ControllerAvis extends Controller
         ]);
     }
 
+    /**
+     * @brief Creer un avis
+     */
+    public function creerAvis()
+    {
+        // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle promeneur peuvent créer des avis
+        $sessionUser = $_SESSION['user'] ?? null;
+
+        // Si l'utilisateur en session est un tableau
+        if (is_array($sessionUser)) {
+            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+
+        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
+        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
+            $id_utilisateur = $sessionUser->getId();
+
+        } else {
+            // On considère qu'il n'y a pas d'utilisateur connecté
+            $id_utilisateur = null;
+        }
+        if (!$id_utilisateur) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();   
+        }
+
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateur = $managerUtilisateur->findById($id_utilisateur);
+
+        if (!$utilisateur || !$utilisateur->getEstPromeneur()) {
+            http_response_code(403); 
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Seuls les utilisateurs avec le rôle 'promeneur' peuvent ajouter un avis."]);
+            return;
+        }
+
+        //Un if() qui contient la logique de si on a répondu au formulaire de la page en dessous
+
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $note = $_POST['note'] ?? null;
+            $texte_commentaire = $_POST['commentaire'] ?? null;
+
+            $regles = [
+                'note' => [
+                    'obligatoire' => true,
+                    'type' => 'numeric',
+                    'plage_min' => 1
+                    //MAX => 5
+                ],
+                'commentaire' => [
+                    'obligatoire' => false,
+                    'type' => 'string',
+                    'longueur_max' => 50
+                ]
+            ];
+
+            $validator = new Validator($regles);
+            $valide = $validator->valider($_POST);
+            $erreurs = $validator->getMessagesErreurs();
+        
+            // SI ERREURS → on réaffiche le formulaire
+        
+            if (!$valide) {
+                $template = $this->getTwig()->load('avis.html.twig');
+                echo $template->render([
+                    'erreurs' => $erreurs,
+                    'donnees' => $_POST,
+                ]);
+                return;
+            }
+            
+
+
+            $pdo = $this->getPDO();
+
+                $avis = new Avis(
+                null,                     // id_avis (auto-increment)
+                $note,
+                $texte_commentaire,
+                $id_utilisateur,
+                $id_promenade,
+                $id_utilisateur_note
+                );
+
+
+        // INSERT avis
+            $managerAvis = new AVisDAO($this->getPDO());
+            $managerAvis->ajouterAvis($avis);
+
+            $id_avis = $pdo->lastInsertId();
+
+            // Redirection vers un popup de confirmation
+            header('Location: index.php?controleur=avis&methode=confirmationCreationAvis');
+            exit();
+            
+        }
+
+        $template = $this->getTwig()->load('ajouter_avis.html.twig');
+        echo $template->render();
+    }
+
+    /**
+     * @brief Confirme la création d'un avis
+     */
+    public function confirmationCreationAvis()
+    {
+        $template = $this->getTwig()->load('confirmation_creation_avis.html.twig');
+        echo $template->render();
+
+    }
+
 }
