@@ -32,34 +32,39 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * @brief Afficher un utilisateur spécifique
-     * @param int $id_utilisateur Identifiant de l'utilisateur à afficher
+     * @brief Afficher l'utilisateur connecte
      */
-    public function afficherUtilisateur()
+    public function afficherTonUtilisateur()
     {
         // Vérifier que l'utilisateur est connecté
         if (!isset($_SESSION['utilisateur'])) {
-        var_dump('yuiop');
-        exit();
                 header('Location: index.php?controleur=utilisateur&methode=authentification');
                 exit();
             }
 
         // Récupérer l'ID depuis la session (profil de l'utilisateur connecté)
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
 
-        // Si l'utilisateur en session est un tableau
-        if (is_array($utilisateurConnecte)) {
-            $id_utilisateur = $utilisateurConnecte['id_utilisateur'] ?? null;
-            
-        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
-        } elseif (is_object($utilisateurConnecte) && method_exists($utilisateurConnecte, 'getId')) {
-            $id_utilisateur = $utilisateurConnecte->getId();
-        } else {
-            // Invalide -> redirection vers l'authentification
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();
-        }
+        // Récupérer un utilisateur spécifique depuis la base de données
+        $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateur = $managerutilisateur->findById($id_utilisateur);
+
+        // Rendre la vue avec l'utilisateur
+        $template = $this->getTwig()->load('utilisateur.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur
+        ]);
+    }
+
+    /**
+     * @brief Afficher un utilisateur autre que soi-même
+     * @param int $id_utilisateur Identifiant de l'utilisateur à afficher
+     */
+    public function afficherUtilisateur()
+    {
+        // Récupérer l'ID de l'utilisateur depuis les paramètres GET
+        $id_utilisateur = $_GET['id_utilisateur'];
 
         // Récupérer un utilisateur spécifique depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
@@ -340,8 +345,7 @@ class ControllerUtilisateur extends Controller
                 $managerutilisateur = new UtilisateurDAO($this->getPDO());
 
                 $id_utilisateur = $utilisateurConnecte->getId();
-                var_dump($id_utilisateur);
-                exit();
+                
                 $nouvelEmail = $_POST['email'];
                 $donnes = ['email' => $nouvelEmail];
 
