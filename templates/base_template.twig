@@ -100,27 +100,27 @@
 
                 <!-- DROITE : utilisateur -->
                 <ul class="navbar-nav ms-lg-auto align-items-lg-center gap-2">
-                    {% if utilisateurConnecte is defined %}
+                    {% if utilisateurConnecte is not null %}
                         <li class="nav-item">
                             <a class="nav-link text-light"
-                               href="index.php?controleur=conversation&methode=afficherAllConversation">
+                            href="index.php?controleur=conversation&methode=afficherAllConversation">
                                 <i class="bi bi-chat-dots fs-5"></i>
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold"
-                               style="color:#FEFAE0;"
-                               href="index.php?controleur=utilisateur&methode=afficherTonUtilisateur">
-                                {{ utilisateurConnecte.pseudo }}
+                            <a class="nav-link p-0"
+                            href="index.php?controleur=utilisateur&methode=afficherTonUtilisateur">
+                            <img src="images/utilisateur/{{ utilisateurConnecte.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
                             </a>
                         </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link text-light"
-                               href="index.php?controleur=utilisateur&methode=authentification">
-                                <i class="bi bi-person-circle fs-5"></i>
-                            </a>
-                        </li>
+                    {% else %} 
+                        <li class="nav-item"> 
+                            <a class="nav-link text-light" href="index.php?controleur=utilisateur&methode=authentification"> 
+                                <i class="bi bi-person-circle fs-5">
+                                </i> 
+                            </a> 
+                        </li> 
                     {% endif %}
                 </ul>
 
