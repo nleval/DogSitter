@@ -139,6 +139,11 @@ class Validator
                         $ok = false;
                     }
                     break;
+                case 'pattern':
+                    if (!preg_match($parametre, $valeur)) {
+                        $this->messagesErreurs[] = "Le format du champ $champ est invalide.";
+                        $ok = false;
+                    }
             }
         }
 

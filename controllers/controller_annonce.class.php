@@ -132,8 +132,11 @@ class ControllerAnnonce extends Controller
                 exit();
             }
 
-        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
-        $utilisateur = $managerUtilisateur->findById($_SESSION['utilisateur']['id_utilisateur']);
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
+
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());        
+        $utilisateur = $managerUtilisateur->findById($id_utilisateur);
 
         if (!$utilisateur || !$utilisateur->getEstMaitre()) {
             http_response_code(403); 
