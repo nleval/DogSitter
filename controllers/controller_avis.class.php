@@ -118,30 +118,19 @@ class ControllerAvis extends Controller
      */
     public function creerAvis()
     {
-        // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle promeneur peuvent créer des avis
-        $sessionUser = $_SESSION['user'] ?? null;
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
 
-        // Si l'utilisateur en session est un tableau
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-
-        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-
-        } else {
-            // On considère qu'il n'y a pas d'utilisateur connecté
-            $id_utilisateur = null;
-        }
-        if (!$id_utilisateur) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();   
-        }
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
 
         $managerUtilisateur = new UtilisateurDAO($this->getPDO());
-        $utilisateur = $managerUtilisateur->findById($id_utilisateur);
+        $utilisateurConnecte = $managerUtilisateur->findById($id_utilisateur);
 
-        if (!$utilisateur || !$utilisateur->getEstPromeneur()) {
+        if (!$utilisateurConnecte || !$utilisateurConnecte->getEstPromeneur()) {
             http_response_code(403); 
             $template = $this->getTwig()->load('403.html.twig');
             echo $template->render(['message' => "Seuls les utilisateurs avec le rôle 'promeneur' peuvent ajouter un avis."]);
