@@ -100,7 +100,7 @@
 
                 <!-- DROITE : utilisateur -->
                 <ul class="navbar-nav ms-lg-auto align-items-lg-center gap-2">
-                    {% if session is defined and session.user is defined %}
+                    {% if utilisateurConnecte is defined %}
                         <li class="nav-item">
                             <a class="nav-link text-light"
                                href="index.php?controleur=conversation&methode=afficherAllConversation">
@@ -110,8 +110,8 @@
                         <li class="nav-item">
                             <a class="nav-link fw-semibold"
                                style="color:#FEFAE0;"
-                               href="index.php?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ session.user.id_utilisateur }}">
-                                {{ session.user.pseudo }}
+                               href="index.php?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ utilisateurConnecte.id_utilisateur }}">
+                                {{ utilisateurConnecte.pseudo }}
                             </a>
                         </li>
                     {% else %}

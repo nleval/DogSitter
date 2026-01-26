@@ -29,6 +29,15 @@
             </div>
         </div>
     </header>
+    {% if(utilisateurConnecte) %}
+        <div class="alert alert-success text-center m-0" role="alert">
+            Bienvenue, {{ utilisateurConnecte.pseudo }} ! Vous êtes connecté en tant que {{ utilisateurConnecte.email }}.
+        </div>
+    {%else %}
+        <div class="alert alert-info text-center m-0" role="alert">
+            Vous n'êtes pas connecté. <a href="?controleur=Utilisateur&methode=afficherFormulaireConnexion" class="alert-link">Connectez-vous</a> ou
+            <a href="?controleur=Utilisateur&methode=afficherFormulaireInscription" class="alert-link">inscrivez-vous</a> pour profiter de toutes les fonctionnalités !
+    {% endif %}
 
     {# 2. SECTION DES SERVICES #}
     <section class="py-5">

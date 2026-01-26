@@ -38,21 +38,23 @@ class ControllerUtilisateur extends Controller
     public function afficherUtilisateur()
     {
         // Vérifier que l'utilisateur est connecté
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION['utilisateur'])) {
+        var_dump('yuiop');
+        exit();
                 header('Location: index.php?controleur=utilisateur&methode=authentification');
                 exit();
             }
 
         // Récupérer l'ID depuis la session (profil de l'utilisateur connecté)
-        $sessionUser = $_SESSION['user'];
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
         // Si l'utilisateur en session est un tableau
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
+        if (is_array($utilisateurConnecte)) {
+            $id_utilisateur = $utilisateurConnecte['id_utilisateur'] ?? null;
             
         // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
+        } elseif (is_object($utilisateurConnecte) && method_exists($utilisateurConnecte, 'getId')) {
+            $id_utilisateur = $utilisateurConnecte->getId();
         } else {
             // Invalide -> redirection vers l'authentification
             header('Location: index.php?controleur=utilisateur&methode=authentification');
@@ -295,49 +297,79 @@ class ControllerUtilisateur extends Controller
             'utilisateur' => $utilisateur
         ]);
     }
+
+    /**
+     * @brief Affiche le formulaire de modification d'un utilisateur
+     */
+    public function afficherModif()
+    {
+        // Afficher le formulaire de modification d'utilisateur
+        $id_utilisateur = $_GET['id_utilisateur'] ?? 1;
+
+        // Récupérer l'utilisateur depuis la base de données
+        $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateur = $managerutilisateur->findById($id_utilisateur);
+
+        $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur
+        ]);
+    }
        
     /**
      * @brief Modifie l'email d'un utilisateur
      */
     public function modifierEmail()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
-             $regles = [
-                'email' => [
-                'obligatoire' => true,
-                'type' => 'string',
-                'longueur_min' => 5,
-                'longueur_max' => 255,
-                'format' => FILTER_VALIDATE_EMAIL
-                ]
-            ];
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+                $regles = [
+                    'email' => [
+                                'obligatoire' => true,
+                                'type' => 'string',
+                                'longueur_min' => 5,
+                                'longueur_max' => 255,
+                                'format' => FILTER_VALIDATE_EMAIL
+                                ]
+                ];
 
-            $id_utilisateur = 1;
-            $nouvelEmail = $_POST['email'];
-            $donnes = ['email' => $nouvelEmail];
+                $managerutilisateur = new UtilisateurDAO($this->getPDO());
 
-            $validator = new Validator($regles);
-            $valide = $validator->valider($donnes);
+                $id_utilisateur = $utilisateurConnecte->getId();
+                var_dump($id_utilisateur);
+                exit();
+                $nouvelEmail = $_POST['email'];
+                $donnes = ['email' => $nouvelEmail];
 
-            if (!$valide) {
-                $messagesErreurs = $validator->getMessagesErreurs();
-                // Rendre la vue avec les erreurs
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'messagesErreurs' => $messagesErreurs,
-                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                ]);
-                return;
+                $validator = new Validator($regles);
+                $valide = $validator->valider($donnes);
+
+                if (!$valide) {
+                    $messagesErreurs = $validator->getMessagesErreurs();
+                    // Rendre la vue avec les erreurs
+                    $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                    echo $template->render([
+                        'messagesErreurs' => $messagesErreurs,
+                        'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
+                    ]);
+                    return;
+                }
+
+                // Mettre à jour l'email de l'utilisateur dans la base de données
+                $managerutilisateur->modifierChamp($id_utilisateur, 'email', $nouvelEmail);
+
+                // Rediriger vers la page de l'utilisateur
+                header('Location: index.php?action=afficherUtilisateur&id_utilisateur=' . $id_utilisateur);
+                exit();
             }
-
-            // Mettre à jour l'email de l'utilisateur dans la base de données
-            $managerutilisateur->modifierChamp($id_utilisateur, 'email', $nouvelEmail);
-
-            // Rediriger vers la page de l'utilisateur
-            header('Location: index.php?action=afficherUtilisateur&id_utilisateur=' . $id_utilisateur);
+        }
+        else {
+            // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+            header('Location: index.php?action=authentification');
             exit();
         }
     }
@@ -347,103 +379,150 @@ class ControllerUtilisateur extends Controller
      */
     public function authentification()
     {
-        $erreurs = [];
-
-        // === Si formulaire envoyé ===
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $email = trim($_POST['email'] ?? '');
-            $motDePasse = $_POST['motDePasse'] ?? '';
-
-            $regles = [
-                'email' => [
-                    'obligatoire' => true,
-                    'format' => FILTER_VALIDATE_EMAIL,
-                    'longueur_max' => 100
-                ],
-                'motDePasse' => [
-                    'obligatoire' => true,
-                    'type' => 'string',
-                    'longueur_min' => 8,
-                    'longueur_max' => 50
-                ]
+            // Récupération des données du formulaire
+            $donneesFormulaire = [
+                'email' => htmlspecialchars($_POST['email'], ENT_QUOTES,) ?? null,
+                'motDePasse' => htmlspecialchars($_POST['motDePasse'], ENT_QUOTES) ?? null,
             ];
 
-            $manager = new UtilisateurDAO($this->getPDO());
-
-            try {
-                // Tentative d’authentification
-                if ($manager->authentification($email, $motDePasse)) {
-
-                    // Récupération des données utilisateur
-                    $utilisateur = $manager->findByEmail($email);
-
-                    if ($utilisateur) {
-                        // On évite de stocker le mot de passe en session
-                        $utilisateur->setMotDePasse(null);
-
-                        $_SESSION['user'] = [
-                            'id_utilisateur' => $utilisateur->getId(),
-                            'email' => $utilisateur->getEmail(),
-                            'estMaitre' => $utilisateur->getEstMaitre(),
-                            'estPromeneur' => $utilisateur->getEstPromeneur(),
-                            'pseudo' => $utilisateur->getPseudo(),
-                            'photoProfil' => $utilisateur->getPhotoProfil()
-                        ];
-
-                        header(
-                            'Location: index.php?controleur=utilisateur&methode=afficherUtilisateur'
-                        );
-                        exit();
-                    }
-
-                } else {
-                    // Email ou mot de passe incorrect
-                    $erreurs[] = "Email ou mot de passe incorrect.";
-                }
-
-            } catch (Exception $e) {
-
-                // Gestion du cas où le compte est temporairement désactivé
-                if ($e->getMessage() === "compte_desactive") {
-
-                    $utilisateur = $manager->findByEmail($email);
-                    $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
-                    $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
-
-                    $minutes = floor($tempsRestant / 60);
-                    $secondes = $tempsRestant % 60;
-
-                    $erreurs[] = "Votre compte est temporairement désactivé. 
-                                Réessayez dans {$minutes} minutes et {$secondes} secondes.";
-                } 
-                else {
-                    // Erreur inattendue
-                    $erreurs[] = "Erreur inattendue : " . $e->getMessage();
-                }
+            // Validation des données
+            $regles = [];
+            $validator = new Validator($regles);
+            $erreurs = $validator->validerConnexion($donneesFormulaire);
+            if ($erreurs) {
+                $template = $this->getTwig()->load('connexion.html.twig');
+                echo $template->render(['erreurs' => $erreurs]);
+                return;
             }
 
-            // Réaffichage du formulaire avec erreurs et valeurs précédentes
-            $template = $this->getTwig()->load('formulaire_authentification.html.twig');
-            echo $template->render([
-                'erreurs' => $erreurs,
-                'old' => ['email' => $email]
-            ]);
+            $mail = $donneesFormulaire['email'];
+            $mdp = $donneesFormulaire['motDePasse'];
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
 
-            return;
+            if(!$managerUtilisateur->estActif($mail) && $managerUtilisateur->emailExist($mail)){ 
+                $erreurs[] = "Votre compte est desactivé";
+                $template = $this->getTwig()->load('connexion.html.twig');
+                echo $template->render(['erreurs' => $erreurs]);
+                return;
+            }
+
+            $utilisateur = $managerUtilisateur->findByEmail($mail);
+            if ($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())) {
+                // $managerUtilisateur->verifierDerniereSauvegarde();
+                $_SESSION['utilisateur'] = serialize($utilisateur);
+                $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+                header("Location: index.php");
+            } else {
+                $template = $this->getTwig()->load('connexion.html.twig');
+                $erreurs[] = "L'adresse mail ou le mot de passe est incorrect";
+                echo $template->render(['erreurs' => $erreurs]);
+            }
         }
-
-        // Si le formulaire n’est pas envoyé : affichage simple
-        $success = null;
-
-        if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
-            $success = 'Votre compte a bien été créé. Veuillez vous connecter.';
+        else {
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render();
         }
-
-        $template = $this->getTwig()->load('formulaire_authentification.html.twig');
-        echo $template->render([
-            'erreurs' => [],
-            'success' => $success
-        ]);
     }
+    // public function authentification()
+    // {
+    //     $erreurs = [];
+
+    //     // === Si formulaire envoyé ===
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    //         $email = trim($_POST['email'] ?? '');
+    //         $motDePasse = $_POST['motDePasse'] ?? '';
+
+    //         $regles = [
+    //             'email' => [
+    //                 'obligatoire' => true,
+    //                 'format' => FILTER_VALIDATE_EMAIL,
+    //                 'longueur_max' => 100
+    //             ],
+    //             'motDePasse' => [
+    //                 'obligatoire' => true,
+    //                 'type' => 'string',
+    //                 'longueur_min' => 8,
+    //                 'longueur_max' => 50
+    //             ]
+    //         ];
+
+    //         $manager = new UtilisateurDAO($this->getPDO());
+
+    //         try {
+    //             // Tentative d’authentification
+    //             if ($manager->authentification($email, $motDePasse)) {
+
+    //                 // Récupération des données utilisateur
+    //                 $utilisateur = $manager->findByEmail($email);
+
+    //                 if ($utilisateur) {
+    //                     // On évite de stocker le mot de passe en session
+    //                     $utilisateur->setMotDePasse(null);
+
+    //                     $_SESSION['user'] = [
+    //                         'id_utilisateur' => $utilisateur->getId(),
+    //                         'email' => $utilisateur->getEmail(),
+    //                         'estMaitre' => $utilisateur->getEstMaitre(),
+    //                         'estPromeneur' => $utilisateur->getEstPromeneur(),
+    //                         'pseudo' => $utilisateur->getPseudo(),
+    //                         'photoProfil' => $utilisateur->getPhotoProfil()
+    //                     ];
+
+    //                     header(
+    //                         'Location: index.php'
+    //                     );
+    //                     exit();
+    //                 }
+
+    //             } else {
+    //                 // Email ou mot de passe incorrect
+    //                 $erreurs[] = "Email ou mot de passe incorrect.";
+    //             }
+
+    //         } catch (Exception $e) {
+
+    //             // Gestion du cas où le compte est temporairement désactivé
+    //             if ($e->getMessage() === "compte_desactive") {
+
+    //                 $utilisateur = $manager->findByEmail($email);
+    //                 $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
+    //                 $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
+
+    //                 $minutes = floor($tempsRestant / 60);
+    //                 $secondes = $tempsRestant % 60;
+
+    //                 $erreurs[] = "Votre compte est temporairement désactivé. 
+    //                             Réessayez dans {$minutes} minutes et {$secondes} secondes.";
+    //             } 
+    //             else {
+    //                 // Erreur inattendue
+    //                 $erreurs[] = "Erreur inattendue : " . $e->getMessage();
+    //             }
+    //         }
+
+    //         // Réaffichage du formulaire avec erreurs et valeurs précédentes
+    //         $template = $this->getTwig()->load('formulaire_authentification.html.twig');
+    //         echo $template->render([
+    //             'erreurs' => $erreurs,
+    //             'old' => ['email' => $email]
+    //         ]);
+
+    //         return;
+    //     }
+
+    //     // Si le formulaire n’est pas envoyé : affichage simple
+    //     $success = null;
+
+    //     if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
+    //         $success = 'Votre compte a bien été créé. Veuillez vous connecter.';
+    //     }
+
+    //     $template = $this->getTwig()->load('formulaire_authentification.html.twig');
+    //     echo $template->render([
+    //         'erreurs' => [],
+    //         'success' => $success
+    //     ]);
+    // }
 }
