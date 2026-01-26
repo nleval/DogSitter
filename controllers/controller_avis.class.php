@@ -137,13 +137,15 @@ class ControllerAvis extends Controller
             return;
         }
 
-        //Un if() qui contient la logique de si on a répondu au formulaire de la page en dessous
-
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $note = $_POST['note'] ?? null;
             $texte_commentaire = $_POST['commentaire'] ?? null;
+
+            //Temporaire
+            $id_promenade = 26;
+            $id_utilisateur_note = 2;
+            //
 
             $regles = [
                 'note' => [
@@ -174,8 +176,6 @@ class ControllerAvis extends Controller
                 return;
             }
             
-
-
             $pdo = $this->getPDO();
 
                 $avis = new Avis(
@@ -186,7 +186,6 @@ class ControllerAvis extends Controller
                 $id_promenade,
                 $id_utilisateur_note
                 );
-
 
         // INSERT avis
             $managerAvis = new AVisDAO($this->getPDO());
