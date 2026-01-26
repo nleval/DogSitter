@@ -28,10 +28,6 @@
                     <table class="table table-striped" style="background-color:#F8F4E8;">
                         <tbody>
                             <tr>
-                                <th style="width: 200px;">ID</th>
-                                <td>{{ utilisateur.id }}</td>
-                            </tr>
-                            <tr>
                                 <th>Pseudo</th>
                                 <td>{{ utilisateur.pseudo }}</td>
                             </tr>
@@ -75,6 +71,11 @@
                                     class="btn px-4"
                                     style="background-color:#DDA15E; color:white;">
                                     Retour à l’accueil
+                                </a>
+                                <a href="?controleur=utilisateur&methode=afficherModif&id_utilisateur={{ utilisateur.id }}"
+                                    class="btn ms-3 px-4"
+                                    style="background-color:#DDA15E; color:white;">
+                                    Modifier
                                 </a>
                                 <a href="?controleur=utilisateur&methode=deconnexion"
                                     class="btn btn-outline-danger ms-3 px-4"

@@ -58,19 +58,10 @@ public function afficherParConversation($id_conversation = null)
     /* ===============================
        Vérification utilisateur connecté
     =============================== */
-    $sessionUser = $_SESSION['user'] ?? null;
-    $id_utilisateur = null;
-
-    if (is_array($sessionUser)) {
-        $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-    } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-        $id_utilisateur = $sessionUser->getId();
-    }
-
-    if (!$id_utilisateur) {
-        header('Location: index.php?controleur=utilisateur&methode=authentification');
-        exit;
-    }
+    if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
 
     /* ===============================
        Récupération id conversation

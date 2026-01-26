@@ -153,4 +153,23 @@ class Validator
     {
         return $this->messagesErreurs;
     }
+
+    public function validerConnexion($donnees)
+    {
+        $erreurs = [];
+
+        // Validation de l'email
+        if (empty($donnees['email'])) {
+            $erreurs['email'] = "'email est requis.";
+        } elseif (!filter_var($donnees['email'], FILTER_VALIDATE_EMAIL)) {
+            $erreurs['email'] = "'email n'est pas valide.";
+        }
+    
+        // Validation du mot de passe
+        if (empty($donnees['motDePasse'])) {
+            $erreurs['motDePasse'] = "Le mot de passe est requis.";
+        }
+    
+        return $erreurs;
+    }
 }
