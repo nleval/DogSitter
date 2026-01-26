@@ -66,17 +66,17 @@ class ControllerConversation extends Controller
         echo $this->getTwig()->render('messages.html.twig', [
             'conversationListe' => $conversationListe
         ]);
+    
+        $utilisateurConnecte = $_SESSION['utilisateur'];
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+        $managerConversation = new ConversationDAO($this->getPdo());
+        $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
+
+        echo $this->getTwig()->render('messages.html.twig', [
+            'conversationListe' => $conversationListe
+        ]);
     }
-
-    $idUtilisateur = $_SESSION['id_utilisateur'];
-
-    $managerConversation = new ConversationDAO($this->getPdo());
-    $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
-
-    echo $this->getTwig()->render('messages.html.twig', [
-        'conversationListe' => $conversationListe
-    ]);
-}
 
 
 }

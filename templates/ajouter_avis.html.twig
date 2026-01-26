@@ -1,0 +1,107 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Créer une annonce — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
+                        Ajouter un avis
+                    </h2>
+
+                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
+                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
+                            <form method="post" action="?controleur=Avis&methode=creerAvis">
+                                <div class="mb-4">
+                                    <label for="titre" class="form-label fw-bold" style="color:#537031;">
+                                        Note <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
+                                    </label>
+                                    <div class="rating" data-value="3">
+                                        <img src="images/Nonos.svg"  data-star="1" alt="1 étoile">
+                                        <img src="images/Nonos.svg"  data-star="2" alt="2 étoiles">
+                                        <img src="images/Nonos.svg"  data-star="3" alt="3 étoiles">
+                                        <img src="images/Nonos2.svg" data-star="4" alt="4 étoiles">
+                                        <img src="images/Nonos2.svg" data-star="5" alt="5 étoiles">
+                                    </div>
+                                    <input type="hidden" name="note" id="note" value="{{ donnees.note|default('3') }}">
+                                </div>
+
+                                <style>
+                                .rating {
+                                    display: flex;
+                                    gap: 6px;
+                                    cursor: pointer;
+                                }
+
+                                .rating img {
+                                    width: 40px;
+                                    height: 40px;
+                                }
+                                </style>
+
+                                <script>
+                                const stars = document.querySelectorAll('.rating img');
+                                const input = document.getElementById('note');
+
+                                stars.forEach(star => {
+                                    star.addEventListener('click', () => {
+                                        const value = star.dataset.star;
+                                        input.value = value;
+
+                                        stars.forEach(s => {
+                                            s.src = s.dataset.star <= value
+                                                ? 'images/Nonos.svg'
+                                                : 'images/Nonos2.svg';
+                                        });
+                                    });
+                                });
+                                </script>
+
+                                <div class="mb-4">
+                                    <label for="description" class="form-label fw-bold" style="color:#537031;">
+                                        Commentaire
+                                    </label>
+                                    <textarea class="form-control"
+                                        id="commentaire"
+                                        name="commentaire"
+                                        rows="4"
+                                        placeholder="Donnez votre avis sur cette promenade"
+                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px; resize: vertical;">
+                                        {{ donnees.commentaire|default('')|trim }}
+                                    </textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="index.php"
+                                        class="btn btn-outline"
+                                        style="border-radius:8px; border-color: #537031; color: #537031;">
+                                        Annuler
+                                    </a>
+                                    <button type="submit"
+                                        class="btn fw-bold text-white"
+                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
+                                        Publier l'avis
+                                    </button>
+                                </div>
+                            </form>
+
+                            {% if erreurs is defined and erreurs %}
+                                <div class="alert alert-danger mt-4">
+                                    <ul class="mb-0">
+                                        {% for err in erreurs %}
+                                            <li>{{ err }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
