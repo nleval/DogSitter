@@ -143,4 +143,27 @@ class AvisDAO
 
         return $avis;
     }
+
+    /**
+     * @brief Ajoute un nouvel avis en base.
+     *
+     * @param ?Avis $avis Objet Avis à insérer.
+     * @return bool Succès de l'insertion.
+     */
+    public function ajouterAvis(?Avis $avis): bool
+    {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO " . PREFIXE_TABLE . "Avis 
+            (note, texte_commentaire, id_utilisateur, id_promenade, id_utilisateur_note)
+            VALUES (:note, :texte_commentaire, :id_utilisateur, :id_promenade, :id_utilisateur_note)
+        ");
+
+        return $stmt->execute([
+            ':note' => $avis->getNote(),
+            ':texte_commentaire' => $avis->getTexteCommentaire(),
+            ':id_utilisateur' => $avis->getIdUtilisateur(),
+            ':id_promenade' => $avis->getIdPromenade(),
+            ':id_utilisateur_note' => $avis->getIdUtilisateurNote(),
+        ]);
+    }
 }

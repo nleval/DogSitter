@@ -8,23 +8,30 @@
         {% if avisListe is defined and avisListe|length > 0 %}
             <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis :</h2>
             <ul>
-                {% for avis in avisListe %}
-                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
-                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                        <h4 class="mb-0">Nom d'utilisateur</h4>
+                {% for element in avisListe %}
+                    {% set avis = element.avis %}
+                    {% set proprietaire = element.proprietaire %}
+
+                    <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
+                        <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                            {% if proprietaire.photoProfil is not empty %}
+                                <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;"
+                                    class="rounded-circle" width="56" height="56">
+                            {% endif %}
+                            <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
+                        </div>
+
+                        <div class="p-4">
+                            <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
+                            <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
+                            <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
+                            <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
+                            <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
+                            <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                        </div>
                     </div>
-                    <div class="p-4">
-                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
-                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
-                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
-                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
-                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
-                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
-                    </div>
-                </div>
-                {% else %}
-                    <h3>Aucun avis trouvé.</h3>
                 {% endfor %}
+
             </ul>
 
         {% elseif avis is defined %}
@@ -32,7 +39,10 @@
             <ul>
                 <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
                     <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                        <h4 class="mb-0">Nom d'utilisateur</h4>
+                        {% if proprietaire.photoProfil is not empty %}
+                            <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                        {% endif %}
+                        <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
                     </div>
                     <div class="p-4">
                         <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
@@ -48,23 +58,30 @@
         {% elseif avisUtilisateurNote is defined %}
            <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis donnés à l'utilisateur {{ id_utilisateur_note }} :</h2>
             <ul>
-                {% for avis in avisUtilisateurNote %}
-                    <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
-                        <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                            <h4 class="mb-0">Nom d'utilisateur</h4>
-                        </div>
-                        <div class="p-4">
-                            <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
-                            <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
-                            <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
-                            <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
-                            <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
-                            <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
-                        </div>
+                {% for element in avisUtilisateurNote %}
+                {% set avis = element.avis %}
+                {% set proprietaire = element.proprietaire %}
+
+                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
+                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+                        {% if proprietaire.photoProfil is not empty %}
+                            <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                        {% endif %}
+                        <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
                     </div>
-                {% else %}
-                    <h3>Aucun avis trouvé.</h3>
-                {% endfor %}
+
+                    <div class="p-4">
+                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
+                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
+                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
+                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
+                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
+                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                    </div>
+                </div>
+            {% else %}
+                <h3>Aucun avis trouvé.</h3>
+            {% endfor %}
             </ul>
         {% else %}
             <p>Aucun avis à afficher.</p>

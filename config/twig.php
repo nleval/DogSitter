@@ -53,7 +53,6 @@ if (file_exists($configPath)) {
     die('Le fichier config/constantes.yaml est introuvable.');
 }
 
-require_once 'modeles/utilisateur.class.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
