@@ -25,25 +25,10 @@ class ControllerAnnonce extends Controller
      */
     public function afficherAnnonce($id_annonce = null)
     {
-       // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle maître peuvent créer des annonces
-        $sessionUser = $_SESSION['user'] ?? null;
-
-        // Si l'utilisateur en session est un tableau
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-
-        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-
-        } else {
-            // On considère qu'il n'y a pas d'utilisateur connecté
-            $id_utilisateur = null;
-        }
-        if (!$id_utilisateur) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();   
-        }
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
 
         // Vérifie si l'identifiant de l'annonce ($id_annonce) n'a pas été reçu en tant qu'argument
         if($id_annonce === null) {
@@ -120,30 +105,20 @@ class ControllerAnnonce extends Controller
      */
     public function afficherAnnoncesParUtilisateur()
     {
-
-        // Récupérer l'utilisateur connecté
-        $sessionUser = $_SESSION['user'] ?? null;
-
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-        } else {
-            $id_utilisateur = null;
-        }
-
-        if (!$id_utilisateur) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();
-        }
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
 
         $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $id_utilisateur = $_GET['id_utilisateur'] ?? null;
 
         $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);            
 
         $template = $this->getTwig()->load('annonces_par_utilisateur.html.twig');
         echo $template->render([
             'annoncesListe' => $annoncesListe,
+            'id_utilisateur' => $id_utilisateur
         ]);
     }
 
@@ -152,28 +127,13 @@ class ControllerAnnonce extends Controller
      */
     public function creerAnnonce()
     {
-        // Gestion des sessions - seulement les utilisateurs connectés et ayant le rôle maître peuvent créer des annonces
-        $sessionUser = $_SESSION['user'] ?? null;
-
-        // Si l'utilisateur en session est un tableau
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-
-        // Sinon, si l'utilisateur en session est un objet avec la méthode getId()
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-
-        } else {
-            // On considère qu'il n'y a pas d'utilisateur connecté
-            $id_utilisateur = null;
-        }
-        if (!$id_utilisateur) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();   
-        }
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
 
         $managerUtilisateur = new UtilisateurDAO($this->getPDO());
-        $utilisateur = $managerUtilisateur->findById($id_utilisateur);
+        $utilisateur = $managerUtilisateur->findById($_SESSION['utilisateur']['id_utilisateur']);
 
         if (!$utilisateur || !$utilisateur->getEstMaitre()) {
             http_response_code(403); 
@@ -333,21 +293,12 @@ class ControllerAnnonce extends Controller
      */
     public function supprimerAnnonce()
     {
-        $sessionUser = $_SESSION['user'] ?? null;
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         $id_annonce = $_GET['id_annonce'] ?? null;
-
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-        } else {
-            $id_utilisateur = null;
-        }
-
-        if (!$id_utilisateur || !$id_annonce) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();
-        }
 
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annonce = $managerAnnonce->findById($id_annonce);
@@ -370,21 +321,10 @@ class ControllerAnnonce extends Controller
      */
     public function modifierAnnonce($id_annonce = null)
     {
-        // ---------- SESSION ----------
-        $sessionUser = $_SESSION['user'] ?? null;
-
-        if (is_array($sessionUser)) {
-            $id_utilisateur = $sessionUser['id_utilisateur'] ?? null;
-        } elseif (is_object($sessionUser) && method_exists($sessionUser, 'getId')) {
-            $id_utilisateur = $sessionUser->getId();
-        } else {
-            $id_utilisateur = null;
-        }
-
-        if (!$id_utilisateur) {
-            header('Location: index.php?controleur=utilisateur&methode=authentification');
-            exit();
-        }
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
 
         // ---------- ID ANNONCE ----------
         if ($id_annonce === null) {

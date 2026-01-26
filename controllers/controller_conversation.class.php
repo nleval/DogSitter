@@ -50,11 +50,22 @@ class ControllerConversation extends Controller
         ]);
     }
 
-public function afficherMesConversations()
-{
-    if (!isset($_SESSION['id_utilisateur'])) {
-        header("Location: ?controleur=Index&methode=render");
-        exit;
+    public function afficherMesConversations()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
+        $utilisateurConnecte = $_SESSION['utilisateur'];
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+        $managerConversation = new ConversationDAO($this->getPdo());
+        $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
+    
+        echo $this->getTwig()->render('messages.html.twig', [
+            'conversationListe' => $conversationListe
+        ]);
     }
 
     $idUtilisateur = $_SESSION['id_utilisateur'];
