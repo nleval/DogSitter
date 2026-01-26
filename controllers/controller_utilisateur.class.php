@@ -63,6 +63,11 @@ class ControllerUtilisateur extends Controller
      */
     public function afficherUtilisateur()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         // Récupérer l'ID de l'utilisateur depuis les paramètres GET
         $id_utilisateur = $_GET['id_utilisateur'];
 
@@ -82,6 +87,11 @@ class ControllerUtilisateur extends Controller
      */
     public function afficherAllUtilisateurs()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         // Récupérer tous les utilisateurs depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
         $utilisateursListe = $managerutilisateur->findAll();
@@ -99,6 +109,11 @@ class ControllerUtilisateur extends Controller
      */
     public function ajouterUtilisateur()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Récupération des données du formulaire
@@ -274,6 +289,11 @@ class ControllerUtilisateur extends Controller
      */
     public function supprimerUtilisateur()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         $id_utilisateur = $_GET['id_utilisateur'];
 
         // Supprimer l'utilisateur de la base de données
@@ -290,6 +310,11 @@ class ControllerUtilisateur extends Controller
      */
     public function afficherFormulaire()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
         // Afficher le formulaire d'ajout d'utilisateur
         $id_utilisateur = 1;
 
@@ -308,6 +333,11 @@ class ControllerUtilisateur extends Controller
      */
     public function afficherModif()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+            
         // Afficher le formulaire de modification d'utilisateur
         $id_utilisateur = $_GET['id_utilisateur'] ?? 1;
 
