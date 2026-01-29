@@ -578,7 +578,46 @@ class ControllerUtilisateur extends Controller
      */
     public function modifierRoles()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+        }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $id_utilisateur = $utilisateurConnecte->getId();
+                
+            $estMaitre = isset($_POST['estMaitre']) ? 1 : 0;
+            $estPromeneur = isset($_POST['estPromeneur']) ? 1 : 0;
+
+            // VALIDATION SPÉCIALE : au moins un rôle
+            if (!$estMaitre && !$estPromeneur) {
+                $messagesErreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'messagesErreurs' => $messagesErreurs,
+                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
+                ]);
+                return;
+            }
+
+            // Mettre à jour les rôles de l'utilisateur dans la base de données
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
+
+            $utilisateurConnecte->setEstMaitre($estMaitre);
+            $utilisateurConnecte->setEstPromeneur($estPromeneur);
+            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
+
+            // Rediriger vers la page de l'utilisateur
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'utilisateur' => $utilisateurConnecte
+                ]);
+        }
     }
     
        
