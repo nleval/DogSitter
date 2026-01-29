@@ -1,7 +1,7 @@
 <?php
 /**
  * @file controller_annonce.class.php
- * @author Lalanne Victor
+ * @author Lalanne Victor & Léval Noah
  * @brief Gere la validation des données de formulaire
  * @version 1.0
  * @date 2025-12-18
@@ -159,7 +159,12 @@ class Validator
         return $this->messagesErreurs;
     }
 
-    public function validerConnexion($donnees)
+    /** 
+     * @brief Valider la connexion d'un utilisateur
+     * @param array $donnees : données du formulaire de connexion
+     * @return array
+     */
+    public function validerConnexion($donnees): array
     {
         $erreurs = [];
 
@@ -176,5 +181,76 @@ class Validator
         }
     
         return $erreurs;
+    }
+
+    /**
+     * @brief Valider une photo de profil
+     * @param array $photo : photo de profil a vérifier
+     * @param array $messagesErreurs : tableau contenant les messages d'erreurs
+     * @return bool : true si le champ est valide, false sinon
+     */
+    public function validerPhotoProfil(array $photo, array &$messagesErreurs): bool
+    {
+        $valide = true;
+
+        // 1. Champs obligatoires : la photo de profil est facultative
+        if ($photo['error'] === UPLOAD_ERR_NO_FILE) {
+            return true;  // Si aucun fichier n'est envoyé, c'est valide.
+        }
+
+        // 6. Vérification du type et de la taille du fichier
+        $typesAutorises = ['image/jpeg', 'image/png']; // Formats autorisés
+        $tailleMaxAutoriseeEnOctets = 2 * 1024 * 1024; // 2 Mo max
+
+        $typeMimeReel = mime_content_type($photo['tmp_name']); // Obtenir le type MIME réel du fichier
+        if (!in_array($typeMimeReel, $typesAutorises)) {
+            $messagesErreurs[] = "Le fichier doit être au format JPG ou PNG.";
+            $valide = false;
+        }
+
+        if ($photo['size'] > $tailleMaxAutoriseeEnOctets) {
+            $messagesErreurs[] = "Le fichier ne doit pas dépasser 2 Mo.";
+            $valide = false;
+        }
+
+        // Vérification des dimensions du fichier image
+        $dimensions = getimagesize($photo['tmp_name']);
+        if ($dimensions === false) {
+            $messagesErreurs[] = "Le fichier doit être une image valide.";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    /**
+     * @brief valide l'upload et le fichier
+     * @param array $fichier : fichier a vérifier
+     * @param array $messagesErreurs : tableau contenant les messages d'erreurs
+     * @return bool : true si le champ est valide, false sinon
+     */
+    public function validerUploadEtPhoto(array $fichier, array &$messagesErreurs): bool
+    {
+        if (isset($fichier) && $fichier['error'] === UPLOAD_ERR_OK) {
+            // Valider la photo
+            return $this->validerPhotoProfil($fichier, $messagesErreurs);
+        } else {
+            // Gestion des erreurs d'upload
+            switch ($fichier['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $messagesErreurs[] = "Le fichier dépasse la taille maximale autorisée sur le serveur.";
+                    return false;
+                case UPLOAD_ERR_PARTIAL:
+                    $messagesErreurs[] = "Le fichier n'a été que partiellement téléchargé.";
+                    return false;
+                case UPLOAD_ERR_NO_FILE:
+                    $messagesErreurs[] = "Aucun fichier n'a été téléchargé.";
+                    return false;
+                default:
+                    $messagesErreurs[] = "Erreur lors du téléchargement du fichier.";
+                    return false;
+            }
+        }
     }
 }
