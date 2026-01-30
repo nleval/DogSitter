@@ -59,13 +59,6 @@
 
                     <label class="form-label fw-semibold" style="color:#537031;">Photo de profil <span class="required-star" aria-hidden="true" title="Champ requis"></span></label>
 
-                    {% if utilisateur.photo is not empty %}
-                        <div class="mb-2">
-                            <img src="uploads/{{ utilisateur.photo }}" alt="Photo de profil"
-                                class="rounded-circle" width="80" height="80">
-                        </div>
-                    {% endif %}
-
                     <div class="d-flex gap-2">
                         <input type="file" name="photo" class="form-control"
                             accept="image/*"

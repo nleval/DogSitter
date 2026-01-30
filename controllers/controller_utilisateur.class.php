@@ -450,7 +450,72 @@ class ControllerUtilisateur extends Controller
      */
     public function modifierPdP()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+        } else {
+            $regles = [];
+    
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+    
+            $userId = $utilisateurConnecte->getId();
+            $userPseudo = $utilisateurConnecte->getPseudo();
+            $userPseudo = preg_replace('/[^a-zA-Z0-9_-]/', '', $userPseudo);
+            $messages = [];
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            
+            // Vérifier si un fichier a été envoyé
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+                // Valider le fichier photo
+                $validator = new Validator($regles);
+                $photoValide = $validator->validerUploadEtPhoto($_FILES['photo'], $messages);
+                
+                // Si la photo est valide
+                if ($photoValide) {
+                    // Définir le dossier de destination
+                    $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+                    $uploadDir = 'images/utilisateur/';
+                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
+                    $filePath = $uploadDir . $fileName;
+                    
+                    // Supprimer l'ancienne photo si elle existe
+                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    foreach ($anciennePhoto as $fichier) {
+                        if (is_file($fichier)) {
+                            unlink($fichier);
+                        }
+                    }
+                    
+                    // Déplacer le fichier téléchargé
+                    if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                        // Mettre à jour la photo de profil dans la base de données
+                        $reussite = $managerUtilisateur->modifierChamp($userId, 'photoProfil', $fileName);
+                        
+                        if ($reussite) {
+                            $messages[] = "La photo de profil a été mise à jour avec succès.";
+                        } else {
+                            $messages[] = "Erreur lors de la mise à jour de la photo de profil dans la base de données.";
+                        }
+                    } else {
+                        $messages[] = "Erreur lors du téléchargement du fichier.";
+                    }
+                } else {
+                    $messages[] = "La photo de profil n'est pas valide.";
+                }
+            } else {
+                $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
+            }
+    
+            $utilisateurConnecte->setPhotoProfil($fileName);
+            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
 
+            // Rediriger vers la page de l'utilisateur
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'utilisateur' => $utilisateurConnecte
+                ]);
+        }
     }
        
     /**
@@ -578,7 +643,46 @@ class ControllerUtilisateur extends Controller
      */
     public function modifierRoles()
     {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+        }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $id_utilisateur = $utilisateurConnecte->getId();
+                
+            $estMaitre = isset($_POST['estMaitre']) ? 1 : 0;
+            $estPromeneur = isset($_POST['estPromeneur']) ? 1 : 0;
+
+            // VALIDATION SPÉCIALE : au moins un rôle
+            if (!$estMaitre && !$estPromeneur) {
+                $messagesErreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'messagesErreurs' => $messagesErreurs,
+                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
+                ]);
+                return;
+            }
+
+            // Mettre à jour les rôles de l'utilisateur dans la base de données
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
+
+            $utilisateurConnecte->setEstMaitre($estMaitre);
+            $utilisateurConnecte->setEstPromeneur($estPromeneur);
+            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
+
+            // Rediriger vers la page de l'utilisateur
+                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                echo $template->render([
+                    'utilisateur' => $utilisateurConnecte
+                ]);
+        }
     }
     
        
