@@ -151,8 +151,8 @@ class ControllerAvis extends Controller
                 'note' => [
                     'obligatoire' => true,
                     'type' => 'numeric',
-                    'plage_min' => 1
-                    //MAX => 5
+                    'plage_min' => 1,
+                    'plage_max' => 5
                 ],
                 'commentaire' => [
                     'obligatoire' => false,
@@ -168,7 +168,7 @@ class ControllerAvis extends Controller
             // SI ERREURS → on réaffiche le formulaire
         
             if (!$valide) {
-                $template = $this->getTwig()->load('avis.html.twig');
+                $template = $this->getTwig()->load('ajouter_avis.html.twig');
                 echo $template->render([
                     'erreurs' => $erreurs,
                     'donnees' => $_POST,
@@ -256,8 +256,8 @@ class ControllerAvis extends Controller
                 'note' => [
                     'obligatoire' => true,
                     'type' => 'numeric',
-                    'plage_min' => 1
-                    //MAX => 5
+                    'plage_min' => 1,
+                    'plage_max' => 5
                 ],
                 'texte_commentaire' => [
                     'obligatoire' => false,
