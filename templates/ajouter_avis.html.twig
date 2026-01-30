@@ -21,11 +21,11 @@
                                         Note <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
                                     </label>
                                     <div class="rating" data-value="3">
-                                        <img src="images/Nonos.svg"  data-star="1" alt="1 étoile">
-                                        <img src="images/Nonos.svg"  data-star="2" alt="2 étoiles">
-                                        <img src="images/Nonos.svg"  data-star="3" alt="3 étoiles">
-                                        <img src="images/Nonos2.svg" data-star="4" alt="4 étoiles">
-                                        <img src="images/Nonos2.svg" data-star="5" alt="5 étoiles">
+                                        <img src="images/Nonos2.svg"  data-star="1" alt="1 étoile">
+                                        <img src="images/Nonos2.svg"  data-star="2" alt="2 étoiles">
+                                        <img src="images/Nonos2.svg"  data-star="3" alt="3 étoiles">
+                                        <img src="images/Nonos.svg" data-star="4" alt="4 étoiles">
+                                        <img src="images/Nonos.svg" data-star="5" alt="5 étoiles">
                                     </div>
                                     <input type="hidden" name="note" id="note" value="{{ donnees.note|default('3') }}">
                                 </div>
@@ -54,8 +54,8 @@
 
                                         stars.forEach(s => {
                                             s.src = s.dataset.star <= value
-                                                ? 'images/Nonos.svg'
-                                                : 'images/Nonos2.svg';
+                                                ? 'images/Nonos2.svg'
+                                                : 'images/Nonos.svg';
                                         });
                                     });
                                 });
