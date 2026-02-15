@@ -691,49 +691,63 @@ class ControllerUtilisateur extends Controller
      */
     public function authentification()
     {
+        $template = $this->getTwig()->load('connexion.html.twig');
+
+        // Si redirection après inscription
+        $success = null;
+        if (isset($_GET['inscription']) && $_GET['inscription'] === 'success') {
+            $success = 'Votre compte a été créé avec succès. Vous pouvez vous connecter.';
+        }
+
+        // Si formulaire envoyé
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupération des données du formulaire
-            $donneesFormulaire = [
-                'email' => htmlspecialchars($_POST['email'], ENT_QUOTES,) ?? null,
-                'motDePasse' => htmlspecialchars($_POST['motDePasse'], ENT_QUOTES) ?? null,
-            ];
+            $email = trim($_POST['email'] ?? '');
+            $motDePasse = $_POST['motDePasse'] ?? '';
 
-            // Validation des données   
-            $regles = [];
-            $validator = new Validator($regles);
-            $erreurs = $validator->validerConnexion($donneesFormulaire);
+            // Validation légère côté contrôleur
+            $validator = new Validator([]);
+            $erreurs = $validator->validerConnexion(['email' => $email, 'motDePasse' => $motDePasse]);
+
+            $manager = new UtilisateurDAO($this->getPDO());
+
             if ($erreurs) {
-                $template = $this->getTwig()->load('connexion.html.twig');
-                echo $template->render(['erreurs' => $erreurs]);
+                echo $template->render(['erreurs' => $erreurs, 'old' => ['email' => $email]] + ($success ? ['success' => $success] : []));
                 return;
             }
 
-            $mail = $donneesFormulaire['email'];
-            $mdp = $donneesFormulaire['motDePasse'];
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-
-            if(!$managerUtilisateur->estActif($mail) && $managerUtilisateur->emailExist($mail)){ 
-                $erreurs[] = "Votre compte est desactivé";
-                $template = $this->getTwig()->load('connexion.html.twig');
-                echo $template->render(['erreurs' => $erreurs]);
-                return;
+            try {
+                // utilise la logique du DAO qui gère tentatives et désactivation
+                if ($manager->authentification($email, $motDePasse)) {
+                    $utilisateur = $manager->findByEmail($email);
+                    if ($utilisateur) {
+                        $utilisateur->setMotDePasse(null);
+                        $_SESSION['utilisateur'] = serialize($utilisateur);
+                        $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+                        header('Location: index.php');
+                        exit();
+                    }
+                } else {
+                    $erreurs[] = "L'adresse mail ou le mot de passe est incorrect";
+                }
+            } catch (Exception $e) {
+                if ($e->getMessage() === 'compte_desactive') {
+                    $utilisateur = $manager->findByEmail($email);
+                    $tempsDernierEchec = $utilisateur ? $utilisateur->getDateDernierEchecConnexion() : null;
+                    $tempsRestant = $manager->tempsRestantAvantReactivationCompte($tempsDernierEchec);
+                    $minutes = floor($tempsRestant / 60);
+                    $secondes = $tempsRestant % 60;
+                    $erreurs[] = "Votre compte est temporairement désactivé. Réessayez dans {$minutes} minutes et {$secondes} secondes.";
+                } else {
+                    $erreurs[] = "Erreur inattendue : " . $e->getMessage();
+                }
             }
 
-            $utilisateur = $managerUtilisateur->findByEmail($mail);
-            if ($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())) {
-                $_SESSION['utilisateur'] = serialize($utilisateur);
-                $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
-                header("Location: index.php");
-            } else {
-                $template = $this->getTwig()->load('connexion.html.twig');
-                $erreurs[] = "L'adresse mail ou le mot de passe est incorrect";
-                echo $template->render(['erreurs' => $erreurs]);
-            }
+            echo $template->render(['erreurs' => $erreurs, 'old' => ['email' => $email], 'success' => $success]);
+            return;
         }
-        else {
-            $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render();
-        }
+
+        // GET : affichage du formulaire (éventuellement message de succès d'inscription)
+        echo $template->render($success ? ['success' => $success] : []);
     }
     // public function authentification()
     // {

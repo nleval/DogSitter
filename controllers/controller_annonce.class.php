@@ -30,6 +30,9 @@ class ControllerAnnonce extends Controller
                 exit();
             }
 
+            $sessionUser = unserialize($_SESSION['utilisateur']);
+
+
         // Vérifie si l'identifiant de l'annonce ($id_annonce) n'a pas été reçu en tant qu'argument
         if($id_annonce === null) {
             if (isset($_GET['id_annonce'])) {
@@ -265,7 +268,7 @@ class ControllerAnnonce extends Controller
             }
 
             // Redirection vers un popup de confirmation
-            header('Location: index.php?controleur=annonce&methode=confirmationCreationAnnonce');
+            header('Location: index.php?controleur=Annonce&methode=confirmationCreationAnnonce');
             exit();
             
         }
@@ -301,6 +304,9 @@ class ControllerAnnonce extends Controller
                 exit();
             }
 
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
+
         $id_annonce = $_GET['id_annonce'] ?? null;
 
         $managerAnnonce = new AnnonceDAO($this->getPDO());
@@ -314,7 +320,7 @@ class ControllerAnnonce extends Controller
 
         $managerAnnonce->supprimerAnnonce($id_annonce);
 
-        header('Location: index.php?controleur=annonce&methode=afficherAnnoncesParUtilisateur');
+        header('Location: index.php?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur=' . $id_utilisateur);
         exit();
     }
 
@@ -328,6 +334,9 @@ class ControllerAnnonce extends Controller
                 header('Location: index.php?controleur=utilisateur&methode=authentification');
                 exit();
             }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
 
         // ---------- ID ANNONCE ----------
         if ($id_annonce === null) {
