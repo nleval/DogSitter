@@ -5,72 +5,80 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid" style="background-color:#FEFAE0; min-height:100vh;">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-6 col-lg-5">
-                    <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family:'Poppins', sans-serif;">
-                        Se connecter
-                    </h2>
+    <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Se connecter</h1>
+                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Accédez à votre compte DogSitter</p>
+            </div>
+        </div>
 
-                    <div class="card shadow-lg" style="border:none; border-radius:12px; overflow:hidden;">
-                        <div style="background-color: #FAF6E9; padding:32px; border-left:6px solid #DDA15E;">
-                            <form action="index.php?controleur=Utilisateur&methode=authentification" method="POST">
-                                <!-- EMAIL -->
-                                <div class="mb-4">
-                                    <label for="email" class="form-label fw-bold" style="color:#537031;">
-                                        E-mail <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
-                                    </label>
-                                    <input type="email"
-                                        class="form-control"
-                                        id="email"
-                                        name="email"
-                                        value="{{ old.email|default('') }}"
-                                        maxlength="100"
-                                        placeholder="votreE-mail@example.org"
-                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
-                                        required />
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
+            <div style="width: 100%; max-width: 600px;">
+                <div style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
+                    <form action="index.php?controleur=Utilisateur&methode=authentification" method="POST">
+                        <!-- EMAIL -->
+                        <div style="margin-bottom: 28px;">
+                            <label for="email" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">E-mail *</label>
+                            <input type="email"
+                                id="email"
+                                name="email"
+                                value="{{ old.email|default('') }}"
+                                maxlength="100"
+                                placeholder="votreE-mail@example.org"
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
+                                required />
+                        </div>
+
+                        <!-- MOT DE PASSE -->
+                        <div style="margin-bottom: 28px;">
+                            <label for="motDePasse" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe *</label>
+                            <input type="password"
+                                id="motDePasse"
+                                name="motDePasse"
+                                minlength="8"
+                                maxlength="50"
+                                placeholder="Veuillez saisir votre mot de passe"
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
+                                required />
+                        </div>
+
+                        <!-- ERREURS -->
+                        {% if erreurs is defined and erreurs %}
+                            <div style="background-color: #FAF6E9; border-left: 5px solid #DDA15E; padding: 16px; border-radius: 6px; margin-bottom: 28px;">
+                                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                    <span style="color: #DDA15E; font-size: 18px;">!</span>
+                                    <ul style="margin: 0; padding-left: 20px; color: #2c2c2c; font-size: 14px;">
+                                        {% for err in erreurs %}
+                                            <li>{{ err }}</li>
+                                        {% endfor %}
+                                    </ul>
                                 </div>
+                            </div>
+                        {% endif %}
 
-                                <!-- MOT DE PASSE -->
-                                <div class="mb-4">
-                                    <label for="motDePasse" class="form-label fw-bold" style="color:#537031;">
-                                        Mot de passe <span class="required-star" aria-hidden="true" title="Champ requis">★</span>
-                                    </label>
-                                    <input type="password"
-                                        class="form-control"
-                                        id="motDePasse"
-                                        name="motDePasse"
-                                        minlength="8"
-                                        maxlength="50"
-                                        placeholder="Veuillez saisir votre mot de passe"
-                                        style="border:1px solid #DDA15E; background-color:#FEFAE0; color:#537031; border-radius:8px;"
-                                        required />
-                                </div>
+                        <!-- BOUTONS -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 28px;">
+                            <a href="index.php"
+                                style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                                Annuler
+                            </a>
+                            <button type="submit"
+                                style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                Se connecter
+                            </button>
+                        </div>
 
-                                <!-- BOUTONS -->
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <a href="index.php"
-                                        class="btn btn-outline"
-                                        style="border-radius:8px; border-color:#537031; color:#537031;">
-                                        Annuler
-                                    </a>
-
-                                    <button type="submit"
-                                        class="btn fw-bold text-white"
-                                        style="background-color:#BC6C25; border-radius:8px; padding:10px 28px;">
-                                        Se connecter
-                                    </button>
-                                </div>
-
-                                <!-- Lien vers inscription -->
-                                <div class="text-center mt-3">
-                                    <span style="color:#537031;">Vous n'avez pas de compte ?</span>
-                                    <a href="?controleur=Utilisateur&methode=afficherInscription"
-                                        style="color:#BC6C25; font-weight:bold;">
-                                        Créer un compte
-                                    </a>
-                                </div>
+                        <!-- Lien vers inscription -->
+                        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #DDA15E;">
+                            <span style="color: #537031; font-size: 14px;">Vous n'avez pas de compte ?</span>
+                            <a href="?controleur=Utilisateur&methode=afficherInscription"
+                                style="color: #DDA15E; font-weight: 600; text-decoration: none; margin-left: 8px;">
+                                Créer un compte
+                            </a>
+                        </div>
 
                                 {% if success is defined and success %}
                                     <div class="alert alert-success mt-4">
@@ -86,9 +94,7 @@
                                         </ul>
                                     </div>
                                 {% endif %}
-                            </form>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
