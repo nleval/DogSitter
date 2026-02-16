@@ -33,10 +33,20 @@
                 {% endif %}
 
                 <form method="post" action="?controleur=Avis&methode=creerAvis" style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
+                    <!-- ID utilisateur noté (caché) -->
+                    {% if id_utilisateur_note is defined %}
+                        <input type="hidden" name="id_utilisateur_note" value="{{ id_utilisateur_note }}">
+                    {% endif %}
+
+                    <!-- ID promenade/annonce (caché) -->
+                    {% if id_annonce is defined %}
+                        <input type="hidden" name="id_annonce" value="{{ id_annonce }}">
+                    {% endif %}
+
                     <!-- Note -->
                     <div style="margin-bottom: 28px;">
                         <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px;">Note *</label>
-                        <div class="rating" data-value="3" style="display: flex; gap: 12px; cursor: pointer; margin-bottom: 10px;">
+                        <div class="rating" data-value="{{ donnees.note|default('3') }}" style="display: flex; gap: 12px; cursor: pointer; margin-bottom: 10px;">
                             <img src="images/Nonos.svg" data-star="1" alt="1 étoile" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
                             <img src="images/Nonos.svg" data-star="2" alt="2 étoiles" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
                             <img src="images/Nonos.svg" data-star="3" alt="3 étoiles" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
@@ -55,10 +65,10 @@
                     <!-- Boutons -->
                     <div style="display: flex; gap: 12px; margin-top: 40px;">
                         <button type="submit" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                            <i class="bi bi-check-circle me-2"></i> Publier l'avis
+                            <i class="bi bi-check-circle" style="margin-right: 6px;"></i> Publier l'avis
                         </button>
-                        <a href="index.php" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
-                            <i class="bi bi-x-circle me-2"></i> Annuler
+                        <a href="{{ referer|default('index.php') }}" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                            <i class="bi bi-x-circle" style="margin-right: 6px;"></i> Annuler
                         </a>
                     </div>
                 </form>

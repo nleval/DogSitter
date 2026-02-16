@@ -20,6 +20,14 @@
                     {% endif %}
                     <div style="flex: 1; padding-top: 6px;">
                         <h1 class="mb-3" style="font-size: 36px; font-weight: 600; color: #FEFAE0; margin: 0; letter-spacing: -0.5px;">{{ utilisateur.pseudo }}</h1>
+                        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: rgba(254, 250, 224, 0.15); border: 1px solid rgba(254, 250, 224, 0.35); border-radius: 999px; color: #FEFAE0; font-size: 13px; font-weight: 600; margin-bottom: 12px;">
+                            <i class="bi bi-star-fill" style="color: #DDA15E;"></i>
+                            {% if statsAvis is defined and statsAvis.total > 0 %}
+                                {{ statsAvis.moyenne|number_format(1, '.', '') }}/5 ({{ statsAvis.total }})
+                            {% else %}
+                                Aucun avis
+                            {% endif %}
+                        </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             {% if utilisateur.estMaitre %}
                                 <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
@@ -123,7 +131,18 @@
                                                     <i class="bi bi-paw" style="font-size: 40px; color: #FEFAE0;"></i>
                                                 </div>
                                             {% endif %}
-                                            <p style="color: #537031; font-size: 14px; font-weight: 600; margin: 0; text-transform: capitalize;">{{ chien.nom_Chien }}</p>
+                                            <p style="color: #537031; font-size: 14px; font-weight: 600; margin: 0 0 10px 0; text-transform: capitalize;">{{ chien.nom_Chien }}</p>
+                                            <div style="display: flex; gap: 8px;">
+                                                <a href="?controleur=chien&methode=afficherFormulaireModification&id_chien={{ chien.id_chien }}" style="flex: 1; background-color: #FEFAE0; color: #537031; padding: 8px 10px; font-size: 12px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; text-decoration: none;" onmouseover="this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
+                                                    <i class="bi bi-pencil" style="margin-right: 4px;"></i>Modifier
+                                                </a>
+                                                <form method="post" action="?controleur=chien&methode=supprimerChien" style="flex: 1;" onsubmit="return confirm('Supprimer ce chien ?');">
+                                                    <input type="hidden" name="id_chien" value="{{ chien.id_chien }}">
+                                                    <button type="submit" style="width: 100%; background-color: #FAF6E9; color: #BC6C25; padding: 8px 10px; font-size: 12px; border: 1px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer;" onmouseover="this.style.borderColor='#BC6C25'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#DDA15E'; this.style.backgroundColor='#FAF6E9';">
+                                                        <i class="bi bi-trash" style="margin-right: 4px;"></i>Supprimer
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 {% endfor %}

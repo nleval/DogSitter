@@ -35,6 +35,15 @@
                                         <h5 class="fw-bold" style="color:#BC6C25;">
                                             {{ utilisateur.pseudo }}
                                         </h5>
+                                        <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; background-color: #FEFAE0; border: 1px solid #DDA15E; border-radius: 999px; font-size: 12px; font-weight: 600; color: #537031; margin-bottom: 10px;">
+                                            <i class="bi bi-star-fill" style="color:#DDA15E;"></i>
+                                            {% set stats = statsParUtilisateur[utilisateur.id]|default({'moyenne': 0, 'total': 0}) %}
+                                            {% if stats.total > 0 %}
+                                                {{ stats.moyenne|number_format(1, '.', '') }}/5 ({{ stats.total }})
+                                            {% else %}
+                                                Aucun avis
+                                            {% endif %}
+                                        </div>
 
                                         <p class="mb-2" style="font-size:0.95rem;">
                                             <strong>Email :</strong> {{ utilisateur.email }}<br>

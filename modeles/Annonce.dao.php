@@ -368,6 +368,104 @@ public function refuserCandidature(int $id_annonce, int $id_candidat)
 }
 
 /**
+ * @brief Récupère l'ID du candidat accepté pour une annonce
+ * @param int $id_annonce Identifiant de l'annonce
+ * @return int|null ID du candidat accepté ou null
+ */
+public function getCandidatAccepte(int $id_annonce): ?int
+{
+    $stmt = $this->pdo->prepare("
+        SELECT id_utilisateur
+        FROM " . PREFIXE_TABLE . "Repond
+        WHERE id_annonce = :id_annonce
+          AND statut IN ('acceptee', 'acceptée')
+        ORDER BY id_reponse DESC
+        LIMIT 1
+    ");
+
+    $stmt->execute([':id_annonce' => $id_annonce]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row && isset($row['id_utilisateur'])) {
+        return (int) $row['id_utilisateur'];
+    }
+
+    return null;
+}
+
+/**
+ * @brief Récupère l'ID de la promenade pour une annonce et un promeneur
+ * @param int $id_annonce Identifiant de l'annonce
+ * @param int $id_promeneur Identifiant du promeneur
+ * @return int|null ID de la promenade ou null
+ */
+public function getPromenadeIdByAnnonceAndPromeneur(int $id_annonce, int $id_promeneur): ?int
+{
+    $stmt = $this->pdo->prepare("
+        SELECT id_promenade
+        FROM " . PREFIXE_TABLE . "Promenade
+        WHERE id_annonce = :id_annonce
+          AND id_promeneur = :id_promeneur
+        ORDER BY id_promenade DESC
+        LIMIT 1
+    ");
+
+    $stmt->execute([
+        ':id_annonce' => $id_annonce,
+        ':id_promeneur' => $id_promeneur
+    ]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && isset($row['id_promenade'])) {
+        return (int) $row['id_promenade'];
+    }
+
+    return null;
+}
+
+/**
+ * @brief Crée une promenade pour une annonce et un promeneur
+ * @param int $id_annonce Identifiant de l'annonce
+ * @param int $id_promeneur Identifiant du promeneur
+ * @param int $id_proprietaire Identifiant du proprietaire
+ * @param string $date_promenade Date/heure de la promenade
+ * @param string $statut Statut de la promenade
+ * @return int|null ID de la promenade créée ou null
+ */
+public function createPromenadeForAnnonce(
+    int $id_annonce,
+    int $id_promeneur,
+    int $id_proprietaire,
+    string $date_promenade,
+    string $statut = 'terminee'
+): ?int {
+    try {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO " . PREFIXE_TABLE . "Promenade
+                (id_chien, id_promeneur, id_proprietaire, id_annonce, date_promenade, statut)
+            VALUES
+                (NULL, :id_promeneur, :id_proprietaire, :id_annonce, :date_promenade, :statut)
+        ");
+
+        $ok = $stmt->execute([
+            ':id_promeneur' => $id_promeneur,
+            ':id_proprietaire' => $id_proprietaire,
+            ':id_annonce' => $id_annonce,
+            ':date_promenade' => $date_promenade,
+            ':statut' => $statut
+        ]);
+
+        if ($ok) {
+            return (int) $this->pdo->lastInsertId();
+        }
+    } catch (PDOException $e) {
+        return null;
+    }
+
+    return null;
+}
+
+/**
  * @brief Annule/supprime une candidature soumise par un promeneur
  * @param int $id_annonce Identifiant de l'annonce
  * @param int $id_utilisateur Identifiant de l'utilisateur

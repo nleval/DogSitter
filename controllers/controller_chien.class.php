@@ -171,6 +171,219 @@ class ControllerChien extends Controller
             exit();
         }
     }
+
+    /**
+     * @brief Afficher le formulaire de modification de chien
+     */
+    public function afficherFormulaireModification()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $id_chien = isset($_GET['id_chien']) ? (int) $_GET['id_chien'] : null;
+        if (!$id_chien) {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $managerChien = new ChienDAO($this->getPDO());
+        $chien = $managerChien->findById($id_chien);
+
+        if (!$chien || $chien->getid_Utilisateur() !== $utilisateurConnecte->getId()) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Acces refuse."]);
+            return;
+        }
+
+        $template = $this->getTwig()->load('ajouter_chien.html.twig');
+        echo $template->render([
+            'chien' => $chien,
+            'mode' => 'edit'
+        ]);
+    }
+
+    /**
+     * @brief Modifier un chien
+     */
+    public function modifierChien()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $id_chien = isset($_GET['id_chien']) ? (int) $_GET['id_chien'] : null;
+        if (!$id_chien) {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
+
+        $managerChien = new ChienDAO($this->getPDO());
+        $chienExistant = $managerChien->findById($id_chien);
+
+        if (!$chienExistant || $chienExistant->getid_Utilisateur() !== $id_utilisateur) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Acces refuse."]);
+            return;
+        }
+
+        $nom_chien = $_POST['nom_chien'] ?? '';
+        $race = $_POST['race'] ?? '';
+        $taille = $_POST['taille'] ?? '';
+        $poids = $_POST['poids'] ?? '';
+
+        if (empty($nom_chien) || empty($race)) {
+            $erreur = "Le nom et la race sont obligatoires.";
+            $template = $this->getTwig()->load('ajouter_chien.html.twig');
+            echo $template->render([
+                'erreur' => $erreur,
+                'chien' => $chienExistant,
+                'mode' => 'edit'
+            ]);
+            return;
+        }
+
+        $cheminPhoto = $chienExistant->getCheminPhoto() ?? '';
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $fichier = $_FILES['photo'];
+
+            $mimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!in_array($fichier['type'], $mimeTypes)) {
+                $erreur = "Le format de fichier n'est pas accepte (JPEG, PNG, GIF uniquement).";
+                $template = $this->getTwig()->load('ajouter_chien.html.twig');
+                echo $template->render([
+                    'erreur' => $erreur,
+                    'chien' => $chienExistant,
+                    'mode' => 'edit'
+                ]);
+                return;
+            }
+
+            if ($fichier['size'] > 2 * 1024 * 1024) {
+                $erreur = "Le fichier est trop volumineux (maximum 2MB).";
+                $template = $this->getTwig()->load('ajouter_chien.html.twig');
+                echo $template->render([
+                    'erreur' => $erreur,
+                    'chien' => $chienExistant,
+                    'mode' => 'edit'
+                ]);
+                return;
+            }
+
+            $uploadDir = 'images/chiens/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $extension = pathinfo($fichier['name'], PATHINFO_EXTENSION);
+            $nouveauNom = 'chien_' . $id_utilisateur . '_' . time() . '.' . $extension;
+            $uploadPath = $uploadDir . $nouveauNom;
+
+            if (!move_uploaded_file($fichier['tmp_name'], $uploadPath)) {
+                $erreur = "Erreur lors de l'upload du fichier.";
+                $template = $this->getTwig()->load('ajouter_chien.html.twig');
+                echo $template->render([
+                    'erreur' => $erreur,
+                    'chien' => $chienExistant,
+                    'mode' => 'edit'
+                ]);
+                return;
+            }
+
+            if (!empty($cheminPhoto)) {
+                $ancien = $uploadDir . $cheminPhoto;
+                if (is_file($ancien)) {
+                    @unlink($ancien);
+                }
+            }
+
+            $cheminPhoto = $nouveauNom;
+        }
+
+        $chien = new Chien(
+            $id_chien,
+            $nom_chien,
+            $poids,
+            $taille,
+            $race,
+            $cheminPhoto,
+            $id_utilisateur
+        );
+
+        if ($managerChien->update($chien)) {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $erreur = "Erreur lors de la modification du chien.";
+        $template = $this->getTwig()->load('ajouter_chien.html.twig');
+        echo $template->render([
+            'erreur' => $erreur,
+            'chien' => $chienExistant,
+            'mode' => 'edit'
+        ]);
+    }
+
+    /**
+     * @brief Supprimer un chien
+     */
+    public function supprimerChien()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $id_chien = isset($_POST['id_chien']) ? (int) $_POST['id_chien'] : null;
+        if (!$id_chien) {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
+
+        $managerChien = new ChienDAO($this->getPDO());
+        $chien = $managerChien->findById($id_chien);
+
+        if (!$chien || $chien->getid_Utilisateur() !== $id_utilisateur) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Acces refuse."]);
+            return;
+        }
+
+        if ($managerChien->deleteByIdAndUser($id_chien, $id_utilisateur)) {
+            $cheminPhoto = $chien->getCheminPhoto();
+            if (!empty($cheminPhoto)) {
+                $filePath = 'images/chiens/' . $cheminPhoto;
+                if (is_file($filePath)) {
+                    @unlink($filePath);
+                }
+            }
+        }
+
+        header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+        exit();
+    }
 }
 
 ?>

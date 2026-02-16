@@ -66,7 +66,7 @@
                                         <!-- Photo du chien -->
                                         <div style="width: 120px; height: 120px; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; background-color: #FEFAE0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1);">
                                             {% if chien.getCheminPhoto() %}
-                                                <img src="{{ chien.getCheminPhoto() }}" alt="Photo de {{ chien.getNom_Chien() }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                <img src="images/chiens/{{ chien.getCheminPhoto() }}" alt="Photo de {{ chien.getNom_Chien() }}" style="width: 100%; height: 100%; object-fit: cover;" />
                                             {% else %}
                                                 <i class="bi bi-paw" style="font-size: 48px; color: #9AAD5A;"></i>
                                             {% endif %}
@@ -195,6 +195,64 @@
                                     <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;" disabled>
                                         Seuls les promeneurs peuvent postuler
                                     </button>
+                                {% endif %}
+                            </div>
+
+                            <!-- Avis du propriétaire -->
+                            <div style="margin-top: 40px; padding-top: 32px; border-top: 2px solid #DDA15E;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                                    <h3 style="font-size: 18px; font-weight: 600; color: #537031; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <i class="bi bi-star-fill" style="margin-right: 8px; color: #DDA15E;"></i>Avis de cette promenade
+                                    </h3>
+                                    {% if userConnecte and userConnecte.estMaitre and userConnecte.getId() == proprietaire.getId() %}
+                                        {% if acceptedCandidatId %}
+                                            <a href="?controleur=Avis&methode=creerAvis&id_utilisateur_note={{ acceptedCandidatId }}&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 10px 16px; font-size: 12px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2); cursor: pointer; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                                <i class="bi bi-pencil" style="margin-right: 4px;"></i>Laisser un avis
+                                            </a>
+                                        {% else %}
+                                            <div style="background-color: #FAF6E9; color: #9AAD5A; padding: 10px 16px; font-size: 12px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; text-align: center; cursor: not-allowed; white-space: nowrap;">
+                                                <i class="bi bi-lock" style="margin-right: 4px;"></i>Aucun promeneur accepte
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                {% if avisPromenade is defined and avisPromenade|length > 0 %}
+                                    <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                                        {% for avis in avisPromenade %}
+                                            <div style="background-color: #FEFAE0; border: 1px solid #9AAD5A; border-radius: 8px; padding: 16px; display: flex; flex-direction: column;">
+                                                <!-- Note (étoiles) -->
+                                                <div style="display: flex; gap: 4px; margin-bottom: 12px;">
+                                                    {% for i in 1..5 %}
+                                                        {% if i <= avis.note %}
+                                                            <i class="bi bi-star-fill" style="font-size: 16px; color: #DDA15E;"></i>
+                                                        {% else %}
+                                                            <i class="bi bi-star" style="font-size: 16px; color: #DDA15E; opacity: 0.3;"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <span style="margin-left: 6px; font-size: 13px; font-weight: 600; color: #537031;">{{ avis.note }}/5</span>
+                                                </div>
+
+                                                <!-- Commentaire -->
+                                                {% if avis.getTexteCommentaire() is not empty %}
+                                                    <p style="margin: 0; color: #2c2c2c; font-size: 13px; line-height: 1.5; flex: 1;">
+                                                        {{ avis.getTexteCommentaire() }}
+                                                    </p>
+                                                {% else %}
+                                                    <p style="margin: 0; color: #9AAD5A; font-size: 13px; font-style: italic;">
+                                                        Aucun commentaire
+                                                    </p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div style="background-color: #FEFAE0; border: 1px dashed #9AAD5A; padding: 16px; border-radius: 8px; text-align: center;">
+                                        <p style="margin: 0; color: #9AAD5A; font-size: 13px; font-style: italic;">
+                                            <i class="bi bi-star" style="margin-right: 6px;"></i>Pas encore d'avis pour cette promenade
+                                        </p>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>

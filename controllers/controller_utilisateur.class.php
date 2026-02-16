@@ -50,11 +50,15 @@ class ControllerUtilisateur extends Controller
         $chiensDAO = new ChienDAO($this->getPDO());
         $chiens = $chiensDAO->findByUtilisateur($id_utilisateur);
 
+        $managerAvis = new AvisDAO($this->getPDO());
+        $statsAvis = $managerAvis->getStatsParUtilisateurNote($id_utilisateur);
+
         // Rendre la vue avec l'utilisateur et ses chiens
         $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
-            'chiens' => $chiens
+            'chiens' => $chiens,
+            'statsAvis' => $statsAvis
         ]);
     }
 
@@ -80,11 +84,15 @@ class ControllerUtilisateur extends Controller
         $chiensDAO = new ChienDAO($this->getPDO());
         $chiens = $chiensDAO->findByUtilisateur($id_utilisateur);
 
+        $managerAvis = new AvisDAO($this->getPDO());
+        $statsAvis = $managerAvis->getStatsParUtilisateurNote((int) $id_utilisateur);
+
         // Rendre la vue avec l'utilisateur et ses chiens
         $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
-            'chiens' => $chiens
+            'chiens' => $chiens,
+            'statsAvis' => $statsAvis
         ]);
     }
 
@@ -102,10 +110,18 @@ class ControllerUtilisateur extends Controller
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
         $utilisateursListe = $managerutilisateur->findAll();
 
+        $managerAvis = new AvisDAO($this->getPDO());
+        $statsParUtilisateur = [];
+
+        foreach ($utilisateursListe as $utilisateur) {
+            $statsParUtilisateur[$utilisateur->getId()] = $managerAvis->getStatsParUtilisateurNote($utilisateur->getId());
+        }
+
         // Rendre la vue avec les utilisateurs
         $template = $this->getTwig()->load('utilisateurs.html.twig');
         echo $template->render([
-            'utilisateursListe' => $utilisateursListe
+            'utilisateursListe' => $utilisateursListe,
+            'statsParUtilisateur' => $statsParUtilisateur
         ]);
     }
 

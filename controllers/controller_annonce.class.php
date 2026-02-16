@@ -53,6 +53,8 @@ class ControllerAnnonce extends Controller
         $chienConcernes = [];
         $proprietaire = null;
 
+        $acceptedCandidatId = null;
+
         if($annonce !== null) {
 
             // Récupérer les chiens concernés par cette annonce
@@ -61,16 +63,36 @@ class ControllerAnnonce extends Controller
 
             $managerUtilisateur = new UtilisateurDAO($this->getPDO()); 
             $proprietaire = $managerUtilisateur->findById($annonce->getIdUtilisateur());
+
+            $acceptedCandidatId = $managerAnnonce->getCandidatAccepte($annonce->getIdAnnonce());
         }
 
         // Rendre la vue avec l'annonce
         $template = $this->getTwig()->load('annonce.html.twig');
+        
+        $avisPromenade = [];
+        $idPromenade = null;
+
+        if ($annonce !== null && $acceptedCandidatId) {
+            $idPromenade = $managerAnnonce->getPromenadeIdByAnnonceAndPromeneur(
+                $annonce->getIdAnnonce(),
+                $acceptedCandidatId
+            );
+
+            if ($idPromenade) {
+                $managerAvis = new AvisDAO($this->getPDO());
+                $avisPromenade = $managerAvis->trouverParIdPromenade($idPromenade);
+            }
+        }
+        
         echo $template->render([
             'annonce' => $annonce,
             'chiens' => $chienConcernes,
             'proprietaire' => $proprietaire,
             'userConnecte' => $sessionUser,
-            'reponse' => $_GET['reponse'] ?? null
+            'reponse' => $_GET['reponse'] ?? null,
+            'avisPromenade' => $avisPromenade,
+            'acceptedCandidatId' => $acceptedCandidatId
         ]);
     }
 
