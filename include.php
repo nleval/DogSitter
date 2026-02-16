@@ -51,4 +51,5 @@ require_once 'modeles/message.class.php';
 require_once 'modeles/message.dao.php';
 require_once 'modeles/chien.class.php';
 require_once 'modeles/chien.dao.php';
+require_once 'modeles/Notification.dao.php';
 require_once 'modeles/validator.class.php';

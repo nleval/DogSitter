@@ -1,0 +1,132 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Ajouter un chien — DogSitter
+{% endblock %}
+
+{% block content %}
+    <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Ajouter un chien</h1>
+                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Complétez les informations de votre compagnon</p>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
+            <div style="width: 100%; max-width: 600px;">
+                {% if erreur is defined %}
+                    <div style="background-color: #FEFAE0; margin-bottom: 30px; padding: 20px; border-radius: 8px; border: 2px solid #DDA15E;">
+                        <div style="padding: 16px; background-color: #FAF6E9; border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+                            <i class="bi bi-exclamation-circle" style="font-size: 24px; color: #DDA15E; flex-shrink: 0; margin-top: 2px;"></i>
+                            <p style="color: #537031; margin: 0; font-weight: 500;">{{ erreur }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="?controleur=chien&methode=ajouterChien" enctype="multipart/form-data" style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
+                    <!-- Nom du chien -->
+                    <div style="margin-bottom: 28px;">
+                        <label for="nom_chien" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Nom du chien *</label>
+                        <input type="text" id="nom_chien" name="nom_chien" required placeholder="Ex: Rex, Bella..." style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                    </div>
+
+                    <!-- Race -->
+                    <div style="margin-bottom: 28px;">
+                        <label for="race" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Race *</label>
+                        <input type="text" id="race" name="race" required placeholder="Ex: Labrador, Beagle..." style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                    </div>
+
+                    <!-- Taille -->
+                    <div style="margin-bottom: 28px;">
+                        <label for="taille" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Taille</label>
+                        <select id="taille" name="taille" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; cursor: pointer;">
+                            <option value="">Sélectionner une taille...</option>
+                            <option value="Très petit">Très petit (< 5 kg)</option>
+                            <option value="Petit">Petit (5-15 kg)</option>
+                            <option value="Moyen">Moyen (15-30 kg)</option>
+                            <option value="Grand">Grand (30-50 kg)</option>
+                            <option value="Très grand">Très grand (> 50 kg)</option>
+                        </select>
+                    </div>
+
+                    <!-- Poids -->
+                    <div style="margin-bottom: 28px;">
+                        <label for="poids" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Poids (en kg)</label>
+                        <input type="number" id="poids" name="poids" placeholder="Ex: 25" step="0.1" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">
+                    </div>
+
+                    <!-- Photo du chien -->
+                    <div style="margin-bottom: 28px;">
+                        <label for="photo" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Photo du chien</label>
+                        <div style="border: 2px dashed #9AAD5A; border-radius: 8px; padding: 24px; text-align: center; background-color: #FEFAE0; cursor: pointer; transition: all 0.2s;" id="dropZone" onmouseover="this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 32px; color: #9AAD5A; display: block; margin-bottom: 10px;"></i>
+                            <p style="color: #537031; margin: 0 0 4px 0; font-weight: 600;">Glissez-déposez une photo ou cliquez</p>
+                            <p style="color: #9AAD5A; margin: 0; font-size: 12px;">JPEG, PNG, GIF (max 2MB)</p>
+                            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif" style="display: none;">
+                        </div>
+                        <div id="fileInfo" style="margin-top: 12px; padding: 12px 16px; background-color: #E8F5E0; border-radius: 6px; border: 1px solid #9AAD5A; display: none;">
+                            <p style="color: #537031; margin: 0; font-size: 13px; font-weight: 600;">✓ <span id="fileName"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Boutons -->
+                    <div style="display: flex; gap: 12px; margin-top: 40px;">
+                        <button type="submit" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                            <i class="bi bi-check-circle me-2"></i> Ajouter le chien
+                        </button>
+                        <a href="?controleur=utilisateur&methode=afficherTonUtilisateur" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                            <i class="bi bi-x-circle me-2"></i> Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion du drag & drop
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('photo');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#537031';
+            dropZone.style.backgroundColor = '#F0F8EC';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#9AAD5A';
+            dropZone.style.backgroundColor = '#FEFAE0';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#9AAD5A';
+            dropZone.style.backgroundColor = '#FEFAE0';
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileInfo();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileInfo);
+
+        function updateFileInfo() {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                fileName.textContent = file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                fileInfo.style.display = 'block';
+            } else {
+                fileInfo.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

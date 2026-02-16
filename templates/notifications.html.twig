@@ -1,0 +1,355 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Notifications — DogSitter
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-5" style="background-color: #FEFAE0; min-height: 100vh;">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-bold" style="color: #537031; font-size: 28px;">Notifications</h1>
+                <p style="color: #9AAD5A; margin-top: 0.5rem; font-weight:500;">Historique de vos notifications</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Filtres -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm" style="position: sticky; top: 100px; background-color:#FAF6E9; border:1px solid #DDA15E;">
+                    <div class="card-body" style="background-color:#FAF6E9;">
+                        <h6 class="fw-bold text-uppercase" style="color: #537031; font-size: 12px; letter-spacing: 0.5px;">Filtrer par type</h6>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-sm text-start filter-btn active" 
+                                    onclick="filterNotifications('all')"
+                                    style="background: none; border: 1px solid #ddd; color: #537031; transition: all 0.2s;">
+                                <i class="bi bi-funnel" style="width: 16px;"></i> Toutes les notifications
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    onclick="filterNotifications('candidature_soumise')"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-check2" style="width: 16px;"></i> Candidatures soumises
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    onclick="filterNotifications('candidature_reçue')"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-inbox" style="width: 16px;"></i> Candidatures reçues
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    onclick="filterNotifications('candidature_acceptée')"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-check-lg" style="width: 16px;"></i> Acceptées
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    onclick="filterNotifications('candidature_refusée')"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-x-lg" style="width: 16px;"></i> Refusées
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="col-lg-9">
+                <div id="notificationsListContainer">
+                    <div class="text-center py-5">
+                        <div class="spinner-border" style="color: #9AAD5A; width: 40px; height: 40px;" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p style="color: #666; margin-top: 1rem; font-size: 14px;">Chargement des notifications...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.filter-btn {
+    background-color: #FAF6E9 !important;
+    border-color: #DDA15E !important;
+    color: #537031 !important;
+}
+
+.filter-btn:hover {
+    background-color: #F8F4E8 !important;
+    border-color: #9AAD5A !important;
+    color: #537031 !important;
+}
+
+.filter-btn.active {
+    background-color: #537031 !important;
+    border-color: #537031 !important;
+    color: white !important;
+}
+
+.notification-item {
+    background: #FAF6E9;
+    border: 1px solid #DDA15E;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    border-left: 4px solid #DDA15E;
+}
+
+.notification-item:hover {
+    box-shadow: 0 4px 12px rgba(83, 112, 49, 0.15);
+    border-left-color: #537031;
+    background-color: #F8F4E8;
+}
+
+.notification-item.marked-as-read {
+    background-color: #E8F5E0 !important;
+    border-left-color: #9AAD5A !important;
+    box-shadow: 0 4px 12px rgba(154, 173, 90, 0.4);
+}
+
+.notification-item.candidature_soumise {
+    border-left-color: #9AAD5A;
+}
+
+.notification-item.candidature_reçue {
+    border-left-color: #DDA15E;
+}
+
+.notification-item.candidature_acceptée {
+    border-left-color: #9AAD5A;
+}
+
+.notification-item.candidature_refusée {
+    border-left-color: #BC6C25;
+}
+
+.notification-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notification-item-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #537031;
+    margin: 0;
+}
+
+.notification-item-message {
+    font-size: 13px;
+    color: #537031;
+    margin: 8px 0 0 0;
+    line-height: 1.5;
+}
+
+.notification-item-date {
+    font-size: 12px;
+    color: #9AAD5A;
+    margin-top: 8px;
+}
+
+.notification-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    background-color: #9AAD5A;
+    color: white;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.notification-badge.unread {
+    background-color: #537031;
+    color: white;
+}
+
+.notify-remove-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+.notify-remove-btn:hover {
+    color: #999;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background: #FAF6E9;
+    border-radius: 6px;
+    border: 1px dashed #DDA15E;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 12px;
+}
+
+.empty-state-text {
+    font-size: 14px;
+    color: #999;
+}
+</style>
+
+<script>
+let allNotifications = [];
+let currentFilter = 'all';
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadAllNotifications();
+});
+
+function loadAllNotifications() {
+    fetch('index.php?controleur=annonce&methode=getAllNotifications')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.notifications) {
+                allNotifications = data.notifications;
+                renderNotifications(allNotifications);
+            } else {
+                showEmptyState();
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showEmptyState();
+        });
+}
+
+function renderNotifications(notifications) {
+    const container = document.getElementById('notificationsListContainer');
+    
+    if (notifications.length === 0) {
+        showEmptyState();
+        return;
+    }
+
+    let html = '';
+    const typeLabels = {
+        'candidature_soumise': 'Candidature soumise',
+        'candidature_reçue': 'Candidature reçue',
+        'candidature_acceptée': 'Candidature acceptée',
+        'candidature_refusée': 'Candidature refusée',
+        'info': 'Information'
+    };
+
+    notifications.forEach(notif => {
+        const dateCreation = new Date(notif.date_creation).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        html += `
+            <div class="notification-item ${notif.type} ${notif.lue === 0 ? 'unread-status' : ''}" 
+                 data-id="${notif.id_notification}" 
+                 data-read="${notif.lue}"
+                 onmouseover="markNotificationAsRead(this, ${notif.id_notification})"
+                 style="cursor: pointer;">
+                <div class="notification-item-header">
+                    <div style="flex: 1;">
+                        <p class="notification-item-title">${escapeHtml(notif.titre)}</p>
+                        <p class="notification-item-message">${escapeHtml(notif.message)}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="notification-item-date">${dateCreation}</span>
+                            <span class="notification-badge ${notif.lue === 0 ? 'unread' : ''}">
+                                ${notif.lue === 0 ? 'Non lue' : 'Lue'}
+                            </span>
+                        </div>
+                    </div>
+                    <button class="notify-remove-btn" onclick="dismissNotification(this, ${notif.id_notification})" title="Supprimer">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+function showEmptyState() {
+    const container = document.getElementById('notificationsListContainer');
+    container.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+            <p class="empty-state-text">Aucune notification pour le moment</p>
+        </div>
+    `;
+}
+
+function filterNotifications(type) {
+    currentFilter = type;
+    let filtered = allNotifications;
+    
+    if (type !== 'all') {
+        filtered = allNotifications.filter(n => n.type === type);
+    }
+    
+    renderNotifications(filtered);
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.closest('.filter-btn').classList.add('active');
+}
+
+function dismissNotification(button, id_notification) {
+    const card = button.closest('.notification-item');
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(30px)';
+    card.style.transition = 'all 0.3s ease';
+    
+    setTimeout(() => {
+        card.remove();
+        
+        const formData = new FormData();
+        formData.append('id_notification', id_notification);
+        fetch('index.php?controleur=annonce&methode=supprimerNotification', {
+            method: 'POST',
+            body: formData
+        }).catch(err => console.log('Erreur suppression:', err));
+    }, 300);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function markNotificationAsRead(element, id_notification) {
+    if (element.getAttribute('data-read') === '0') {
+        element.classList.add('marked-as-read');
+        
+        const badge = element.querySelector('.notification-badge');
+        if (badge) {
+            badge.textContent = 'Lue';
+            badge.classList.remove('unread');
+        }
+        
+        element.setAttribute('data-read', '1');
+        
+        const formData = new FormData();
+        formData.append('id_notification', id_notification);
+        fetch('index.php?controleur=annonce&methode=marquerNotificationComeLue', {
+            method: 'POST',
+            body: formData
+        }).catch(err => console.log('Erreur marquage notification:', err));
+    }
+}
+</script>
+
+{% endblock %}

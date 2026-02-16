@@ -69,8 +69,8 @@ class ControllerAnnonce extends Controller
             'annonce' => $annonce,
             'chiens' => $chienConcernes,
             'proprietaire' => $proprietaire,
-            'userConnecte' => $sessionUser
-            
+            'userConnecte' => $sessionUser,
+            'reponse' => $_GET['reponse'] ?? null
         ]);
     }
 
@@ -430,7 +430,599 @@ class ControllerAnnonce extends Controller
         ]);
     }
 
+    /**
+ * @brief Permet à un utilisateur de répondre à une annonce
+ * @param int $id_annonce Identifiant de l'annonce
+ */
+public function repondreAnnonce($id_annonce = null)
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
 
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+    $id_utilisateur = $sessionUser->getId();
+
+    // Vérifier que l'utilisateur est promeneur
+    if (!$sessionUser->getEstPromeneur()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Seuls les promeneurs peuvent postuler aux annonces."
+        ]);
+        return;
+    }
+
+    // Récupérer l'id de l'annonce depuis GET si non fourni
+    if ($id_annonce === null) {
+        $id_annonce = $_GET['id_annonce'] ?? null;
+    }
+
+    if (!$id_annonce) {
+        http_response_code(404);
+        echo $this->getTwig()->render('404.html.twig', ['message' => 'Annonce non trouvée.']);
+        return;
+    }
+
+    // Vérifier que l'annonce existe
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $annonce = $managerAnnonce->findById($id_annonce);
+
+    if (!$annonce) {
+        http_response_code(404);
+        echo $this->getTwig()->render('404.html.twig', ['message' => 'Annonce non trouvée.']);
+        return;
+    }
+
+    // VÉRIFICATION IMPORTANTE: Vérifier que l'utilisateur n'est pas le propriétaire de l'annonce
+    if ($annonce->getIdUtilisateur() == $id_utilisateur) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Vous ne pouvez pas répondre à votre propre annonce."
+        ]);
+        return;
+    }
+
+    // VÉRIFICATION: Vérifier que l'annonce est disponible
+    if ($annonce->getStatus() !== 'Disponible') {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Cette annonce n'est plus disponible. Un maître a déjà accepté une candidature."
+        ]);
+        return;
+    }
+
+    // Appel à la DAO pour enregistrer la réponse
+    $resultat = $managerAnnonce->repondreAnnonce($id_annonce, $id_utilisateur);
+
+    // Gestion du résultat
+    if (is_numeric($resultat)) {
+        // Succès - $resultat contient l'id_reponse
+        $id_reponse = $resultat;
+        
+        // 1. CRÉER UNE NOTIFICATION POUR LE PROMENEUR (validation de sa candidature)
+        $managerNotification = new NotificationDAO($this->getPDO());
+        $managerNotification->creerNotification(
+            $id_utilisateur,
+            'Candidature soumise',
+            "Votre candidature pour l'annonce \"{$annonce->getTitre()}\" a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.",
+            'candidature_soumise',
+            $id_annonce,
+            $id_reponse
+        );
+
+        // 2. CRÉER UNE NOTIFICATION POUR LE MAÎTRE (nouvelle candidature)
+        $managerNotification->creerNotification(
+            $annonce->getIdUtilisateur(),
+            'Nouvelle candidature reçue',
+            "{$sessionUser->getPseudo()} a postulé pour votre annonce \"{$annonce->getTitre()}\".",
+            'candidature_reçue',
+            $id_annonce,
+            $id_reponse,
+            $id_utilisateur
+        );
+
+        // Redirection vers l'annonce avec confirmation
+        header('Location: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=' . $id_annonce . '&reponse=ok');
+        exit();
+    } else {
+        // Réafficher l'annonce avec le message d'erreur
+        $managerChien = new ChienDAO($this->getPDO());
+        $chienConcernes = $managerChien->findByAnnonce($annonce->getIdAnnonce());
+
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+        $proprietaire = $managerUtilisateur->findById($annonce->getIdUtilisateur());
+        
+        $template = $this->getTwig()->load('annonce.html.twig');
+        echo $template->render([
+            'annonce' => $annonce,
+            'chiens' => $chienConcernes,
+            'proprietaire' => $proprietaire,
+            'erreur' => $resultat,
+            'userConnecte' => $sessionUser
+        ]);
+    }
+}
+
+
+/**
+ * @brief Affiche toutes les candidatures pour les annonces du maître connecté
+ */
+public function voirCandidatures()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+
+    // Vérifier que l'utilisateur est bien un maître
+    if (!$sessionUser->getEstMaitre()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Seuls les maîtres peuvent voir les candidatures."
+        ]);
+        return;
+    }
+
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $candidatures = $managerAnnonce->getCandidaturesPourUtilisateur($sessionUser->getId());
+
+    // Rendu Twig
+    $template = $this->getTwig()->load('candidatures.html.twig');
+    echo $template->render([
+        'candidatures' => $candidatures,
+        'userConnecte' => $sessionUser
+    ]);
+}
+
+/**
+ * @brief Affiche toutes les candidatures soumises par le promeneur connecté
+ */
+public function verMesCandidatures()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+
+    // Vérifier que l'utilisateur est bien un promeneur
+    if (!$sessionUser->getEstPromeneur()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Seuls les promeneurs peuvent voir leurs candidatures."
+        ]);
+        return;
+    }
+
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $candidatures = $managerAnnonce->getCandidaturesBySubmittedBy($sessionUser->getId());
+
+    // Rendu Twig
+    $template = $this->getTwig()->load('mes_candidatures.html.twig');
+    echo $template->render([
+        'candidatures' => $candidatures,
+        'userConnecte' => $sessionUser
+    ]);
+}
+
+/**
+ * @brief Accepter une candidature à une annonce
+ * @param int $id_annonce Identifiant de l'annonce
+ * @param int $id_candidat Identifiant du candidat à accepter
+ */
+public function accepterCandidature()
+{
+    header('Content-Type: application/json');
+    
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => "Authentification requise."]);
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+
+    // Vérifier que l'utilisateur est bien un maître
+    if (!$sessionUser->getEstMaitre()) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => "Seuls les maîtres peuvent accepter les candidatures."]);
+        exit();
+    }
+
+    $id_annonce = $_POST['id_annonce'] ?? null;
+    $id_candidat = $_POST['id_candidat'] ?? null;
+
+    if (!$id_annonce || !$id_candidat) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => "Paramètres manquants."]);
+        exit();
+    }
+
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $annonce = $managerAnnonce->findById($id_annonce);
+
+    // Vérifier que l'annonce appartient à l'utilisateur
+    if (!$annonce || $annonce->getIdUtilisateur() != $sessionUser->getId()) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => "Vous n'êtes pas autorisé à accepter cette candidature."]);
+        exit();
+    }
+
+    // Appel à la méthode de la DAO pour accepter la candidature
+    $id_reponse = $managerAnnonce->accepterCandidature($id_annonce, $id_candidat);
+
+    if ($id_reponse) {
+        // MARQUER L'ANNONCE COMME INDISPONIBLE
+        $managerAnnonce->modifierChamp($id_annonce, 'status', 'Indisponible');
+        
+        // CRÉER UNE CONVERSATION AUTOMATIQUEMENT
+        $managerConversation = new ConversationDAO($this->getPDO());
+        $id_conversation = $managerConversation->createConversation($sessionUser->getId(), $id_candidat);
+        
+        // CRÉER UNE NOTIFICATION POUR LE PROMENEUR
+        $managerNotification = new NotificationDAO($this->getPDO());
+        
+        // Récupérer les infos du promeneur pour le message
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+        $promeneur = $managerUtilisateur->findById($id_candidat);
+        
+        $notificationMessage = "Votre candidature pour l'annonce \"{$annonce->getTitre()}\" a été acceptée. Une conversation a été créée pour discuter des détails de la promenade. Consultez vos messages.";
+        
+        $managerNotification->creerNotification(
+            $id_candidat,
+            'Candidature acceptée',
+            $notificationMessage,
+            'candidature_acceptée',
+            $id_annonce,
+            $id_reponse,
+            $id_candidat
+        );
+
+        error_log("✓ Candidature acceptée: Annonce {$id_annonce} - Candidat {$id_candidat} - Conversation {$id_conversation}");
+
+        http_response_code(200);
+        echo json_encode(['success' => true, 'message' => "Candidature acceptée avec succès.", 'conversation_id' => $id_conversation]);
+        exit();
+    } else {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => "Erreur lors de l'acceptation de la candidature."]);
+        exit();
+    }
+}
+
+    /**
+     * @brief Refuser une candidature à une annonce
+     * @param int $id_annonce Identifiant de l'annonce
+     * @param int $id_candidat Identifiant du candidat à refuser
+     */
+    public function refuserCandidature()
+    {
+        header('Content-Type: application/json');
+        
+        if (!isset($_SESSION['utilisateur'])) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => "Authentification requise."]);
+            exit();
+        }
+
+        $sessionUser = unserialize($_SESSION['utilisateur']);
+
+        // Vérifier que l'utilisateur est bien un maître
+        if (!$sessionUser->getEstMaitre()) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => "Seuls les maîtres peuvent refuser les candidatures."]);
+            exit();
+        }
+
+        $id_annonce = $_POST['id_annonce'] ?? null;
+        $id_candidat = $_POST['id_candidat'] ?? null;
+
+        if (!$id_annonce || !$id_candidat) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => "Paramètres manquants."]);
+            exit();
+        }
+
+        $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $annonce = $managerAnnonce->findById($id_annonce);
+
+        // Vérifier que l'annonce appartient à l'utilisateur
+        if (!$annonce || $annonce->getIdUtilisateur() != $sessionUser->getId()) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => "Vous n'êtes pas autorisé à refuser cette candidature."]);
+            exit();
+        }
+
+        // Appel à la méthode de la DAO pour refuser la candidature
+        $id_reponse = $managerAnnonce->refuserCandidature($id_annonce, $id_candidat);
+
+        if ($id_reponse) {
+            // CRÉER UNE NOTIFICATION POUR LE PROMENEUR
+            $managerNotification = new NotificationDAO($this->getPDO());
+            
+            // Récupérer les infos du promeneur pour le message
+            $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+            $promeneur = $managerUtilisateur->findById($id_candidat);
+            
+            $managerNotification->creerNotification(
+                $id_candidat,
+                'Candidature refusée',
+                "Votre candidature pour l'annonce \"{$annonce->getTitre()}\" n'a pas été retenue cette fois-ci. D'autres annonces correspondant à votre profil seront bientôt disponibles.",
+                'candidature_refusée',
+                $id_annonce,
+                $id_reponse,
+                $id_candidat
+            );
+
+            http_response_code(200);
+            echo json_encode(['success' => true, 'message' => "Candidature refusée avec succès."]);
+            exit();
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => "Erreur lors du refus de la candidature."]);
+            exit();
+        }
+    }
+
+    /**
+     * @brief Annuler une candidature
+     */
+    public function annulerCandidature()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $sessionUser = unserialize($_SESSION['utilisateur']);
+
+        // Vérifier que l'utilisateur est bien un promeneur
+        if (!$sessionUser->getEstPromeneur()) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => "Seuls les promeneurs peuvent annuler leurs candidatures."]);
+            exit();
+        }
+
+        $id_annonce = $_POST['id_annonce'] ?? $_GET['id_annonce'] ?? null;
+
+        if (!$id_annonce) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => "Identifiant de l'annonce manquant."]);
+            exit();
+        }
+
+        $managerAnnonce = new AnnonceDAO($this->getPDO());
+        
+        // Appel à la méthode de la DAO pour annuler la candidature
+        $resultat = $managerAnnonce->supprimerCandidature($id_annonce, $sessionUser->getId());
+
+        if ($resultat) {
+            header('Location: index.php?controleur=annonce&methode=verMesCandidatures&success=Candidature%20annulée');
+            exit();
+        } else {
+            http_response_code(500);
+            echo $this->getTwig()->render('403.html.twig', [
+                'message' => "Erreur lors de l'annulation de la candidature."
+            ]);
+        }
+}
+
+/**
+ * @brief Vérifie s'il y a des candidatures nouvelles pour l'utilisateur maître
+ * Méthode AJAX pour le système de notifications en temps réel
+ */
+public function checkNewCandidatures()
+{
+    // Vérifier que l'utilisateur est connecté et est maître
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'candidatures' => []]);
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+
+    if (!$sessionUser->getEstMaitre()) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'candidatures' => []]);
+        exit();
+    }
+
+    // Récupérer toutes les candidatures pour l'utilisateur
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $candidatures = $managerAnnonce->getCandidaturesPourUtilisateur($sessionUser->getId());
+
+    // Formatez les candidatures pour la réponse (ils sont déjà des arrays)
+    $formattedCandidatures = [];
+    foreach ($candidatures as $c) {
+        $formattedCandidatures[] = [
+            'id_annonce' => isset($c['id_annonce']) ? $c['id_annonce'] : '',
+            'id_candidat' => isset($c['id_candidat']) ? $c['id_candidat'] : '',
+            'pseudo' => isset($c['pseudo']) ? $c['pseudo'] : 'Candidat',
+            'titre' => isset($c['titre']) ? $c['titre'] : 'Annonce'
+        ];
+    }
+
+    // Répondre avec les données
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'candidatures' => $formattedCandidatures,
+        'count' => count($formattedCandidatures),
+        'timestamp' => time()
+    ]);
+    exit();
+}
+
+/**
+ * @brief Récupère les notifications pour le promeneur/maître actuel
+ * AJAX endpoint
+ */
+public function getNotifications()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'notifications' => []]);
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+    $managerNotification = new NotificationDAO($this->getPDO());
+
+    // Récupérer les notifications non-lues
+    $notifications = $managerNotification->getNotifications($sessionUser->getId(), true);
+
+    error_log("📬 Controller getNotifications pour user " . $sessionUser->getId() . ": " . count($notifications) . " notif(s)");
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'notifications' => $notifications,
+        'count' => count($notifications),
+        'userId' => $sessionUser->getId()
+    ]);
+    exit();
+}
+
+/**
+ * @brief Marque une notification comme lue
+ * AJAX endpoint
+ */
+public function markNotificationAsRead()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Non authentifié']);
+        exit();
+    }
+
+    $id_notification = $_POST['id_notification'] ?? null;
+
+    if (!$id_notification) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Paramètre manquant']);
+        exit();
+    }
+
+    $managerNotification = new NotificationDAO($this->getPDO());
+    $result = $managerNotification->marquerCommeLue($id_notification);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => $result,
+        'message' => $result ? 'Marquée comme lue' : 'Erreur'
+    ]);
+    exit();
+}
+
+/**
+ * @brief Récupère toutes les notifications de l'utilisateur
+ * AJAX endpoint
+ */
+public function getAllNotifications()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'notifications' => []]);
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+    $managerNotification = new NotificationDAO($this->getPDO());
+
+    // Récupérer TOUTES les notifications (pas seulement les non-lues)
+    $notifications = $managerNotification->getNotifications($sessionUser->getId(), false);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'notifications' => $notifications,
+        'count' => count($notifications),
+        'userId' => $sessionUser->getId()
+    ]);
+    exit();
+}
+
+/**
+ * @brief Supprime une notification
+ * AJAX endpoint
+ */
+public function supprimerNotification()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Non authentifié']);
+        exit();
+    }
+
+    $id_notification = $_POST['id_notification'] ?? null;
+
+    if (!$id_notification) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Paramètre manquant']);
+        exit();
+    }
+
+    $managerNotification = new NotificationDAO($this->getPDO());
+    $result = $managerNotification->supprimerNotification($id_notification);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => $result,
+        'message' => $result ? 'Supprimée avec succès' : 'Erreur'
+    ]);
+    exit();
+}
+
+/**
+ * @brief Affiche la page des notifications
+ */
+public function afficherNotifications()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    $template = $this->getTwig()->load('notifications.html.twig');
+    echo $template->render();
+}
+
+/**
+ * @brief Affiche les promenades acceptées du promeneur
+ */
+public function verMesPromenades()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        header('Location: index.php?controleur=utilisateur&methode=authentification');
+        exit();
+    }
+
+    $sessionUser = unserialize($_SESSION['utilisateur']);
+
+    // Vérifier que l'utilisateur est bien un promeneur
+    if (!$sessionUser->getEstPromeneur()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Seuls les promeneurs peuvent voir leurs promenades."
+        ]);
+        return;
+    }
+
+    $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $promenades = $managerAnnonce->getMesPromenades($sessionUser->getId());
+
+    // Rendu Twig
+    $template = $this->getTwig()->load('mes_promenades.html.twig');
+    echo $template->render([
+        'promenades' => $promenades,
+        'userConnecte' => $sessionUser
+    ]);
+}
 
 
 }

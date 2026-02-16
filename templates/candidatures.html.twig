@@ -1,0 +1,69 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Candidatures — DogSitter
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-4" style="background-color: #FEFAE0;">
+    {% if not userConnecte.estMaitre %}
+        <div class="alert text-center fw-bold" style="background-color: #DDA15E; color: white;">
+            Accès refusé. Seuls les maîtres peuvent voir les candidatures.
+        </div>
+    {% else %}
+        <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family: 'Poppins', sans-serif;">
+            Mes Candidatures Reçues
+        </h2>
+
+        {% if candidatures is empty %}
+            <div class="alert text-center" style="background-color: #F8F4E8; color:#537031;">
+                Aucune candidature reçue pour le moment.
+            </div>
+        {% else %}
+            {% set current_annonce_id = null %}
+            <div class="d-grid gap-3">
+            {% for c in candidatures %}
+                {% if current_annonce_id != c.id_annonce %}
+                    {% if current_annonce_id != null %}
+                        </div>
+                        </div>
+                    {% endif %}
+                    <div class="card shadow-lg border-0 mb-4" style="background-color: #FAF6E9; border-left: 6px solid #9AAD5A;">
+                        <div class="card-header" style="background-color:#BC6C25; color:white;">
+                            <h5 class="mb-0">{{ c.titre }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                    {% set current_annonce_id = c.id_annonce %}
+                {% endif %}
+
+                <div class="list-group-item d-flex justify-content-between align-items-center"
+                     style="border: 1px solid #DDA15E; border-radius: 8px; margin-bottom:4px;"
+                     data-id-annonce="{{ c.id_annonce }}" data-id-candidat="{{ c.id_candidat }}">
+                    <div>
+                        <h6 class="mb-1 fw-bold" style="color:#537031;">{{ c.pseudo }}</h6>
+                        <small class="text-muted">{{ c.email }}</small>
+                    </div>
+                    <div class="btn-group gap-2">
+                        <button class="btn btn-sm fw-bold text-white"
+                                style="background-color:#9AAD5A;"
+                                onclick="accepterCandidature({{ c.id_annonce }}, {{ c.id_candidat }}, this)">
+                            <i class="bi bi-check"></i> Accepter
+                        </button>
+                        <button class="btn btn-sm fw-bold text-white"
+                                style="background-color:#BC6C25;"
+                                onclick="refuserCandidature({{ c.id_annonce }}, {{ c.id_candidat }}, this)">
+                            <i class="bi bi-x"></i> Refuser
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}

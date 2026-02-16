@@ -162,5 +162,28 @@ class ChienDAO{
 
         return $chiens;
     }
+
+    /**
+     * @brief Crée un nouveau chien dans la base de données.
+     *
+     * @param Chien $chien Objet Chien à créer.
+     * @return bool True si la création a réussi, false sinon.
+     */
+    public function create(Chien $chien): bool
+    {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "Chien (nom_chien, poids, taille, race, cheminPhoto, id_utilisateur)
+                VALUES (:nom_chien, :poids, :taille, :race, :cheminPhoto, :id_utilisateur)";
+
+        $stmt = $this->pdo->prepare($sql);
+        
+        $stmt->bindParam(':nom_chien', $chien->getNom_Chien(), PDO::PARAM_STR);
+        $stmt->bindParam(':poids', $chien->getPoids(), PDO::PARAM_STR);
+        $stmt->bindParam(':taille', $chien->getTaille(), PDO::PARAM_STR);
+        $stmt->bindParam(':race', $chien->getRace(), PDO::PARAM_STR);
+        $stmt->bindParam(':cheminPhoto', $chien->getCheminPhoto(), PDO::PARAM_STR);
+        $stmt->bindParam(':id_utilisateur', $chien->getid_Utilisateur(), PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }
 ?>

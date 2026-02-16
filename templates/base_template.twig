@@ -57,6 +57,137 @@
         .nav-link:hover i {
             color: #DDA15E !important;
         }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notifications-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .notification {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            padding: 16px;
+            margin-bottom: 12px;
+            min-width: 320px;
+            max-width: 400px;
+            pointer-events: all;
+            animation: slideInRight 0.3s ease-out;
+            border-left: 4px solid #537031;
+        }
+
+        .notification.success {
+            border-left-color: #9AAD5A;
+        }
+
+        .notification.info {
+            border-left-color: #DDA15E;
+        }
+
+        .notification.error {
+            border-left-color: #d9534f;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notification.success .notification-icon {
+            background: rgba(154, 173, 90, 0.15);
+            color: #9AAD5A;
+        }
+
+        .notification.info .notification-icon {
+            background: rgba(221, 161, 94, 0.15);
+            color: #DDA15E;
+        }
+
+        .notification.error .notification-icon {
+            background: rgba(217, 83, 79, 0.15);
+            color: #d9534f;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 4px 0;
+            font-size: 14px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: #666;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .notification-close:hover {
+            color: #999;
+        }
+
+        .notification.removing {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
     </style>
 
     <title>{% block title %}DogSynergie{% endblock %}</title>
@@ -64,6 +195,16 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+
+<!-- ================= NOTIFICATIONS CONTAINER ================= -->
+<div id="notificationsContainer" class="notifications-container"></div>
+
+<!-- ================= USER CONTEXT ================= -->
+<script>
+    window.userIsConnected = {{ utilisateurConnecte is not null ? 'true' : 'false' }};
+    window.userIsMaitre = {{ (utilisateurConnecte is not null and utilisateurConnecte.estMaitre) ? 'true' : 'false' }};
+    window.userId = {{ utilisateurConnecte is not null ? utilisateurConnecte.id : 'null' }};
+</script>
 
 <!-- ================= HEADER ================= -->
 <header class="sticky-top shadow-sm">
@@ -102,8 +243,20 @@
                 <ul class="navbar-nav ms-lg-auto align-items-lg-center gap-2">
                     {% if utilisateurConnecte is not null %}
                         <li class="nav-item">
+                            <a class="nav-link text-light position-relative"
+                            href="index.php?controleur=annonce&methode=afficherNotifications"
+                            title="Mes notifications">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color:#DDA15E; display:none;">
+                                    <span id="notificationCount">0</span>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link text-light"
-                            href="index.php?controleur=conversation&methode=afficherAllConversation">
+                            href="index.php?controleur=conversation&methode=afficherAllConversation"
+                            title="Mes messages">
                                 <i class="bi bi-chat-dots fs-5"></i>
                             </a>
                         </li>
@@ -302,6 +455,16 @@
     </div>
 </footer>
 
-{% block script %}{% endblock %}
+{% block script %}
+<!-- Variables globales pour JavaScript -->
+<script>
+    window.userIsConnected = {{ utilisateurConnecte is not null ? 'true' : 'false' }};
+    window.userIsMaitre = {{ (utilisateurConnecte is not null and utilisateurConnecte.estMaitre) ? 'true' : 'false' }};
+    window.userId = {{ utilisateurConnecte is not null ? utilisateurConnecte.id : 'null' }};
+</script>
+
+<!-- Fichier JavaScript centralisé -->
+<script src="js/mescripts.js"></script>
+{% endblock %}
 </body>
 </html>

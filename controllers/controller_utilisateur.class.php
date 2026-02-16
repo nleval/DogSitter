@@ -46,10 +46,15 @@ class ControllerUtilisateur extends Controller
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
         $utilisateur = $managerutilisateur->findById($id_utilisateur);
 
-        // Rendre la vue avec l'utilisateur
+        // Récupérer les chiens de l'utilisateur
+        $chiensDAO = new ChienDAO($this->getPDO());
+        $chiens = $chiensDAO->findByUtilisateur($id_utilisateur);
+
+        // Rendre la vue avec l'utilisateur et ses chiens
         $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
-            'utilisateur' => $utilisateur
+            'utilisateur' => $utilisateur,
+            'chiens' => $chiens
         ]);
     }
 
@@ -71,10 +76,15 @@ class ControllerUtilisateur extends Controller
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
         $utilisateur = $managerutilisateur->findById($id_utilisateur);
 
-        // Rendre la vue avec l'utilisateur
+        // Récupérer les chiens de l'utilisateur
+        $chiensDAO = new ChienDAO($this->getPDO());
+        $chiens = $chiensDAO->findByUtilisateur($id_utilisateur);
+
+        // Rendre la vue avec l'utilisateur et ses chiens
         $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
-            'utilisateur' => $utilisateur
+            'utilisateur' => $utilisateur,
+            'chiens' => $chiens
         ]);
     }
 
@@ -183,7 +193,7 @@ class ControllerUtilisateur extends Controller
 
             // SI ERREURS on réaffichage le formulaire
             if (!$valide) {
-                $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                $template = $this->getTwig()->load('inscription.html.twig');
                 echo $template->render([
                     'erreurs' => $erreurs,
                     'old' => $donnees
@@ -199,7 +209,7 @@ class ControllerUtilisateur extends Controller
                 $imageInfo = @getimagesize($tmpName);
                 if ($imageInfo === false) {
                     $erreurs[] = "Le fichier téléchargé n'est pas une image valide.";
-                    $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                    $template = $this->getTwig()->load('inscription.html.twig');
                     echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
                     return;
                 }
@@ -214,7 +224,7 @@ class ControllerUtilisateur extends Controller
                 $destination = $uploadDir . $safeName;
                 if (!move_uploaded_file($tmpName, $destination)) {
                     $erreurs[] = "Impossible d'enregistrer la photo de profil.";
-                    $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                    $template = $this->getTwig()->load('inscription.html.twig');
                     echo $template->render(['erreurs' => $erreurs, 'old' => $donnees]);
                     return;
                 }
@@ -262,7 +272,7 @@ class ControllerUtilisateur extends Controller
                         break;
                 }
 
-                $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+                $template = $this->getTwig()->load('inscription.html.twig');
                 echo $template->render([
                     'erreurs' => $erreurs,
                     'old' => $donnees
@@ -271,7 +281,7 @@ class ControllerUtilisateur extends Controller
             }
         }
 
-        $template = $this->getTwig()->load('formulaire_creerCompte.html.twig');
+        $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render();
     }
        
