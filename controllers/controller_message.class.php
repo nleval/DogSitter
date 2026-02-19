@@ -95,6 +95,10 @@ public function afficherParConversation($id_conversation = null)
     // Récupérer l'autre utilisateur de la conversation
     $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
     $idUtilisateurConnecte = $utilisateurConnecte->getId();
+
+    // Ouvrir une conversation = considérer les notifications de messages comme consultées
+    $notificationDAO = new NotificationDAO($this->getPDO());
+    $notificationDAO->marquerCommeLuesParType($idUtilisateurConnecte, 'nouveau_message');
     
     $utilisateurDAO = new UtilisateurDAO($this->getPDO());
     
@@ -230,6 +234,7 @@ public function getUnreadMessageCount()
 {
     if (!isset($_SESSION['utilisateur'])) {
         http_response_code(401);
+        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'count' => 0]);
         exit();
     }
@@ -237,16 +242,9 @@ public function getUnreadMessageCount()
     $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
     $idUtilisateur = $utilisateurConnecte->getId();
 
-    // Recuperer les notifications de messages non lues
+    // Compter via le DAO (pas de SQL dans le contrôleur)
     $notificationDAO = new NotificationDAO($this->getPDO());
-    $allNotifications = $notificationDAO->getNotifications($idUtilisateur, true); // true = non-lues seulement
-    
-    // Filtrer pour avoir UNIQUEMENT les messages (type = 'nouveau_message')
-    $messageNotifications = array_filter($allNotifications, function($notif) {
-        return isset($notif['type']) && $notif['type'] === 'nouveau_message';
-    });
-
-    $count = count($messageNotifications);
+    $count = $notificationDAO->compterNonLuesParType($idUtilisateur, 'nouveau_message');
 
     header('Content-Type: application/json');
     echo json_encode([

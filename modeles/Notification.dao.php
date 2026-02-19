@@ -125,6 +125,36 @@ class NotificationDAO {
     }
 
     /**
+     * @brief Compte les notifications non-lues d'un type donné
+     * @param int $id_utilisateur Identifiant de l'utilisateur
+     * @param string $type Type de notification (ex: nouveau_message)
+     * @return int Nombre de notifications non-lues du type
+     */
+    public function compterNonLuesParType(int $id_utilisateur, string $type): int {
+        try {
+            $sql = "
+                SELECT COUNT(*) as count
+                FROM " . PREFIXE_TABLE . "Notification
+                WHERE id_utilisateur = :id_utilisateur
+                  AND lue = 0
+                  AND type = :type
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':id_utilisateur' => $id_utilisateur,
+                ':type' => $type
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int) ($result['count'] ?? 0);
+        } catch (PDOException $e) {
+            error_log("Erreur NotificationDAO::compterNonLuesParType - " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
      * @brief Marque une notification comme lue
      * @param int $id_notification Identifiant de la notification
      * @return bool Succès de la mise à jour
@@ -179,6 +209,33 @@ class NotificationDAO {
             return $stmt->execute([':id_utilisateur' => $id_utilisateur]);
         } catch (PDOException $e) {
             error_log("Erreur NotificationDAO::marquerTousCommeLue - " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @brief Marque comme lues les notifications d'un type donné
+     * @param int $id_utilisateur Identifiant de l'utilisateur
+     * @param string $type Type de notification (ex: nouveau_message)
+     * @return bool Succès de la mise à jour
+     */
+    public function marquerCommeLuesParType(int $id_utilisateur, string $type): bool {
+        try {
+            $sql = "
+                UPDATE " . PREFIXE_TABLE . "Notification
+                SET lue = 1
+                WHERE id_utilisateur = :id_utilisateur
+                AND type = :type
+                AND lue = 0
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':id_utilisateur' => $id_utilisateur,
+                ':type' => $type
+            ]);
+        } catch (PDOException $e) {
+            error_log("Erreur NotificationDAO::marquerCommeLuesParType - " . $e->getMessage());
             return false;
         }
     }

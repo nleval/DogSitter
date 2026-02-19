@@ -473,7 +473,36 @@
 </script>
 
 <!-- Fichier JavaScript centralisé -->
-<script src="js/mescripts.js"></script>
+<script src="js/mescripts.js?v={{ "now"|date("U") }}"></script>
+
+<!-- Fallback dédié pour la pastille messages du header -->
+<script>
+    (function () {
+        if (!window.userIsConnected) return;
+
+        const badge = document.getElementById('messageBadge');
+        const countSpan = document.getElementById('messageCount');
+        if (!badge || !countSpan) return;
+
+        function refreshMessageBadge() {
+            fetch('index.php?controleur=message&methode=getUnreadMessageCount')
+                .then(response => response.json())
+                .then(data => {
+                    const count = (data && data.success) ? (data.count || 0) : 0;
+                    if (count > 0) {
+                        countSpan.textContent = count > 9 ? '9+' : count;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(() => {});
+        }
+
+        refreshMessageBadge();
+        setInterval(refreshMessageBadge, 10000);
+    })();
+</script>
 {% endblock %}
 </body>
 </html>

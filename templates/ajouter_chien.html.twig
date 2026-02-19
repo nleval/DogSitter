@@ -27,26 +27,29 @@
         <!-- Contenu principal -->
         <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
             <div style="width: 100%; max-width: 600px;">
-                {% if erreur is defined %}
-                    <div style="background-color: #FEFAE0; margin-bottom: 30px; padding: 20px; border-radius: 8px; border: 2px solid #DDA15E;">
-                        <div style="padding: 16px; background-color: #FAF6E9; border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
-                            <i class="bi bi-exclamation-circle" style="font-size: 24px; color: #DDA15E; flex-shrink: 0; margin-top: 2px;"></i>
-                            <p style="color: #537031; margin: 0; font-weight: 500;">{{ erreur }}</p>
-                        </div>
+                {% if erreurs is defined and erreurs %}
+                    <div class="alert alert-danger mb-4">
+                        <ul class="mb-0">
+                            {% for err in erreurs %}
+                                <li>{{ err }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
+                {% elseif erreur is defined %}
+                    <div class="alert alert-danger mb-4">{{ erreur }}</div>
                 {% endif %}
 
-                <form method="POST" action="{% if isEdit %}?controleur=chien&methode=modifierChien&id_chien={{ chien.getId_Chien() }}{% else %}?controleur=chien&methode=ajouterChien{% endif %}" enctype="multipart/form-data" style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
+                <form id="chienForm" method="POST" action="{% if isEdit %}?controleur=chien&methode=modifierChien&id_chien={{ chien.getId_Chien() }}{% else %}?controleur=chien&methode=ajouterChien{% endif %}" enctype="multipart/form-data" style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
                     <!-- Nom du chien -->
                     <div style="margin-bottom: 28px;">
                         <label for="nom_chien" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Nom du chien *</label>
-                        <input type="text" id="nom_chien" name="nom_chien" required placeholder="Ex: Rex, Bella..." value="{{ chien.getNom_Chien()|default('') }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                        <input type="text" id="nom_chien" name="nom_chien" required minlength="2" maxlength="50" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" placeholder="Ex: Rex, Bella..." value="{{ old.nom_chien|default(chien.getNom_Chien()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Race -->
                     <div style="margin-bottom: 28px;">
                         <label for="race" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Race *</label>
-                        <input type="text" id="race" name="race" required placeholder="Ex: Labrador, Beagle..." value="{{ chien.getRace()|default('') }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                        <input type="text" id="race" name="race" required minlength="2" maxlength="80" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" placeholder="Ex: Labrador, Beagle..." value="{{ old.race|default(chien.getRace()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Taille -->
@@ -54,18 +57,18 @@
                         <label for="taille" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Taille</label>
                         <select id="taille" name="taille" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; cursor: pointer;">
                             <option value="">Sélectionner une taille...</option>
-                            <option value="Très petit" {% if chien.getTaille() == 'Très petit' %}selected{% endif %}>Très petit (< 5 kg)</option>
-                            <option value="Petit" {% if chien.getTaille() == 'Petit' %}selected{% endif %}>Petit (5-15 kg)</option>
-                            <option value="Moyen" {% if chien.getTaille() == 'Moyen' %}selected{% endif %}>Moyen (15-30 kg)</option>
-                            <option value="Grand" {% if chien.getTaille() == 'Grand' %}selected{% endif %}>Grand (30-50 kg)</option>
-                            <option value="Très grand" {% if chien.getTaille() == 'Très grand' %}selected{% endif %}>Très grand (> 50 kg)</option>
+                            <option value="Très petit" {% if old.taille|default(chien.getTaille()|default('')) == 'Très petit' %}selected{% endif %}>Très petit (< 5 kg)</option>
+                            <option value="Petit" {% if old.taille|default(chien.getTaille()|default('')) == 'Petit' %}selected{% endif %}>Petit (5-15 kg)</option>
+                            <option value="Moyen" {% if old.taille|default(chien.getTaille()|default('')) == 'Moyen' %}selected{% endif %}>Moyen (15-30 kg)</option>
+                            <option value="Grand" {% if old.taille|default(chien.getTaille()|default('')) == 'Grand' %}selected{% endif %}>Grand (30-50 kg)</option>
+                            <option value="Très grand" {% if old.taille|default(chien.getTaille()|default('')) == 'Très grand' %}selected{% endif %}>Très grand (> 50 kg)</option>
                         </select>
                     </div>
 
                     <!-- Poids -->
                     <div style="margin-bottom: 28px;">
                         <label for="poids" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Poids (en kg)</label>
-                        <input type="number" id="poids" name="poids" placeholder="Ex: 25" step="0.1" value="{{ chien.getPoids()|default('') }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">
+                        <input type="number" id="poids" name="poids" placeholder="Ex: 25" step="0.1" min="0.1" max="120" value="{{ old.poids|default(chien.getPoids()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Photo du chien -->
@@ -80,8 +83,8 @@
                         <div style="border: 2px dashed #9AAD5A; border-radius: 8px; padding: 24px; text-align: center; background-color: #FEFAE0; cursor: pointer; transition: all 0.2s;" id="dropZone" onmouseover="this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
                             <i class="bi bi-cloud-arrow-up" style="font-size: 32px; color: #9AAD5A; display: block; margin-bottom: 10px;"></i>
                             <p style="color: #537031; margin: 0 0 4px 0; font-weight: 600;">Glissez-déposez une photo ou cliquez</p>
-                            <p style="color: #9AAD5A; margin: 0; font-size: 12px;">JPEG, PNG, GIF (max 2MB)</p>
-                            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif" style="display: none;">
+                            <p style="color: #9AAD5A; margin: 0; font-size: 12px;">JPEG, PNG (max 2MB)</p>
+                            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png" style="display: none;">
                         </div>
                         <div id="fileInfo" style="margin-top: 12px; padding: 12px 16px; background-color: #E8F5E0; border-radius: 6px; border: 1px solid #9AAD5A; display: none;">
                             <p style="color: #537031; margin: 0; font-size: 13px; font-weight: 600;">✓ <span id="fileName"></span></p>
@@ -105,9 +108,12 @@
     <script>
         // Gestion du drag & drop
         const dropZone = document.getElementById('dropZone');
+        const form = document.getElementById('chienForm');
         const fileInput = document.getElementById('photo');
         const fileInfo = document.getElementById('fileInfo');
         const fileName = document.getElementById('fileName');
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const maxFileSize = 2 * 1024 * 1024;
 
         dropZone.addEventListener('click', () => fileInput.click());
 
@@ -138,11 +144,30 @@
         function updateFileInfo() {
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Format invalide. Utilisez JPEG ou PNG.');
+                    fileInput.value = '';
+                    fileInfo.style.display = 'none';
+                    return;
+                }
+                if (file.size > maxFileSize) {
+                    alert('Fichier trop volumineux. Maximum 2MB.');
+                    fileInput.value = '';
+                    fileInfo.style.display = 'none';
+                    return;
+                }
                 fileName.textContent = file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
                 fileInfo.style.display = 'block';
             } else {
                 fileInfo.style.display = 'none';
             }
         }
+
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.reportValidity();
+            }
+        });
     </script>
 {% endblock %}

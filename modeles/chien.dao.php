@@ -169,7 +169,7 @@ class ChienDAO{
      * @param Chien $chien Objet Chien à créer.
      * @return bool True si la création a réussi, false sinon.
      */
-    public function create(Chien $chien): bool
+    public function creer(Chien $chien): bool
     {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "Chien (nom_chien, poids, taille, race, cheminPhoto, id_utilisateur)
                 VALUES (:nom_chien, :poids, :taille, :race, :cheminPhoto, :id_utilisateur)";
@@ -192,7 +192,7 @@ class ChienDAO{
      * @param Chien $chien Objet Chien a mettre a jour.
      * @return bool True si la mise a jour a reussi, false sinon.
      */
-    public function update(Chien $chien): bool
+    public function mettreAJour(Chien $chien): bool
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "Chien
                 SET nom_chien = :nom_chien,
@@ -222,7 +222,7 @@ class ChienDAO{
      * @param int $id_utilisateur Identifiant du proprietaire.
      * @return bool True si la suppression a reussi, false sinon.
      */
-    public function deleteByIdAndUser(int $id_chien, int $id_utilisateur): bool
+    public function supprimerParIdEtUtilisateur(int $id_chien, int $id_utilisateur): bool
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "Chien WHERE id_chien = :id_chien AND id_utilisateur = :id_utilisateur";
         $stmt = $this->pdo->prepare($sql);

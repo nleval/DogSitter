@@ -116,6 +116,10 @@ class ControllerConversation extends Controller
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         $idUtilisateur = $utilisateurConnecte->getId();
 
+        // Ouvrir la messagerie = considérer les notifications de messages comme consultées
+        $notificationDAO = new NotificationDAO($this->getPDO());
+        $notificationDAO->marquerCommeLuesParType($idUtilisateur, 'nouveau_message');
+
         $managerConversation = new ConversationDAO($this->getPdo());
         $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
     
@@ -147,7 +151,7 @@ class ControllerConversation extends Controller
         
         // Créer ou récupérer la conversation
         $managerConversation = new ConversationDAO($this->getPdo());
-        $id_conversation = $managerConversation->createConversation($idUtilisateurConnecte, $idAutreUtilisateur);
+        $id_conversation = $managerConversation->creerConversation($idUtilisateurConnecte, $idAutreUtilisateur);
         
         if ($id_conversation) {
             // Rediriger vers la conversation

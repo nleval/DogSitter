@@ -212,7 +212,7 @@ public function findByUtilisateur(int $idUtilisateur): array
  * @param int $userSecond Identifiant du promeneur
  * @return int|false ID de la conversation créée, false sinon
  */
-public function createConversation(int $userMain, int $userSecond)
+public function creerConversation(int $userMain, int $userSecond)
 {
     try {
         // Vérifier si une conversation n'existe pas déjà entre les deux utilisateurs
@@ -288,7 +288,7 @@ public function creerConversationAvecMessage(int $userMain, int $userSecond, str
 {
     try {
         // Créer ou récupérer la conversation
-        $id_conversation = $this->createConversation($userMain, $userSecond);
+        $id_conversation = $this->creerConversation($userMain, $userSecond);
         
         if (!$id_conversation) {
             return false;

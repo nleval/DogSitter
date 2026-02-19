@@ -259,7 +259,7 @@ function renderNotifications(notifications) {
             <div class="notification-item ${notif.type} ${notif.lue === 0 ? 'unread-status' : ''}" 
                  data-id="${notif.id_notification}" 
                  data-read="${notif.lue}"
-                 onmouseover="markNotificationAsRead(this, ${notif.id_notification})"
+                 onmouseover="marquerNotificationCommeLue(this, ${notif.id_notification})"
                  style="cursor: pointer;">
                 <div class="notification-item-header">
                     <div style="flex: 1;">
@@ -343,7 +343,7 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function markNotificationAsRead(element, id_notification) {
+function marquerNotificationCommeLue(element, id_notification) {
     if (element.getAttribute('data-read') === '0') {
         element.classList.add('marked-as-read');
         
@@ -363,7 +363,7 @@ function markNotificationAsRead(element, id_notification) {
         
         const formData = new FormData();
         formData.append('id_notification', id_notification);
-        fetch('index.php?controleur=annonce&methode=marquerNotificationComeLue', {
+        fetch('index.php?controleur=annonce&methode=marquerNotificationCommeLue', {
             method: 'POST',
             body: formData
         })

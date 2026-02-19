@@ -45,20 +45,6 @@
                                 required />
                         </div>
 
-                        <!-- ERREURS -->
-                        {% if erreurs is defined and erreurs %}
-                            <div style="background-color: #FAF6E9; border-left: 5px solid #DDA15E; padding: 16px; border-radius: 6px; margin-bottom: 28px;">
-                                <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                    <span style="color: #DDA15E; font-size: 18px;">!</span>
-                                    <ul style="margin: 0; padding-left: 20px; color: #2c2c2c; font-size: 14px;">
-                                        {% for err in erreurs %}
-                                            <li>{{ err }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        {% endif %}
-
                         <!-- BOUTONS -->
                         <div style="display: flex; gap: 12px; margin-bottom: 28px;">
                             <a href="index.php"

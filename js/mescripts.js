@@ -183,6 +183,9 @@ class NotificationChecker {
 
             // Vérifier les notifications pour tous les utilisateurs
             this.checkNotifications();
+
+            // Vérifier les messages non lus (mécanisme dédié)
+            this.checkUnreadMessages();
         }
 
         /**
@@ -191,7 +194,7 @@ class NotificationChecker {
         checkCandidatures() {
             if (!window.userIsMaitre) return;
 
-            fetch('index.php?controleur=annonce&methode=checkNewCandidatures')
+            fetch('index.php?controleur=annonce&methode=verifierNouvellesCandidatures')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.candidatures) {
@@ -241,12 +244,19 @@ class NotificationChecker {
             fetch('index.php?controleur=annonce&methode=getNotifications')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.notifications && data.notifications.length > 0) {
+                    if (data.success && data.notifications) {
                         console.log('📬 Notifications reçues:', data.notifications.length);
-                        
+
                         // Mettre à jour le badge de notifications
                         this.updateNotificationBadge(data.notifications.length);
-                        
+
+                        // Mettre à jour AUSSI le badge messages depuis ce flux
+                        // (même mécanique que la cloche, mais filtrée sur type message)
+                        const unreadMessageCount = data.notifications.filter(notification =>
+                            notification && notification.type === 'nouveau_message'
+                        ).length;
+                        this.updateMessageBadge(unreadMessageCount);
+
                         data.notifications.forEach(notification => {
                             const notifId = 'notif_' + notification.id_notification;
                             
@@ -266,27 +276,50 @@ class NotificationChecker {
                                     duration
                                 );
 
-                                // Marquer comme lue après affichage
-                                setTimeout(() => {
-                                    const formData = new FormData();
-                                    formData.append('id_notification', notification.id_notification);
-                                    fetch('index.php?controleur=annonce&methode=markNotificationAsRead', {
-                                        method: 'POST',
-                                        body: formData
-                                    }).catch(err => console.log('Erreur marquage lu:', err));
-                                }, duration);
+                                // Marquer comme lue après affichage (sauf nouveaux messages)
+                                // Les notifications de type 'nouveau_message' restent non lues
+                                // pour afficher la pastille orange sur l'icône conversation.
+                                if (notification.type !== 'nouveau_message') {
+                                    setTimeout(() => {
+                                        const formData = new FormData();
+                                        formData.append('id_notification', notification.id_notification);
+                                        fetch('index.php?controleur=annonce&methode=marquerNotificationCommeLue', {
+                                            method: 'POST',
+                                            body: formData
+                                        }).catch(err => console.log('Erreur marquage lu:', err));
+                                    }, duration);
+                                }
                             }
                         });
 
                         this.saveSeenNotifications();
+                    } else {
+                        // Réinitialiser les badges si aucune notification
+                        this.updateNotificationBadge(0);
                     }
                 })
                 .catch(error => {
                     console.log('❌ Erreur vérification notifications:', error);
                 });
+        }
 
-            // Aussi mettre à jour le badge des messages non lus
-            updateMessageBadgeNow();
+        /**
+         * Vérifie les messages non lus (badge conversation)
+         */
+        checkUnreadMessages() {
+            if (!window.userIsConnected) return;
+
+            fetch('index.php?controleur=message&methode=getUnreadMessageCount')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Endpoint dédié = filet de sécurité / synchronisation
+                        this.updateMessageBadge(data.count || 0);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Erreur vérification messages non lus:', error);
+                });
         }
 
         /**

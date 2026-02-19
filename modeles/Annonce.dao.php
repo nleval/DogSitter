@@ -432,7 +432,7 @@ public function getPromenadeIdByAnnonceAndPromeneur(int $id_annonce, int $id_pro
  * @param string $statut Statut de la promenade
  * @return int|null ID de la promenade créée ou null
  */
-public function createPromenadeForAnnonce(
+public function creerPromenadeParAnnonce(
     int $id_annonce,
     int $id_promeneur,
     int $id_proprietaire,

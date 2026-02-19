@@ -199,7 +199,7 @@ class ControllerAvis extends Controller
             $horaire = (string) $annonce->getHoraire();
             $dateTime = trim($datePromenade . ' ' . $horaire);
 
-            $id_promenade = $managerAnnonce->createPromenadeForAnnonce(
+            $id_promenade = $managerAnnonce->creerPromenadeParAnnonce(
                 (int) $id_annonce,
                 (int) $acceptedCandidatId,
                 (int) $annonce->getIdUtilisateur(),

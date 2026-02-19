@@ -85,6 +85,11 @@ class ControllerPromenade extends Controller
                 $promenades = array_filter($toutesLesPromenades, fn($p) => $p->getStatut() === 'archivee');
                 $title = 'Promenades archivées';
                 break;
+
+            case 'terminee':
+                $promenades = array_filter($toutesLesPromenades, fn($p) => $p->getStatut() === 'terminee');
+                $title = 'Promenades terminées';
+                break;
                 
             default:
                 $statut = 'a_venir';
@@ -243,10 +248,11 @@ class ControllerPromenade extends Controller
             $promenade->promeneur = $managerUtilisateur->findById($promenade->getId_promeneur());
         }
 
+        // Rendre la vue détaillée
         echo $this->getTwig()->render('promenade_details.html.twig', [
             'promenade' => $promenade,
             'utilisateurConnecte' => $utilisateurConnecte
         ]);
     }
 }
-?>
+

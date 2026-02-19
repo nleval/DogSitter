@@ -90,16 +90,57 @@ class ControllerChien extends Controller
             $id_utilisateur = $utilisateurConnecte->getId();
 
             // Récupération des données du formulaire
-            $nom_chien = $_POST['nom_chien'] ?? '';
-            $race = $_POST['race'] ?? '';
-            $taille = $_POST['taille'] ?? '';
-            $poids = $_POST['poids'] ?? '';
+            $donnees = [
+                'nom_chien' => trim($_POST['nom_chien'] ?? ''),
+                'race' => trim($_POST['race'] ?? ''),
+                'taille' => trim($_POST['taille'] ?? ''),
+                'poids' => trim($_POST['poids'] ?? '')
+            ];
 
-            // Validation basique
-            if (empty($nom_chien) || empty($race)) {
-                $erreur = "Le nom et la race sont obligatoires.";
+            $regles = [
+                'nom_chien' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 2,
+                    'longueur_max' => 50,
+                    'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
+                ],
+                'race' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 2,
+                    'longueur_max' => 80,
+                    'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
+                ],
+                'taille' => [
+                    'obligatoire' => false,
+                    'type' => 'string',
+                    'pattern' => '/^(Très petit|Petit|Moyen|Grand|Très grand)?$/'
+                ],
+                'poids' => [
+                    'obligatoire' => false,
+                    'type' => 'numeric',
+                    'plage_min' => 0.1,
+                    'plage_max' => 120
+                ]
+            ];
+
+            $validator = new Validator($regles);
+            $valide = $validator->valider($donnees);
+            $erreurs = $validator->getMessagesErreurs();
+
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+                if (!$validator->validerUploadEtPhoto($_FILES['photo'], $erreurs)) {
+                    $valide = false;
+                }
+            }
+
+            if (!$valide) {
                 $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                echo $template->render(['erreur' => $erreur]);
+                echo $template->render([
+                    'erreurs' => $erreurs,
+                    'old' => $donnees
+                ]);
                 return;
             }
 
@@ -108,23 +149,6 @@ class ControllerChien extends Controller
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
                 $fichier = $_FILES['photo'];
                 
-                // Vérifier le type de fichier
-                $mimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                if (!in_array($fichier['type'], $mimeTypes)) {
-                    $erreur = "Le format de fichier n'est pas accepté (JPEG, PNG, GIF uniquement).";
-                    $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                    echo $template->render(['erreur' => $erreur]);
-                    return;
-                }
-
-                // Vérifier la taille du fichier (max 2MB)
-                if ($fichier['size'] > 2 * 1024 * 1024) {
-                    $erreur = "Le fichier est trop volumineux (maximum 2MB).";
-                    $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                    echo $template->render(['erreur' => $erreur]);
-                    return;
-                }
-
                 // Créer le répertoire s'il n'existe pas
                 $uploadDir = 'images/chiens/';
                 if (!is_dir($uploadDir)) {
@@ -138,9 +162,11 @@ class ControllerChien extends Controller
 
                 // Déplacer le fichier
                 if (!move_uploaded_file($fichier['tmp_name'], $uploadPath)) {
-                    $erreur = "Erreur lors de l'upload du fichier.";
                     $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                    echo $template->render(['erreur' => $erreur]);
+                    echo $template->render([
+                        'erreurs' => ["Erreur lors de l'upload du fichier."],
+                        'old' => $donnees
+                    ]);
                     return;
                 }
             }
@@ -148,23 +174,25 @@ class ControllerChien extends Controller
             // Créer un nouvel objet Chien
             $chien = new Chien(
                 null,
-                $nom_chien,
-                $poids,
-                $taille,
-                $race,
+                $donnees['nom_chien'],
+                $donnees['poids'] !== '' ? $donnees['poids'] : null,
+                $donnees['taille'] !== '' ? $donnees['taille'] : null,
+                $donnees['race'],
                 $cheminPhoto,
                 $id_utilisateur
             );
 
             // Sauvegarder dans la base de données
             $chiensDAO = new ChienDAO($this->getPDO());
-            if ($chiensDAO->create($chien)) {
+            if ($chiensDAO->creer($chien)) {
                 header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
                 exit();
             } else {
-                $erreur = "Erreur lors de l'ajout du chien.";
                 $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                echo $template->render(['erreur' => $erreur]);
+                echo $template->render([
+                    'erreurs' => ["Erreur lors de l'ajout du chien."],
+                    'old' => $donnees
+                ]);
             }
         } else {
             header('Location: index.php?controleur=chien&methode=afficherFormulaire');
@@ -240,17 +268,57 @@ class ControllerChien extends Controller
             return;
         }
 
-        $nom_chien = $_POST['nom_chien'] ?? '';
-        $race = $_POST['race'] ?? '';
-        $taille = $_POST['taille'] ?? '';
-        $poids = $_POST['poids'] ?? '';
+        $donnees = [
+            'nom_chien' => trim($_POST['nom_chien'] ?? ''),
+            'race' => trim($_POST['race'] ?? ''),
+            'taille' => trim($_POST['taille'] ?? ''),
+            'poids' => trim($_POST['poids'] ?? '')
+        ];
 
-        if (empty($nom_chien) || empty($race)) {
-            $erreur = "Le nom et la race sont obligatoires.";
+        $regles = [
+            'nom_chien' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 2,
+                'longueur_max' => 50,
+                'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
+            ],
+            'race' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 2,
+                'longueur_max' => 80,
+                'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
+            ],
+            'taille' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'pattern' => '/^(Très petit|Petit|Moyen|Grand|Très grand)?$/'
+            ],
+            'poids' => [
+                'obligatoire' => false,
+                'type' => 'numeric',
+                'plage_min' => 0.1,
+                'plage_max' => 120
+            ]
+        ];
+
+        $validator = new Validator($regles);
+        $valide = $validator->valider($donnees);
+        $erreurs = $validator->getMessagesErreurs();
+
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+            if (!$validator->validerUploadEtPhoto($_FILES['photo'], $erreurs)) {
+                $valide = false;
+            }
+        }
+
+        if (!$valide) {
             $template = $this->getTwig()->load('ajouter_chien.html.twig');
             echo $template->render([
-                'erreur' => $erreur,
+                'erreurs' => $erreurs,
                 'chien' => $chienExistant,
+                'old' => $donnees,
                 'mode' => 'edit'
             ]);
             return;
@@ -259,29 +327,6 @@ class ControllerChien extends Controller
         $cheminPhoto = $chienExistant->getCheminPhoto() ?? '';
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
             $fichier = $_FILES['photo'];
-
-            $mimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!in_array($fichier['type'], $mimeTypes)) {
-                $erreur = "Le format de fichier n'est pas accepte (JPEG, PNG, GIF uniquement).";
-                $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                echo $template->render([
-                    'erreur' => $erreur,
-                    'chien' => $chienExistant,
-                    'mode' => 'edit'
-                ]);
-                return;
-            }
-
-            if ($fichier['size'] > 2 * 1024 * 1024) {
-                $erreur = "Le fichier est trop volumineux (maximum 2MB).";
-                $template = $this->getTwig()->load('ajouter_chien.html.twig');
-                echo $template->render([
-                    'erreur' => $erreur,
-                    'chien' => $chienExistant,
-                    'mode' => 'edit'
-                ]);
-                return;
-            }
 
             $uploadDir = 'images/chiens/';
             if (!is_dir($uploadDir)) {
@@ -293,11 +338,11 @@ class ControllerChien extends Controller
             $uploadPath = $uploadDir . $nouveauNom;
 
             if (!move_uploaded_file($fichier['tmp_name'], $uploadPath)) {
-                $erreur = "Erreur lors de l'upload du fichier.";
                 $template = $this->getTwig()->load('ajouter_chien.html.twig');
                 echo $template->render([
-                    'erreur' => $erreur,
+                    'erreurs' => ["Erreur lors de l'upload du fichier."],
                     'chien' => $chienExistant,
+                    'old' => $donnees,
                     'mode' => 'edit'
                 ]);
                 return;
@@ -315,24 +360,24 @@ class ControllerChien extends Controller
 
         $chien = new Chien(
             $id_chien,
-            $nom_chien,
-            $poids,
-            $taille,
-            $race,
+            $donnees['nom_chien'],
+            $donnees['poids'] !== '' ? $donnees['poids'] : null,
+            $donnees['taille'] !== '' ? $donnees['taille'] : null,
+            $donnees['race'],
             $cheminPhoto,
             $id_utilisateur
         );
 
-        if ($managerChien->update($chien)) {
+        if ($managerChien->mettreAJour($chien)) {
             header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
             exit();
         }
 
-        $erreur = "Erreur lors de la modification du chien.";
         $template = $this->getTwig()->load('ajouter_chien.html.twig');
         echo $template->render([
-            'erreur' => $erreur,
+            'erreurs' => ["Erreur lors de la modification du chien."],
             'chien' => $chienExistant,
+            'old' => $donnees,
             'mode' => 'edit'
         ]);
     }
@@ -371,7 +416,7 @@ class ControllerChien extends Controller
             return;
         }
 
-        if ($managerChien->deleteByIdAndUser($id_chien, $id_utilisateur)) {
+        if ($managerChien->supprimerParIdEtUtilisateur($id_chien, $id_utilisateur)) {
             $cheminPhoto = $chien->getCheminPhoto();
             if (!empty($cheminPhoto)) {
                 $filePath = 'images/chiens/' . $cheminPhoto;
