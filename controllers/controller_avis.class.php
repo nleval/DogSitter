@@ -37,9 +37,15 @@ class ControllerAvis extends Controller
         $manageravis = new AvisDAO($this->getPDO());
         $avis = $manageravis->trouverParId(1); // Exemple avec l'ID 1
         
+        // Vérifier que l'avis existe
+        if (!$avis) {
+            echo "Avis introuvable.";
+            return;
+        }
+        
         // Récupérer l'utilisateur ayant publié l'avis
         $managerUtilisateur = new UtilisateurDAO($this->getPDO()); 
-            $proprietaire = $managerUtilisateur->findById($avis->getIdUtilisateur());
+        $proprietaire = $managerUtilisateur->findById($avis->getIdUtilisateur());
 
         // Rendre la vue avec l'avis
         $template = $this->getTwig()->load('avis.html.twig');

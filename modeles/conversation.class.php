@@ -16,6 +16,26 @@ class Conversation {
      * @brief ?string $dateCreation Date de création de la conversation.
      */
     private ?string $dateCreation;
+
+    /**
+     * @brief ?string $titre Titre personnalisé de la conversation.
+     */
+    private ?string $titre = null;
+    
+    /**
+     * @brief ?string $dernier_message Dernier message de la conversation (propriété dynamique)
+     */
+    public ?string $dernier_message = null;
+    
+    /**
+     * @brief ?string $date_dernier_message Date du dernier message (propriété dynamique)
+     */
+    public ?string $date_dernier_message = null;
+    
+    /**
+     * @brief ?Utilisateur $autre_utilisateur L'autre utilisateur de la conversation (propriété dynamique)
+     */
+    public ?Utilisateur $autre_utilisateur = null;
         
     /**
      * @brief Constructeur de la classe Conversation.
@@ -23,9 +43,10 @@ class Conversation {
      * @param ?int    $idConversation Identifiant unique de la conversation.
      * @param ?string $dateCreation Date de création de la conversation.
      */
-    public function __construct(?int $idConversation = null, ?string $dateCreation = null) {
+    public function __construct(?int $idConversation = null, ?string $dateCreation = null, ?string $titre = null) {
         $this->idConversation = $idConversation;
         $this->dateCreation = $dateCreation;
+        $this->titre = $titre;
     }
         
     /**
@@ -62,6 +83,24 @@ class Conversation {
      */
     public function setDateCreation(?string $dateCreation): void {
         $this->dateCreation = $dateCreation;
+    }
+
+    /**
+     * @brief Récupère le titre personnalisé de la conversation.
+     *
+     * @return ?string Titre.
+     */
+    public function getTitre(): ?string {
+        return $this->titre;
+    }
+
+    /**
+     * @brief Définit le titre personnalisé de la conversation.
+     *
+     * @param ?string $titre Titre.
+     */
+    public function setTitre(?string $titre): void {
+        $this->titre = $titre;
     }
 }
 ?>

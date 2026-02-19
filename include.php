@@ -1,28 +1,31 @@
 <?php
 
-//Ajout de l'autoload de composer
+/**
+ * @file include.php
+ * @brief Fichier d'initialisation centralisé - charge tous les includes nécessaires
+ */
+
+// Autoload Composer
 require_once 'vendor/autoload.php';
 
-// Charger la classe Utilisateur avant d'ouvrir la session pour éviter des __PHP_Incomplete_Class lors de l'unserialize()
+// Charger Utilisateur avant la session pour éviter des erreurs d'unserialization
 require_once 'modeles/Utilisateur.class.php';
 
-// Démarrage de la session (disponible à travers toutes les pages)
+// Démarrage de la session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Si jamais la session contient un objet incomplet (provenant d'une ancienne version), on le nettoie.
+// Nettoyage de session si objet incomplet
 if (isset($_SESSION['user']) && is_object($_SESSION['user']) && get_class($_SESSION['user']) === '__PHP_Incomplete_Class') {
     unset($_SESSION['user']);
 }
 
-//Récupération des constantes
+// === CONFIGURATION ===
 require_once 'config/init.php';
-
-//Ajout du code pour initialiser twig
 require_once 'config/twig.php';
 
-//Ajout des contrôleurs
+// === CONTRÔLEURS ===
 require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_index.class.php';
@@ -33,23 +36,27 @@ require_once 'controllers/controller_chien.class.php';
 require_once 'controllers/controller_message.class.php';
 require_once 'controllers/controller_conversation.class.php';
 require_once 'controllers/controller_newsletter.class.php';
+require_once 'controllers/controller_promenade.class.php';
 
-//Ajout des modèles
+// === MODÈLES - Classes ===
 require_once 'modeles/Bd.class.php';
-require_once 'modeles/Utilisateur.dao.php';
-require_once 'modeles/conversation.class.php';
-require_once 'modeles/conversation.dao.php';
-require_once 'modeles/message.class.php';
-require_once 'modeles/message.dao.php';
+require_once 'modeles/Utilisateur.class.php';
+require_once 'modeles/Conversation.class.php';
+require_once 'modeles/Message.class.php';
 require_once 'modeles/Avis.class.php';
-require_once 'modeles/Avis.dao.php';
 require_once 'modeles/Annonce.class.php';
+require_once 'modeles/Chien.class.php';
+require_once 'modeles/Promenade.class.php';
+
+// === MODÈLES - DAO ===
+require_once 'modeles/Utilisateur.dao.php';
+require_once 'modeles/Conversation.dao.php';
+require_once 'modeles/Message.dao.php';
+require_once 'modeles/Avis.dao.php';
 require_once 'modeles/Annonce.dao.php';
-require_once 'modeles/conversation.class.php';
-require_once 'modeles/conversation.dao.php';
-require_once 'modeles/message.class.php';
-require_once 'modeles/message.dao.php';
-require_once 'modeles/chien.class.php';
-require_once 'modeles/chien.dao.php';
+require_once 'modeles/Chien.dao.php';
+require_once 'modeles/Promenade.dao.php';
 require_once 'modeles/Notification.dao.php';
-require_once 'modeles/validator.class.php';
+
+// === UTILITAIRES ===
+require_once 'modeles/Validator.class.php';

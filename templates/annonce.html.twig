@@ -162,11 +162,11 @@
                             </div>
 
                             <!-- Statut -->
-                            <div style="background-color: {% if annonce.status == 'Disponible' %}#E8F5E9{% else %}#FFE8E8{% endif %}; padding: 16px; border-radius: 8px; margin-bottom: 32px; border-left: 4px solid {% if annonce.status == 'Disponible' %}#4CAF50{% else %}#F44336{% endif %};">
+                            <div style="background-color: {% if annonce.status == 'active' %}#E8F5E9{% else %}#FFE8E8{% endif %}; padding: 16px; border-radius: 8px; margin-bottom: 32px; border-left: 4px solid {% if annonce.status == 'active' %}#4CAF50{% else %}#F44336{% endif %};">
                                 <p style="margin: 0; font-size: 12px; color: #537031; font-weight: 600; text-transform: uppercase;">Statut de l'annonce</p>
                                 <p style="margin: 4px 0 0 0; font-size: 16px; color: #537031; font-weight: 600;">
-                                    {% if annonce.status == 'Disponible' %}
-                                        <i class="bi bi-check-circle" style="margin-right: 6px; color: #4CAF50;"></i>{{ annonce.status }}
+                                    {% if annonce.status == 'active' %}
+                                        <i class="bi bi-check-circle" style="margin-right: 6px; color: #4CAF50;"></i>Disponible
                                     {% else %}
                                         <i class="bi bi-circle-fill" style="margin-right: 6px; color: #F44336;"></i>{{ annonce.status }}
                                     {% endif %}
@@ -175,26 +175,28 @@
 
                             <!-- Boutons d'action -->
                             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                                {% if userConnecte.estPromeneur %}
-                                    <a href="?controleur=Conversation&methode=afficherConversation&id_conversation={{ conversationId }}"
-                                        style="flex: 1; min-width: 200px; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
-                                        <i class="bi bi-chat-dots"></i> Envoyer un message
-                                    </a>
-
-                                    {% if annonce.status == 'Disponible' %}
-                                        <a href="?controleur=Annonce&methode=repondreAnnonce&id_annonce={{ annonce.getIdAnnonce() }}"
-                                            style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                                            <i class="bi bi-check-circle"></i> Postuler pour l'annonce
+                                {% if annonce.getIdUtilisateur() != userConnecte.getId() %}
+                                    {% if userConnecte.estPromeneur %}
+                                        <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ annonce.getIdUtilisateur() }}"
+                                            style="flex: 1; min-width: 200px; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                                            <i class="bi bi-chat-dots"></i> Envoyer un message
                                         </a>
+
+                                        {% if annonce.status == 'active' %}
+                                            <a href="?controleur=Annonce&methode=repondreAnnonce&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                                <i class="bi bi-check-circle"></i> Postuler pour l'annonce
+                                            </a>
+                                        {% else %}
+                                            <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
+                                                Statut: {{ annonce.status }}
+                                            </button>
+                                        {% endif %}
                                     {% else %}
-                                        <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
-                                            Statut: {{ annonce.status }}
+                                        <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;" disabled>
+                                            Seuls les promeneurs peuvent postuler
                                         </button>
                                     {% endif %}
-                                {% else %}
-                                    <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;" disabled>
-                                        Seuls les promeneurs peuvent postuler
-                                    </button>
                                 {% endif %}
                             </div>
 

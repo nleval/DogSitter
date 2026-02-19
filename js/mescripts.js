@@ -284,6 +284,9 @@ class NotificationChecker {
                 .catch(error => {
                     console.log('❌ Erreur vérification notifications:', error);
                 });
+
+            // Aussi mettre à jour le badge des messages non lus
+            updateMessageBadgeNow();
         }
 
         /**
@@ -292,6 +295,23 @@ class NotificationChecker {
         updateNotificationBadge(count) {
             const badge = document.getElementById('notificationBadge');
             const countSpan = document.getElementById('notificationCount');
+            
+            if (badge && countSpan) {
+                if (count > 0) {
+                    countSpan.textContent = count > 9 ? '9+' : count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        /**
+         * Met à jour le badge de messages non lus dans le header
+         */
+        updateMessageBadge(count) {
+            const badge = document.getElementById('messageBadge');
+            const countSpan = document.getElementById('messageCount');
             
             if (badge && countSpan) {
                 if (count > 0) {
@@ -349,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadNotificationCount() {
     if (!window.userIsConnected) return;
     
+    // Charger les notifications générales
     fetch('index.php?controleur=annonce&methode=getNotifications')
         .then(response => response.json())
         .then(data => {
@@ -360,6 +381,38 @@ function loadNotificationCount() {
             }
         })
         .catch(error => console.log('Error loading notification count:', error));
+    
+    // Charger et afficher les messages non lus
+    updateMessageBadgeNow();
+}
+
+/**
+ * Met à jour le badge de messages immédiatement
+ */
+function updateMessageBadgeNow() {
+    if (!window.userIsConnected) return;
+    
+    fetch('index.php?controleur=message&methode=getUnreadMessageCount')
+        .then(response => response.json())
+        .then(data => {
+            console.log('💬 Réponse getUnreadMessageCount:', data);
+            if (data.success) {
+                console.log('💬 Nombre de messages non lus:', data.count);
+                const badge = document.getElementById('messageBadge');
+                const countSpan = document.getElementById('messageCount');
+                if (badge && countSpan) {
+                    if (data.count > 0) {
+                        countSpan.textContent = data.count > 9 ? '9+' : data.count;
+                        badge.style.display = 'inline-block';
+                        console.log('✅ Badge messages AFFICHAGE - count:', data.count);
+                    } else {
+                        badge.style.display = 'none';
+                        console.log('❌ Badge messages MASQUE - count: 0');
+                    }
+                }
+            }
+        })
+        .catch(error => console.log('❌ Erreur appel getUnreadMessageCount:', error));
 }
 
 // ============================================

@@ -1,0 +1,147 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}
+    Mes Annonces
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg py-5" style="background: linear-gradient(135deg, #FEFAE0 0%, #f9f6f0 100%); min-height: 100vh;">
+        <!-- En-tête -->
+        <div class="mb-5" style="text-align: center; padding: 30px 0;">
+            <h1 style="color: #537031; font-family: 'Poppins', sans-serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 10px;">
+                Mes Annonces
+            </h1>
+            <p style="color: #666; font-size: 1.1rem; margin: 0;">
+                Gérez vos annonces de promenades de chiens
+            </p>
+        </div>
+
+        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
+            <!-- Grille des annonces -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px;">
+                {% for annonce in annoncesListe %}
+                    <div class="card border-0 h-100 shadow-sm"
+                        style="background: white; border-radius: 12px; overflow: hidden; 
+                                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                border-top: 4px solid #537031;
+                                cursor: pointer;"
+                        onmouseover="this.style.boxShadow = '0 12px 24px rgba(83, 112, 49, 0.15)'; this.style.transform = 'translateY(-4px)';"
+                        onmouseout="this.style.boxShadow = 'none'; this.style.transform = 'translateY(0)';">
+                        
+                        <!-- En-tête de la carte avec icône -->
+                        <div style="background: linear-gradient(135deg, #537031 0%, #6b8e3f 100%); 
+                                    padding: 20px; display: flex; align-items: center; gap: 15px;">
+                            <div style="font-size: 2.5rem; flex-shrink: 0;">🐕</div>
+                            <div style="flex-grow: 1;">
+                                <h5 style="color: white; margin: 0; font-weight: 600; font-size: 1.2rem; line-height: 1.4;">
+                                    {{ annonce.titre }}
+                                </h5>
+                            </div>
+                        </div>
+
+                        <!-- Corps de la carte -->
+                        <div style="padding: 20px;">
+                            <!-- Détails primaires -->
+                            <div style="margin-bottom: 16px;">
+                                <p style="color: #666; font-size: 0.95rem; margin: 0 0 10px 0; line-height: 1.5;">
+                                    <strong>Description:</strong> {{ (annonce.description|slice(0, 80)) }}{{ annonce.description|length > 80 ? '...' : '' }}
+                                </p>
+                            </div>
+
+                            <!-- Infos de la promenade -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+                                <div style="background: #f5f5f5; padding: 10px 12px; border-radius: 8px;">
+                                    <p style="color: #999; font-size: 0.8rem; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        📅 Date
+                                    </p>
+                                    <p style="color: #537031; font-weight: 600; margin: 0; font-size: 0.95rem;">
+                                        {{ annonce.datePromenade }}
+                                    </p>
+                                </div>
+                                <div style="background: #f5f5f5; padding: 10px 12px; border-radius: 8px;">
+                                    <p style="color: #999; font-size: 0.8rem; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        📍 Lieu
+                                    </p>
+                                    <p style="color: #537031; font-weight: 600; margin: 0; font-size: 0.95rem;">
+                                        {{ annonce.endroitPromenade }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Tarif et durée -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                                <div style="background: #FFF3E0; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #DDA15E;">
+                                    <p style="color: #999; font-size: 0.8rem; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        💰 Tarif
+                                    </p>
+                                    <p style="color: #BC6C25; font-weight: 700; margin: 0; font-size: 1rem;">
+                                        {{ annonce.tarif }}€
+                                    </p>
+                                </div>
+                                <div style="background: #F0F5E8; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #9AAD5A;">
+                                    <p style="color: #999; font-size: 0.8rem; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        ⏱️ Durée
+                                    </p>
+                                    <p style="color: #537031; font-weight: 700; margin: 0; font-size: 1rem;">
+                                        {{ annonce.duree }} min
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Boutons d'action -->
+                            <div style="display: flex; gap: 10px;">
+                                <!-- Bouton Modifier -->
+                                <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{ annonce.getIdAnnonce }}"
+                                    class="btn flex-grow-1"
+                                    style="background-color: #DDA15E; color: white; border: none; border-radius: 8px;
+                                            padding: 10px 12px; font-weight: 600; font-size: 0.95rem;
+                                            transition: all 0.3s ease; text-decoration: none; text-align: center;
+                                            display: flex; align-items: center; justify-content: center; gap: 6px;"
+                                    onmouseover="this.style.backgroundColor = '#BC6C25'; this.style.transform = 'scale(1.02)';"
+                                    onmouseout="this.style.backgroundColor = '#DDA15E'; this.style.transform = 'scale(1)';">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+
+                                <!-- Bouton Supprimer -->
+                                <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{ annonce.getIdAnnonce }}"
+                                    class="btn flex-grow-1"
+                                    style="background-color: #E57373; color: white; border: none; border-radius: 8px;
+                                            padding: 10px 12px; font-weight: 600; font-size: 0.95rem;
+                                            transition: all 0.3s ease; text-decoration: none; text-align: center;
+                                            display: flex; align-items: center; justify-content: center; gap: 6px;"
+                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');"
+                                    onmouseover="this.style.backgroundColor = '#C62828'; this.style.transform = 'scale(1.02)';"
+                                    onmouseout="this.style.backgroundColor = '#E57373'; this.style.transform = 'scale(1)';">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- État vide -->
+            <div style="text-align: center; padding: 60px 30px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="font-size: 4rem; margin-bottom: 20px;">📭</div>
+                {% if id_utilisateur == utilisateurConnecte.id %}
+                    <h3 style="color: #537031; font-weight: 600; margin-bottom: 10px;">Aucune annonce</h3>
+                    <p style="color: #666; margin-bottom: 24px; font-size: 1.05rem;">
+                        Vous n'avez pas encore créé d'annonce. Créez une première annonce pour commencer à trouver des promeneurs.
+                    </p>
+                    <a href="?controleur=Annonce&methode=creerAnnonce"
+                        class="btn"
+                        style="background-color: #537031; color: white; padding: 12px 28px; border-radius: 8px;
+                                font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block;
+                                transition: all 0.3s ease;"
+                        onmouseover="this.style.backgroundColor = '#6b8e3f';"
+                        onmouseout="this.style.backgroundColor = '#537031';">
+                        <i class="bi bi-plus-circle"></i> Créer une annonce
+                    </a>
+                {% else %}
+                    <h3 style="color: #537031; font-weight: 600; margin-bottom: 10px;">Aucune annonce</h3>
+                    <p style="color: #666;">Cet utilisateur n'a pas créé d'annonce pour le moment.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

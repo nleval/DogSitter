@@ -105,6 +105,15 @@ class ControllerAnnonce extends Controller
         $managerAnnonce = new AnnonceDAO($this->getPDO());
         $annoncesListe = $managerAnnonce->findAll();
 
+        // FILTRER: Afficher uniquement les annonces 'active' (disponibles)
+        $annoncesListe = array_filter($annoncesListe, fn($a) => $a->getStatus() === 'active');
+
+        // FILTRER: Exclure les annonces du maître connecté (pas utile qu'il voie les siennes)
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $annoncesListe = array_filter($annoncesListe, fn($a) => $a->getIdUtilisateur() !== $utilisateurConnecte->getId());
+        }
+
         $managerUtilisateur = new UtilisateurDAO($this->getPDO());
         $annoncesEnrichies = [];
 
@@ -135,15 +144,35 @@ class ControllerAnnonce extends Controller
                 exit();
             }
 
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $_GET['id_utilisateur'] ?? $utilisateurConnecte->getId();
         $managerAnnonce = new AnnonceDAO($this->getPDO());
-        $id_utilisateur = $_GET['id_utilisateur'] ?? null;
+        $managerPromenade = new PromenadeDAO($this->getPDO());
+        
+        // Archiver automatiquement les promenades complètement dépassées
+        $managerPromenade->archiverPromenadesDépassées();
+        
+        // Récupérer le filtre de statut depuis GET
+        $statut = isset($_GET['statut']) ? (string) $_GET['statut'] : 'active';
 
-        $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);            
+        $annoncesListe = $managerAnnonce->findByUtilisateur($id_utilisateur);
+        
+        // Filtrer selon le statut de l'annonce
+        if ($statut === 'indisponible') {
+            $annoncesListe = array_filter($annoncesListe, fn($a) => $a->getStatus() === 'Indisponible');
+        } elseif ($statut === 'archivee') {
+            $annoncesListe = array_filter($annoncesListe, fn($a) => $a->getStatus() === 'archivee');
+        } else {
+            // Par défaut : annonces actives
+            $annoncesListe = array_filter($annoncesListe, fn($a) => $a->getStatus() !== 'Indisponible' && $a->getStatus() !== 'archivee');
+        }
 
         $template = $this->getTwig()->load('annonces_par_utilisateur.html.twig');
         echo $template->render([
-            'annoncesListe' => $annoncesListe,
-            'id_utilisateur' => $id_utilisateur
+            'annoncesListe' => array_values($annoncesListe),
+            'id_utilisateur' => $id_utilisateur,
+            'statut' => $statut,
+            'utilisateurConnecte' => $utilisateurConnecte
         ]);
     }
 
@@ -176,7 +205,7 @@ class ControllerAnnonce extends Controller
             $titre = $_POST['titre'] ?? null;
             $datePromenade = $_POST['datePromenade'] ?? null;
             $horaire = $_POST['horaire'] ?? null;
-            $status = $_POST['status'] ?? 'Disponible';
+            $status = $_POST['status'] ?? 'active';
             $tarif = $_POST['tarif'] ?? null;
             $description = $_POST['description'] ?? null;
             $endroitPromenade = $_POST['endroitPromenade'] ?? null;
@@ -506,7 +535,7 @@ public function repondreAnnonce($id_annonce = null)
     }
 
     // VÉRIFICATION: Vérifier que l'annonce est disponible
-    if ($annonce->getStatus() !== 'Disponible') {
+    if ($annonce->getStatus() !== 'active') {
         http_response_code(403);
         echo $this->getTwig()->render('403.html.twig', [
             'message' => "Cette annonce n'est plus disponible. Un maître a déjà accepté une candidature."
@@ -678,12 +707,51 @@ public function accepterCandidature()
     $id_reponse = $managerAnnonce->accepterCandidature($id_annonce, $id_candidat);
 
     if ($id_reponse) {
-        // MARQUER L'ANNONCE COMME INDISPONIBLE
+        // 1. MARQUER L'ANNONCE COMME INDISPONIBLE
         $managerAnnonce->modifierChamp($id_annonce, 'status', 'Indisponible');
         
-        // CRÉER UNE CONVERSATION AUTOMATIQUEMENT
+        // 2. CRÉER LES PROMENADES POUR CHAQUE CHIEN DE L'ANNONCE
+        $managerChien = new ChienDAO($this->getPDO());
+        $chiens = $managerChien->findByAnnonce($id_annonce);
+        $managerPromenade = new PromenadeDAO($this->getPDO());
+        
+        // Construire la date complète (date + horaire)
+        $dateStr = $annonce->getDatePromenade();
+        $horaireStr = $annonce->getHoraire();
+        
+        try {
+            if ($horaireStr && $dateStr) {
+                $datePromenade = new DateTime($dateStr . ' ' . $horaireStr);
+            } else {
+                $datePromenade = new DateTime($dateStr);
+            }
+        } catch (Exception $e) {
+            $datePromenade = new DateTime();
+        }
+        
+        // Créer une promenade pour chaque chien (statut NULL = à venir)
+        foreach ($chiens as $chien) {
+            $promenade = new Promenade(
+                null,                              // id_promenade
+                $chien->getId_chien(),             // id_chien
+                $id_candidat,                      // id_promeneur
+                $sessionUser->getId(),             // id_proprietaire
+                $id_annonce,                       // id_annonce
+                $datePromenade,                    // date_promenade
+                null                               // statut = NULL (à venir)
+            );
+            $managerPromenade->create($promenade);
+        }
+        
+        // 3. CRÉER UNE CONVERSATION AUTOMATIQUEMENT
         $managerConversation = new ConversationDAO($this->getPDO());
         $id_conversation = $managerConversation->createConversation($sessionUser->getId(), $id_candidat);
+        
+        // ENVOYER UN MESSAGE AUTOMATIQUE DANS LA CONVERSATION
+        $managerMessage = new MessageDAO($this->getPDO());
+        $urlAnnonce = "index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=" . $id_annonce;
+        $messageAuto = "Bonjour ! J'ai accepté votre candidature pour promener mon chien. Discutons ensemble des détails de la promenade (date, horaire, lieu de rendez-vous, instructions particulières, etc.). Au plaisir d'échanger avec vous ! Voir l'annonce: " . $urlAnnonce;
+        $managerMessage->creerMessage($sessionUser->getId(), $id_conversation, $messageAuto);
         
         // CRÉER UNE NOTIFICATION POUR LE PROMENEUR
         $managerNotification = new NotificationDAO($this->getPDO());
@@ -704,7 +772,7 @@ public function accepterCandidature()
             $id_candidat
         );
 
-        error_log("✓ Candidature acceptée: Annonce {$id_annonce} - Candidat {$id_candidat} - Conversation {$id_conversation}");
+        error_log("✓ Candidature acceptée: Annonce {$id_annonce} - Candidat {$id_candidat} - Conversation {$id_conversation} - Message automatique envoyé");
 
         http_response_code(200);
         echo json_encode(['success' => true, 'message' => "Candidature acceptée avec succès.", 'conversation_id' => $id_conversation]);
@@ -922,6 +990,9 @@ public function markNotificationAsRead()
         exit();
     }
 
+    $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    $id_utilisateur = $utilisateurConnecte->getId();
+
     $id_notification = $_POST['id_notification'] ?? null;
 
     if (!$id_notification) {
@@ -930,13 +1001,14 @@ public function markNotificationAsRead()
         exit();
     }
 
+    // Marquer comme lue en vérifiant que la notification appartient à l'utilisateur
     $managerNotification = new NotificationDAO($this->getPDO());
-    $result = $managerNotification->marquerCommeLue($id_notification);
+    $result = $managerNotification->marquerCommeLue($id_notification, $id_utilisateur);
 
     header('Content-Type: application/json');
     echo json_encode([
         'success' => $result,
-        'message' => $result ? 'Marquée comme lue' : 'Erreur'
+        'message' => $result ? 'Marquée comme lue' : 'Erreur ou notification non trouvée'
     ]);
     exit();
 }
@@ -970,6 +1042,33 @@ public function getAllNotifications()
 }
 
 /**
+ * @brief Marque toutes les notifications d'un utilisateur comme lues
+ * AJAX endpoint
+ */
+public function marquerToutesNotificationsCommeLues()
+{
+    if (!isset($_SESSION['utilisateur'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Non authentifié']);
+        exit();
+    }
+
+    $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    $id_utilisateur = $utilisateurConnecte->getId();
+
+    $managerNotification = new NotificationDAO($this->getPDO());
+    $result = $managerNotification->marquerTousCommeLue($id_utilisateur);
+
+    header('Content-Type: application/json');
+    if ($result) {
+        echo json_encode(['success' => true, 'message' => 'Toutes les notifications ont été marquées comme lues']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur lors du marquage des notifications']);
+    }
+    exit();
+}
+
+/**
  * @brief Supprime une notification
  * AJAX endpoint
  */
@@ -981,6 +1080,9 @@ public function supprimerNotification()
         exit();
     }
 
+    $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    $id_utilisateur = $utilisateurConnecte->getId();
+
     $id_notification = $_POST['id_notification'] ?? null;
 
     if (!$id_notification) {
@@ -989,13 +1091,14 @@ public function supprimerNotification()
         exit();
     }
 
+    // Supprimer en vérifiant que la notification appartient à l'utilisateur
     $managerNotification = new NotificationDAO($this->getPDO());
-    $result = $managerNotification->supprimerNotification($id_notification);
+    $result = $managerNotification->supprimerNotification($id_notification, $id_utilisateur);
 
     header('Content-Type: application/json');
     echo json_encode([
         'success' => $result,
-        'message' => $result ? 'Supprimée avec succès' : 'Erreur'
+        'message' => $result ? 'Supprimée avec succès' : 'Erreur ou notification non trouvée'
     ]);
     exit();
 }
@@ -1019,31 +1122,9 @@ public function afficherNotifications()
  */
 public function verMesPromenades()
 {
-    if (!isset($_SESSION['utilisateur'])) {
-        header('Location: index.php?controleur=utilisateur&methode=authentification');
-        exit();
-    }
-
-    $sessionUser = unserialize($_SESSION['utilisateur']);
-
-    // Vérifier que l'utilisateur est bien un promeneur
-    if (!$sessionUser->getEstPromeneur()) {
-        http_response_code(403);
-        echo $this->getTwig()->render('403.html.twig', [
-            'message' => "Seuls les promeneurs peuvent voir leurs promenades."
-        ]);
-        return;
-    }
-
-    $managerAnnonce = new AnnonceDAO($this->getPDO());
-    $promenades = $managerAnnonce->getMesPromenades($sessionUser->getId());
-
-    // Rendu Twig
-    $template = $this->getTwig()->load('mes_promenades.html.twig');
-    echo $template->render([
-        'promenades' => $promenades,
-        'userConnecte' => $sessionUser
-    ]);
+    // Redirige vers le nouveau contrôleur Promenade pour meilleure organisation
+    header('Location: index.php?controleur=promenade&methode=mesPromenades&statut=en_cours');
+    exit();
 }
 
 

@@ -254,17 +254,26 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-light"
-                            href="index.php?controleur=conversation&methode=afficherAllConversation"
+                            <a class="nav-link text-light position-relative"
+                            href="index.php?controleur=conversation&methode=afficherMesConversations"
                             title="Mes messages">
                                 <i class="bi bi-chat-dots fs-5"></i>
+                                <span id="messageBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color:#DDA15E; display:none;">
+                                    <span id="messageCount">0</span>
+                                </span>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link p-0"
                             href="index.php?controleur=utilisateur&methode=afficherTonUtilisateur">
-                            <img src="images/utilisateur/{{ utilisateurConnecte.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                            {% if utilisateurConnecte.photoProfil and utilisateurConnecte.photoProfil != '' %}
+                                <img src="images/utilisateur/{{ utilisateurConnecte.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="40" height="40" style="object-fit:cover;">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: #9AAD5A; border: 2px solid #FEFAE0;">
+                                    <i class="bi bi-person" style="font-size: 20px; color: #FEFAE0;"></i>
+                                </div>
+                            {% endif %}
                             </a>
                         </li>
                     {% else %} 

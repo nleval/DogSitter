@@ -1,0 +1,116 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}Mes Annonces — DogSitter{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="background-color: #FEFAE0; min-height: 100vh;">
+    
+    <h2 class="text-center mb-2 fw-bold" style="color:#537031; font-family: 'Poppins', sans-serif;">
+        <i class="bi bi-megaphone me-2"></i>Mes Annonces
+    </h2>
+    <p class="text-center mb-5" style="color: #BC6C25;">Gérez vos annonces de promenades publiées</p>
+
+    {% if annoncesListe is empty %}
+        <div class="alert text-center shadow-sm" style="background-color:#F8F4E8; color:#537031; padding: 50px;">
+            <i class="bi bi-inbox mb-3 d-block" style="font-size: 3rem; color: #DDA15E;"></i>
+            <h4 class="fw-bold">Aucune annonce trouvée</h4>
+            <p>Vous n'avez pas encore créé d'annonce pour le moment.</p>
+            <a href="index.php?controleur=Annonce&methode=creerAnnonce" class="btn fw-bold text-white mt-3" style="background-color:#537031;">
+                <i class="bi bi-plus-circle me-1"></i> Créer une annonce
+            </a>
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for annonce in annoncesListe %}
+                <div class="col-lg-6">
+                    <div class="card h-100 shadow-lg border-0" style="background-color:#FAF6E9; border-left:6px solid #537031;">
+                        
+                        <div class="card-header" style="background-color:#537031; color:white; padding:15px;">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="mb-1 fw-bold">{{ annonce.titre }}</h5>
+                                    <small class="text-light d-flex align-items-center gap-2">
+                                        <i class="bi bi-calendar-event"></i>
+                                        Le {{ annonce.datePromenade }} à {{ annonce.horaire }}
+                                    </small>
+                                </div>
+                                <span class="badge" style="background-color:#9AAD5A; color:white;">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i>Actif
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="mb-4 pb-3 border-bottom" style="border-color:#DDA15E;">
+                                <h6 class="fw-bold mb-3" style="color:#537031;">
+                                    <i class="bi bi-card-text me-2"></i>Description
+                                </h6>
+                                <p class="small mb-0" style="color:#666; line-height: 1.6;">
+                                    {{ annonce.description }}
+                                </p>
+                            </div>
+
+                            <div class="row text-sm mb-3">
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-geo-alt" style="color:#9AAD5A;"></i> Lieu
+                                    </small>
+                                    <strong style="color:#537031;">{{ annonce.endroitPromenade }}</strong>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-clock" style="color:#BC6C25;"></i> Durée
+                                    </small>
+                                    <strong style="color:#537031;">{{ annonce.duree }} min</strong>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-cash" style="color:#DDA15E;"></i> Tarif
+                                    </small>
+                                    <strong style="color:#537031;">{{ annonce.tarif }} €</strong>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-telephone" style="color:#537031;"></i> Contact
+                                    </small>
+                                    <strong style="color:#537031;">{{ annonce.telephone }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-light d-flex justify-content-between gap-2 flex-wrap border-0">
+                            <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{ annonce.getIdAnnonce }}" 
+                               class="btn btn-sm fw-bold text-white" style="background-color:#DDA15E; flex:1; min-width:120px;">
+                                <i class="bi bi-pencil me-1"></i> Modifier
+                            </a>
+                            <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{ annonce.getIdAnnonce }}" 
+                               class="btn btn-sm fw-bold text-white" style="background-color:#E57373; flex:1; min-width:120px;"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
+                                <i class="bi bi-trash me-1"></i> Supprimer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 20px rgba(83, 112, 49, 0.15) !important;
+    }
+    .text-sm {
+        font-size: 0.875rem;
+    }
+    .badge {
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}

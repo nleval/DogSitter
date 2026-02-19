@@ -129,16 +129,33 @@ class NotificationDAO {
      * @param int $id_notification Identifiant de la notification
      * @return bool Succès de la mise à jour
      */
-    public function marquerCommeLue(int $id_notification): bool {
+    public function marquerCommeLue(int $id_notification, ?int $id_utilisateur = null): bool {
         try {
-            $sql = "
-                UPDATE " . PREFIXE_TABLE . "Notification
-                SET lue = 1
-                WHERE id_notification = :id_notification
-            ";
+            // Si un id_utilisateur est fourni, vérifier que la notification lui appartient
+            if ($id_utilisateur !== null) {
+                $sql = "
+                    UPDATE " . PREFIXE_TABLE . "Notification
+                    SET lue = 1
+                    WHERE id_notification = :id_notification
+                    AND id_utilisateur_destinataire = :id_utilisateur
+                ";
+                
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([
+                    ':id_notification' => $id_notification,
+                    ':id_utilisateur' => $id_utilisateur
+                ]);
+            } else {
+                // Mise à jour sans vérification (pour compatibilité)
+                $sql = "
+                    UPDATE " . PREFIXE_TABLE . "Notification
+                    SET lue = 1
+                    WHERE id_notification = :id_notification
+                ";
 
-            $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([':id_notification' => $id_notification]);
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([':id_notification' => $id_notification]);
+            }
         } catch (PDOException $e) {
             error_log("Erreur NotificationDAO::marquerCommeLue - " . $e->getMessage());
             return false;
@@ -171,15 +188,31 @@ class NotificationDAO {
      * @param int $id_notification Identifiant de la notification
      * @return bool Succès de la suppression
      */
-    public function supprimerNotification(int $id_notification): bool {
+    public function supprimerNotification(int $id_notification, ?int $id_utilisateur = null): bool {
         try {
-            $sql = "
-                DELETE FROM " . PREFIXE_TABLE . "Notification
-                WHERE id_notification = :id_notification
-            ";
+            // Si un id_utilisateur est fourni, vérifier que la notification lui appartient
+            if ($id_utilisateur !== null) {
+                $sql = "
+                    DELETE FROM " . PREFIXE_TABLE . "Notification
+                    WHERE id_notification = :id_notification
+                    AND id_utilisateur_destinataire = :id_utilisateur
+                ";
+                
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([
+                    ':id_notification' => $id_notification,
+                    ':id_utilisateur' => $id_utilisateur
+                ]);
+            } else {
+                // Suppression sans vérification (pour compatibilité)
+                $sql = "
+                    DELETE FROM " . PREFIXE_TABLE . "Notification
+                    WHERE id_notification = :id_notification
+                ";
 
-            $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([':id_notification' => $id_notification]);
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([':id_notification' => $id_notification]);
+            }
         } catch (PDOException $e) {
             error_log("Erreur NotificationDAO::supprimerNotification - " . $e->getMessage());
             return false;

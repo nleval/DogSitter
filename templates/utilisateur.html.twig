@@ -20,14 +20,27 @@
                     {% endif %}
                     <div style="flex: 1; padding-top: 6px;">
                         <h1 class="mb-3" style="font-size: 36px; font-weight: 600; color: #FEFAE0; margin: 0; letter-spacing: -0.5px;">{{ utilisateur.pseudo }}</h1>
-                        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: rgba(254, 250, 224, 0.15); border: 1px solid rgba(254, 250, 224, 0.35); border-radius: 999px; color: #FEFAE0; font-size: 13px; font-weight: 600; margin-bottom: 12px;">
-                            <i class="bi bi-star-fill" style="color: #DDA15E;"></i>
-                            {% if statsAvis is defined and statsAvis.total > 0 %}
-                                {{ statsAvis.moyenne|number_format(1, '.', '') }}/5 ({{ statsAvis.total }})
+                        {% if est_profil_public is defined and est_profil_public or not (est_profil_public is defined) %}
+                            {% if utilisateur.estPromeneur %}
+                                <a href="?controleur=utilisateur&methode=afficherAvisPromeneur&id_utilisateur={{ utilisateur.id }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: rgba(254, 250, 224, 0.15); border: 1px solid rgba(254, 250, 224, 0.35); border-radius: 999px; color: #FEFAE0; font-size: 13px; font-weight: 600; margin-bottom: 12px; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(254, 250, 224, 0.25)'; this.style.transform='scale(1.05)'" onmouseout="this.style.backgroundColor='rgba(254, 250, 224, 0.15)'; this.style.transform='scale(1)'">
+                                    <i class="bi bi-star-fill" style="color: #DDA15E;"></i>
+                                    {% if statsAvis is defined and statsAvis.total > 0 %}
+                                        {{ statsAvis.moyenne|number_format(1, '.', '') }}/5 ({{ statsAvis.total }})
+                                    {% else %}
+                                        Aucun avis
+                                    {% endif %}
+                                </a>
                             {% else %}
-                                Aucun avis
+                                <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: rgba(254, 250, 224, 0.15); border: 1px solid rgba(254, 250, 224, 0.35); border-radius: 999px; color: #FEFAE0; font-size: 13px; font-weight: 600; margin-bottom: 12px;">
+                                    <i class="bi bi-star-fill" style="color: #DDA15E;"></i>
+                                    {% if statsAvis is defined and statsAvis.total > 0 %}
+                                        {{ statsAvis.moyenne|number_format(1, '.', '') }}/5 ({{ statsAvis.total }})
+                                    {% else %}
+                                        Aucun avis
+                                    {% endif %}
+                                </div>
                             {% endif %}
-                        </div>
+                        {% endif %}
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             {% if utilisateur.estMaitre %}
                                 <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
@@ -44,17 +57,28 @@
                 </div>
 
                 <!-- Menu dropdown avec identité -->
-                <div class="dropdown">
-                    <button class="btn" type="button" id="menuDeroulant" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #FEFAE0; color: #537031; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
-                        <i class="bi bi-list"></i> Menu
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuDeroulant" style="background-color: #FAF6E9; border: 2px solid #DDA15E; font-size: 14px; min-width: 220px; border-radius: 8px; box-shadow: 0 8px 24px rgba(83, 112, 49, 0.2);">
-                        {% if utilisateur.estMaitre %}
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    {% if est_profil_public is defined and est_profil_public %}
+                        <!-- Bouton envoyer un message -->
+                        <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ utilisateur.id }}" class="btn" style="background-color: #DDA15E; color: #FEFAE0; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); text-decoration: none;">
+                            <i class="bi bi-chat-dots"></i> Envoyer un message
+                        </a>
+                    {% endif %}
+                    {% if not (est_profil_public is defined and est_profil_public) %}
+                    <div class="dropdown">
+                        <button class="btn" type="button" id="menuDeroulant" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #FEFAE0; color: #537031; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+                            <i class="bi bi-list"></i> Menu
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuDeroulant" style="background-color: #FAF6E9; border: 2px solid #DDA15E; font-size: 14px; min-width: 240px; border-radius: 8px; box-shadow: 0 8px 24px rgba(83, 112, 49, 0.2);">
+                            {% if utilisateur.estMaitre %}
                             <li><a class="dropdown-item" href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateur.id }}" style="color: #537031; padding: 11px 16px; font-weight: 500;">
                                 <i class="bi bi-bookmark-heart me-2" style="color: #9AAD5A; font-size: 15px;"></i> Mes annonces
                             </a></li>
                             <li><a class="dropdown-item" href="?controleur=annonce&methode=voirCandidatures" style="color: #537031; padding: 11px 16px; font-weight: 500;">
                                 <i class="bi bi-clipboard-check me-2" style="color: #9AAD5A; font-size: 15px;"></i> Candidatures
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=promenade&methode=archivesAnnonces" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-archive me-2" style="color: #BC6C25; font-size: 15px;"></i> Archives
                             </a></li>
                             {% if utilisateur.estPromeneur %}
                                 <li><hr class="dropdown-divider" style="margin: 8px 0; border-color: #DDA15E; opacity: 0.3;"></li>
@@ -64,8 +88,11 @@
                             <li><a class="dropdown-item" href="?controleur=annonce&methode=verMesCandidatures" style="color: #537031; padding: 11px 16px; font-weight: 500;">
                                 <i class="bi bi-hand-thumbs-up me-2" style="color: #DDA15E; font-size: 15px;"></i> Mes candidatures
                             </a></li>
-                            <li><a class="dropdown-item" href="?controleur=annonce&methode=verMesPromenades" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                            <li><a class="dropdown-item" href="?controleur=promenade&methode=mesPromenades&statut=a_venir" style="color: #537031; padding: 11px 16px; font-weight: 500;">
                                 <i class="bi bi-map me-2" style="color: #DDA15E; font-size: 15px;"></i> Mes promenades
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=promenade&methode=mesPromenades&statut=archivee" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-archive me-2" style="color: #BC6C25; font-size: 15px;"></i> Archives
                             </a></li>
                         {% endif %}
                         <li><hr class="dropdown-divider" style="margin: 8px 0; border-color: #DDA15E; opacity: 0.3;"></li>
@@ -76,6 +103,8 @@
                             <i class="bi bi-box-arrow-right me-2" style="font-size: 15px;"></i> Déconnexion
                         </a></li>
                     </ul>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -132,6 +161,7 @@
                                                 </div>
                                             {% endif %}
                                             <p style="color: #537031; font-size: 14px; font-weight: 600; margin: 0 0 10px 0; text-transform: capitalize;">{{ chien.nom_Chien }}</p>
+                                            {% if not (est_profil_public is defined and est_profil_public) %}
                                             <div style="display: flex; gap: 8px;">
                                                 <a href="?controleur=chien&methode=afficherFormulaireModification&id_chien={{ chien.id_chien }}" style="flex: 1; background-color: #FEFAE0; color: #537031; padding: 8px 10px; font-size: 12px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; text-decoration: none;" onmouseover="this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
                                                     <i class="bi bi-pencil" style="margin-right: 4px;"></i>Modifier
@@ -143,17 +173,20 @@
                                                     </button>
                                                 </form>
                                             </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% endfor %}
                             {% endif %}
                             <!-- Bouton ajouter chien -->
+                            {% if not (est_profil_public is defined and est_profil_public) %}
                             <div class="col-12 col-sm-6 col-md-4">
                                 <a href="?controleur=chien&methode=afficherFormulaire" style="background-color: #FEFAE0; border: 2px dashed #9AAD5A; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-decoration: none; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.15)'; this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.08)'; this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
                                     <i class="bi bi-plus-circle" style="font-size: 36px; color: #9AAD5A; margin-bottom: 8px;"></i>
                                     <p style="color: #537031; font-size: 13px; font-weight: 600; margin: 0; text-transform: uppercase;">Ajouter un chien</p>
                                 </a>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}

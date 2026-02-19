@@ -64,6 +64,11 @@ class Annonce
     private ?string $telephone;
 
     /**
+     * @brief array $promenades Tableau des promenades associées à cette annonce.
+     */
+    public array $promenades = [];
+
+    /**
      * @brief Constructeur de la classe Annonce.
      *
      * @param ?string $id_annonce Identifiant unique de l'annonce.

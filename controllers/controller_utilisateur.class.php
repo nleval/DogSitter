@@ -74,7 +74,7 @@ class ControllerUtilisateur extends Controller
             }
 
         // Récupérer l'ID de l'utilisateur depuis les paramètres GET
-        $id_utilisateur = $_GET['id_utilisateur'];
+        $id_utilisateur = isset($_GET['id_utilisateur']) ? (int) $_GET['id_utilisateur'] : 0;
 
         // Récupérer un utilisateur spécifique depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
@@ -86,13 +86,18 @@ class ControllerUtilisateur extends Controller
 
         $managerAvis = new AvisDAO($this->getPDO());
         $statsAvis = $managerAvis->getStatsParUtilisateurNote((int) $id_utilisateur);
+        
+        // Vérifier si c'est un profil public (pas le sien)
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $est_profil_public = ($utilisateurConnecte->getId() != $id_utilisateur);
 
         // Rendre la vue avec l'utilisateur et ses chiens
         $template = $this->getTwig()->load('utilisateur.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
             'chiens' => $chiens,
-            'statsAvis' => $statsAvis
+            'statsAvis' => $statsAvis,
+            'est_profil_public' => $est_profil_public
         ]);
     }
 
@@ -311,14 +316,28 @@ class ControllerUtilisateur extends Controller
                 exit();
             }
 
-        $id_utilisateur = $_GET['id_utilisateur'];
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur_connecte = $utilisateurConnecte->getId();
+        
+        $id_utilisateur = $_GET['id_utilisateur'] ?? null;
+
+        // SÉCURITÉ : Vérifier que l'utilisateur ne peut supprimer que son propre compte
+        if (!$id_utilisateur || $id_utilisateur != $id_utilisateur_connecte) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Accès refusé : vous ne pouvez supprimer que votre propre compte."]);
+            return;
+        }
 
         // Supprimer l'utilisateur de la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
         $managerutilisateur->supprimerUtilisateur($id_utilisateur);
+        
+        // Détruire la session
+        session_destroy();
 
-        // Rediriger vers la liste des utilisateurs
-        header('Location: index.php?action=afficherAllUtilisateurs');
+        // Rediriger vers l'accueil
+        header('Location: index.php');
         exit();
     }
        
@@ -342,7 +361,16 @@ class ControllerUtilisateur extends Controller
             }
             
         // Afficher le formulaire de modification d'utilisateur
-        $id_utilisateur = $_GET['id_utilisateur'] ?? 1;
+        $id_utilisateur = $_GET['id_utilisateur'] ?? null;
+        
+        // Vérifier que l'utilisateur connecté modifie bien son propre profil
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        if (!$id_utilisateur || $id_utilisateur != $utilisateurConnecte->getId()) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Accès refusé : vous ne pouvez modifier que votre propre profil."]);
+            return;
+        }
 
         // Récupérer l'utilisateur depuis la base de données
         $managerutilisateur = new UtilisateurDAO($this->getPDO());
@@ -711,6 +739,54 @@ class ControllerUtilisateur extends Controller
         }
     }
     
+    /**
+     * @brief Affiche tous les avis reçus par un promeneur
+     */
+    public function afficherAvisPromeneur()
+    {
+        // Récupérer l'ID du promeneur à afficher
+        $id_promeneur = isset($_GET['id_utilisateur']) ? (int) $_GET['id_utilisateur'] : null;
+        
+        if (!$id_promeneur) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig', ['message' => 'Utilisateur non trouvé.']);
+            return;
+        }
+        
+        // Récupérer l'utilisateur
+        $managerUtilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateur = $managerUtilisateur->findById($id_promeneur);
+        
+        if (!$utilisateur) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig', ['message' => 'Utilisateur non trouvé.']);
+            return;
+        }
+        
+        // Vérifier que c'est un promeneur
+        if (!$utilisateur->getEstPromeneur()) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig', ['message' => 'Utilisateur non trouvé.']);
+            return;
+        }
+        
+        // Récupérer tous les avis
+        $managerAvis = new AvisDAO($this->getPDO());
+        $avis = $managerAvis->trouverParIdUtilisateurNote($id_promeneur);
+        $stats = $managerAvis->getStatsParUtilisateurNote($id_promeneur);
+        
+        // Récupérer les infos des auteurs des avis
+        foreach ($avis as $review) {
+            $review->auteur = $managerUtilisateur->findById($review->getIdUtilisateur());
+        }
+        
+        // Rendre la vue
+        echo $this->getTwig()->render('avis_promeneur.html.twig', [
+            'utilisateur' => $utilisateur,
+            'avis' => $avis,
+            'stats' => $stats
+        ]);
+    }
        
     /**
      * @brief Permet l'authentification d'un utilisateur

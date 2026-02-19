@@ -216,6 +216,9 @@ function loadAllNotifications() {
             if (data.success && data.notifications) {
                 allNotifications = data.notifications;
                 renderNotifications(allNotifications);
+                
+                // Marquer TOUTES les notifications comme lues immédiatement
+                marquerToutesCommeLues();
             } else {
                 showEmptyState();
             }
@@ -308,12 +311,22 @@ function filterNotifications(type) {
 
 function dismissNotification(button, id_notification) {
     const card = button.closest('.notification-item');
+    const wasUnread = card.getAttribute('data-read') === '0';
+    
     card.style.opacity = '0';
     card.style.transform = 'translateX(30px)';
     card.style.transition = 'all 0.3s ease';
     
     setTimeout(() => {
         card.remove();
+        
+        // Retirer de la liste allNotifications
+        allNotifications = allNotifications.filter(n => n.id_notification != id_notification);
+        
+        // Mettre à jour le badge si c'était une notification non lue
+        if (wasUnread) {
+            updateHeaderNotificationBadge();
+        }
         
         const formData = new FormData();
         formData.append('id_notification', id_notification);
@@ -342,14 +355,86 @@ function markNotificationAsRead(element, id_notification) {
         
         element.setAttribute('data-read', '1');
         
+        // Mettre à jour dans allNotifications
+        const notif = allNotifications.find(n => n.id_notification == id_notification);
+        if (notif) {
+            notif.lue = 1;
+        }
+        
         const formData = new FormData();
         formData.append('id_notification', id_notification);
         fetch('index.php?controleur=annonce&methode=marquerNotificationComeLue', {
             method: 'POST',
             body: formData
-        }).catch(err => console.log('Erreur marquage notification:', err));
+        })
+        .then(() => {
+            // Mettre à jour le badge dans le header
+            updateHeaderNotificationBadge();
+        })
+        .catch(err => console.log('Erreur marquage notification:', err));
     }
 }
+
+/**
+ * Met à jour le badge de notifications dans le header
+ */
+function updateHeaderNotificationBadge() {
+    // Compter les notifications non lues dans allNotifications
+    const unreadCount = allNotifications.filter(n => n.lue === 0).length;
+    
+    // Mettre à jour le badge
+    const badge = document.getElementById('notificationBadge');
+    const countSpan = document.getElementById('notificationCount');
+    
+    if (badge && countSpan) {
+        if (unreadCount > 0) {
+            countSpan.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    
+    console.log('🔔 Badge mis à jour:', unreadCount, 'notification(s) non lue(s)');
+}
+
+/**
+ * Marquer toutes les notifications comme lues (côté serveur)
+ */
+function marquerToutesCommeLues() {
+    fetch('index.php?controleur=annonce&methode=marquerToutesNotificationsCommeLues', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mettre à jour toutes les notifications en local
+            allNotifications.forEach(notif => {
+                notif.lue = 1;
+            });
+            
+            // Mettre à jour l'affichage
+            const items = document.querySelectorAll('.notification-item');
+            items.forEach(item => {
+                item.setAttribute('data-read', '1');
+                const badge = item.querySelector('.notification-badge');
+                if (badge) {
+                    badge.textContent = 'Lue';
+                    badge.classList.remove('unread');
+                }
+                item.classList.remove('unread-status');
+            });
+            
+            // Mettre à jour le badge du header à 0
+            updateHeaderNotificationBadge();
+            
+            console.log('✅ Toutes les notifications ont été marquées comme lues');
+        }
+    })
+    .catch(err => console.log('Erreur marquage toutes notifications:', err));
+}
+
+
 </script>
 
 {% endblock %}

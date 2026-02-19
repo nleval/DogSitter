@@ -1,0 +1,194 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}Détails de la promenade — DogSitter{% endblock %}
+
+{% block content %}
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+    <div style="max-width: 900px; margin: 0 auto;">
+        
+        <!-- Bouton retour -->
+        <a href="javascript:history.back()" style="display: inline-flex; align-items: center; gap: 6px; color: #537031; text-decoration: none; margin-bottom: 20px; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.color='#4a5f28'; this.style.transform='translateX(-4px)'" onmouseout="this.style.color='#537031'; this.style.transform='translateX(0)'">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+
+        <!-- Infos promenade -->
+        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); border-radius: 12px; padding: 40px; color: #FEFAE0; margin-bottom: 30px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.15);">
+            
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: start;">
+                <div>
+                    <h1 style="margin: 0 0 15px 0; font-size: 32px; font-weight: 600;">
+                        {% if promenade.annonce %}
+                            {{ promenade.annonce.titre }}
+                        {% else %}
+                            Promenade
+                        {% endif %}
+                    </h1>
+                    
+                    {% if promenade.date_promenade %}
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <div>
+                                <p style="color: rgba(254, 250, 224, 0.7); margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Date</p>
+                                <p style="margin: 0; font-size: 16px; font-weight: 600;">{{ promenade.date_promenade|date('d/m/Y H:i') }}</p>
+                            </div>
+                            {% if promenade.annonce %}
+                                <div>
+                                    <p style="color: rgba(254, 250, 224, 0.7); margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Durée</p>
+                                    <p style="margin: 0; font-size: 16px; font-weight: 600;">{{ promenade.annonce.duree }} minutes</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Statut -->
+                <div style="text-align: center; background-color: rgba(255, 255, 255, 0.1); padding: 20px 30px; border-radius: 8px; backdrop-filter: blur(10px);">
+                    <p style="margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Statut</p>
+                    <p style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        {% if promenade.statut == 'en_cours' %}
+                            <i class="bi bi-play-circle" style="color: #537031;"></i> EN COURS
+                        {% elseif promenade.statut == 'terminee' %}
+                            <i class="bi bi-check-circle" style="color: #9AAD5A;"></i> TERMINÉE
+                        {% elseif promenade.statut == 'archivee' %}
+                            <i class="bi bi-archive" style="color: #BC6C25;"></i> ARCHIVÉE
+                        {% elseif promenade.statut == 'annulee' %}
+                            <i class="bi bi-x-circle" style="color: #DC3545;"></i> ANNULÉE
+                        {% else %}
+                            <i class="bi bi-calendar-check" style="color: #DDA15E;"></i> À VENIR
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal en deux colonnes -->
+        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 30px;">
+            
+            <!-- Colonne gauche - Détails -->
+            <div>
+                <!-- Description -->
+                {% if promenade.annonce and promenade.annonce.description %}
+                    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
+                            <i class="bi bi-file-text"></i> Description
+                        </h3>
+                        <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.8;">{{ promenade.annonce.description }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Lieu et détails -->
+                {% if promenade.annonce %}
+                    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h3 style="color: #537031; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">
+                            <i class="bi bi-info-circle"></i> Détails de la promenade
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-geo-alt"></i> Lieu</p>
+                                <p style="color: #537031; margin: 8px 0 0 0; font-weight: 600;">{{ promenade.annonce.endroitPromenade }}</p>
+                            </div>
+                            <div>
+                                <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-clock"></i> Durée</p>
+                                <p style="color: #537031; margin: 8px 0 0 0; font-weight: 600;">{{ promenade.annonce.duree }} min</p>
+                            </div>
+                            <div>
+                                <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-tag"></i> Tarif</p>
+                                <p style="color: #537031; margin: 8px 0 0 0; font-weight: 600;">{{ promenade.annonce.tarif }}€</p>
+                            </div>
+                            <div>
+                                <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-check2"></i> Statut annonce</p>
+                                <p style="color: #537031; margin: 8px 0 0 0; font-weight: 600;">{{ promenade.annonce.status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Actions -->
+                {% if promenade.statut == 'en_cours' and utilisateurConnecte.id == promenade.id_promeneur %}
+                    <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
+                            <i class="bi bi-lightning"></i> Actions
+                        </h3>
+                        <a href="?controleur=promenade&methode=marquerTerminee&id_promenade={{ promenade.id_promenade }}" style="display: block; text-align: center; padding: 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; margin-bottom: 12px;" onmouseover="this.style.backgroundColor='#7a8f47'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#9AAD5A'; this.style.transform='translateY(0)'">
+                            <i class="bi bi-check-circle"></i> Marquer comme terminée
+                        </a>
+                    </div>
+                {% elseif promenade.statut == 'terminee' and utilisateurConnecte.id == promenade.maitre.id %}
+                    <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
+                            <i class="bi bi-chat-dots"></i> Avis
+                        </h3>
+                        <p style="color: #666; margin: 0 0 16px 0; font-size: 13px;">Vous pouvez laisser un avis sur le promeneur.</p>
+                        <a href="?controleur=avis&methode=ajouter&id_annonce={% if promenade.annonce %}{{ promenade.annonce.id_annonce }}{% endif %}&id_utilisateur_note={{ promenade.id_promeneur }}" style="display: block; text-align: center; padding: 14px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#DDA15E'; this.style.transform='translateY(0)'">
+                            <i class="bi bi-star"></i> Laisser un avis
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Colonne droite - Contacts -->
+            <div>
+                <!-- Propriétaire du chien (maître) -->
+                {% if promenade.maitre and utilisateurConnecte.id != promenade.id_proprietaire %}
+                    <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h4 style="color: #537031; margin: 0 0 16px 0; font-size: 14px; font-weight: 600;">
+                            <i class="bi bi-house-heart"></i> Propriétaire
+                        </h4>
+                        
+                        <div style="text-align: center;">
+                            {% if promenade.maitre.photoProfil %}
+                                <img src="images/utilisateur/{{ promenade.maitre.photoProfil }}" alt="{{ promenade.maitre.pseudo }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; border: 3px solid #9AAD5A;">
+                            {% else %}
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #9AAD5A; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 3px solid #9AAD5A;">
+                                    <i class="bi bi-person" style="color: #FEFAE0; font-size: 28px;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <p style="color: #537031; margin: 0 0 4px 0; font-weight: 600;">{{ promenade.maitre.pseudo }}</p>
+                            <p style="color: #999; margin: 0 0 12px 0; font-size: 12px;">Maître</p>
+                            
+                            <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ promenade.maitre.id }}" style="display: block; padding: 8px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease; margin-bottom: 8px;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                                <i class="bi bi-eye"></i> Voir le profil
+                            </a>
+                            
+                            <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ promenade.maitre.id }}" style="display: block; padding: 8px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'" onmouseout="this.style.backgroundColor='#DDA15E'">
+                                <i class="bi bi-chat-dots"></i> Message
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Promeneur (si visualisé par le maître) -->
+                {% if promenade.promeneur and utilisateurConnecte.id != promenade.id_promeneur %}
+                    <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                        <h4 style="color: #537031; margin: 0 0 16px 0; font-size: 14px; font-weight: 600;">
+                            <i class="bi bi-person-walking"></i> Promeneur
+                        </h4>
+                        
+                        <div style="text-align: center;">
+                            {% if promenade.promeneur.photoProfil %}
+                                <img src="images/utilisateur/{{ promenade.promeneur.photoProfil }}" alt="{{ promenade.promeneur.pseudo }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; border: 3px solid #DDA15E;">
+                            {% else %}
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #DDA15E; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 3px solid #DDA15E;">
+                                    <i class="bi bi-person" style="color: #FEFAE0; font-size: 28px;"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <p style="color: #537031; margin: 0 0 4px 0; font-weight: 600;">{{ promenade.promeneur.pseudo }}</p>
+                            <p style="color: #999; margin: 0 0 12px 0; font-size: 12px;">Promeneur</p>
+                            
+                            <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ promenade.promeneur.id }}" style="display: block; padding: 8px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease; margin-bottom: 8px;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                                <i class="bi bi-eye"></i> Voir le profil
+                            </a>
+                            
+                            <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ promenade.promeneur.id }}" style="display: block; padding: 8px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'" onmouseout="this.style.backgroundColor='#DDA15E'">
+                                <i class="bi bi-chat-dots"></i> Message
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,74 +1,125 @@
 {% extends 'base_template.twig' %}
 
-{% block title %}
-    Mes Annonces
-{% endblock %}
+{% block title %}Mes Annonces — DogSitter{% endblock %}
 
 {% block content %}
-    <div class="container-fluid pt-4" style="background-color: #FEFAE0; min-height: 100vh;">
-        <h2 class="fw-bold mb-4 text-center" style="color:#537031; font-family: 'Poppins', sans-serif;">
-            Mes Annonces
-        </h2>
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- Header avec filtres -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <h1 style="color: #537031; margin: 0 0 10px 0; font-size: 32px; font-weight: 600;">
+                    <i class="bi bi-megaphone"></i> Mes Annonces
+                </h1>
+                <p style="color: #999; margin: 0; font-size: 14px;">Gérez vos annonces de promenades</p>
+            </div>
+            
+            <!-- Filtres par statut -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=active" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'active' %}background-color: #537031; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'active' %}this.style.borderColor='#537031'{% endif %}" onmouseout="{% if statut != 'active' %}this.style.borderColor='#ddd'{% endif %}">
+                    <i class="bi bi-lightning-charge-fill"></i> Actives
+                </a>
+                <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=indisponible" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'indisponible' %}background-color: #9AAD5A; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'indisponible' %}this.style.borderColor='#9AAD5A'{% endif %}" onmouseout="{% if statut != 'indisponible' %}this.style.borderColor='#ddd'{% endif %}">
+                    <i class="bi bi-hourglass-split"></i> En attente
+                </a>
+                <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=archivee" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'archivee' %}background-color: #BC6C25; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'archivee' %}this.style.borderColor='#BC6C25'{% endif %}" onmouseout="{% if statut != 'archivee' %}this.style.borderColor='#ddd'{% endif %}">
+                    <i class="bi bi-archive"></i> Archivées
+                </a>
+            </div>
+        </div>
 
-        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
-            <div class="d-grid gap-3">
+        {% if annoncesListe|length > 0 %}
+            <!-- Grille d'annonces -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
                 {% for annonce in annoncesListe %}
-                    <div class="card shadow-lg border-0"
-                        style="background-color: #FEFAE0; border-left: 6px solid #9AAD5A;">
-                        <div class="card-body d-flex p-3">
-                            <div class="flex-shrink-0 me-3 d-flex align-items-center justify-content-center"
-                                style="width: 100px; height: 100px; background-color: #FEFAE0; 
-                                    border: 2px dashed #DDA15E; border-radius: 12px; font-size: 3rem;">
-                                🐶
+                    <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08); transition: all 0.3s ease; border-left: 4px solid {% if annonce.status == 'archivee' %}#BC6C25{% elseif annonce.status == 'Indisponible' %}#9AAD5A{% else %}#537031{% endif %};" onmouseover="this.style.transform='translateX(4px)'; this.style.boxShadow='0 4px 20px rgba(83, 112, 49, 0.15)'" onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='0 2px 12px rgba(83, 112, 49, 0.08)'">
+                        
+                        <!-- En-tête annonce -->
+                        <div style="padding: 25px; background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%); border-bottom: 1px solid #eee;">
+                            <div style="display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;">
+                                <div>
+                                    <h2 style="color: #537031; margin: 0 0 8px 0; font-size: 20px; font-weight: 600;">{{ annonce.titre }}</h2>
+                                    <p style="color: #999; margin: 0; font-size: 14px;">
+                                        <i class="bi bi-calendar-event"></i> 
+                                        Prévue le <strong>{{ annonce.datePromenade }} à {{ annonce.horaire }}</strong>
+                                    </p>
+                                </div>
+                                <span style="display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; {% if annonce.status == 'archivee' %}background-color: #ffe8d4; color: #8b4513;{% elseif annonce.status == 'Indisponible' %}background-color: #e6f3ff; color: #0066cc;{% else %}background-color: #d4e8d4; color: #4a5f28;{% endif %}">
+                                    {% if annonce.status == 'archivee' %}
+                                        <i class="bi bi-archive"></i> Archivée
+                                    {% elseif annonce.status == 'Indisponible' %}
+                                        <i class="bi bi-hourglass-split"></i> En attente
+                                    {% else %}
+                                        <i class="bi bi-lightning-charge-fill"></i> Actif
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Contenu -->
+                        <div style="padding: 25px;">
+                            
+                            <!-- Description -->
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                                <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">{{ annonce.description }}</p>
                             </div>
 
-                            <div class="flex-grow-1 d-flex flex-column justify-content-between">
-                                <p class="mb-2" style="color:#537031; font-weight: bold;">
-                                    {{ annonce.titre }}
-                                </p>
-                                <p class="mb-2 text-muted">
-                                    {{ (annonce.description|slice(0, 150)) ~ '...' }} ({{ annonce.datePromenade }} à {{
-                                        annonce.endroitPromenade
-                                    }})
-                                </p>
-
-                                <div class="d-flex gap-2 mt-2">
-                                    <!-- Bouton Modifier -->
-                                    <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{
-                                        annonce.getIdAnnonce
-                                        }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#BC6C25; color:white; white-space:nowrap;">
-                                        Modifier
-                                    </a>
-
-                                    <!-- Bouton Supprimer -->
-                                    <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{
-                                        annonce.getIdAnnonce
-                                        }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#D00000; color:white; white-space:nowrap;"
-                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
-                                        Supprimer
-                                    </a>
+                            <!-- Détails annonce en grille -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-geo-alt"></i> Lieu</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.endroitPromenade }}</p>
                                 </div>
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-clock"></i> Durée</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.duree }} min</p>
+                                </div>
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-tag"></i> Tarif</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.tarif }}€</p>
+                                </div>
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-telephone"></i> Tél</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.telephone }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Boutons d'action -->
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{ annonce.getIdAnnonce }}" style="flex: 1; min-width: 130px; text-align: center; padding: 12px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'" onmouseout="this.style.backgroundColor='#DDA15E'">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+                                <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{ annonce.getIdAnnonce }}" style="flex: 1; min-width: 130px; text-align: center; padding: 12px; background-color: #E57373; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');" onmouseover="this.style.backgroundColor='#c62828'" onmouseout="this.style.backgroundColor='#E57373'">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            {% if id_utilisateur == utilisateurConnecte.id %}
-                <div class="alert text-center"
-                    role="alert"
-                    style="background-color: #DDA15E; color: white; font-weight:bold;">
-                    Vous n'avez aucune annonce pour le moment.
-                </div>
-            {% else %}
-                <div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
-                    Cet utilisateur n'a aucune annonce pour le moment.
-                </div>
-            {% endif %}
+            <!-- État vide -->
+            <div style="background: white; border-radius: 12px; padding: 100px 40px; text-align: center; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                <i class="bi bi-inbox" style="font-size: 64px; color: #ddd; margin-bottom: 20px; display: block;"></i>
+                <h3 style="color: #537031; margin: 0 0 10px 0; font-size: 22px; font-weight: 600;">Aucune annonce</h3>
+                <p style="color: #999; margin: 0 0 30px 0; font-size: 14px;">
+                    {% if statut == 'archivee' %}
+                        Vous n'avez pas encore d'annonces archivées.
+                    {% elseif statut == 'indisponible' %}
+                        Vous n'avez pas d'annonces en attente.
+                    {% else %}
+                        Vous n'avez pas encore créé d'annonce active.
+                    {% endif %}
+                </p>
+                {% if statut != 'archivee' %}
+                    <a href="?controleur=Annonce&methode=creerAnnonce" style="display: inline-block; padding: 12px 28px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                        <i class="bi bi-plus-circle"></i> Créer une annonce
+                    </a>
+                {% endif %}
+            </div>
         {% endif %}
+
     </div>
+</div>
 {% endblock %}

@@ -1,0 +1,337 @@
+{% extends 'base_template.twig' %}
+
+{% block title %}Mes conversations — DogSitter{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ds-cream: #FEFAE0;
+            --ds-sand: #FAF6E9;
+            --ds-green: #537031;
+            --ds-green-light: #9AAD5A;
+            --ds-orange: #DDA15E;
+            --ds-orange-dark: #BC6C25;
+            --ds-ink: #2c2c2c;
+            --ds-border: #DDA15E;
+            --ds-white: #FAF6E9;
+        }
+
+        .dm-list-wrap {
+            background: var(--ds-cream);
+            min-height: 100vh;
+            padding: 28px 16px 60px;
+            font-family: "Sora", sans-serif;
+        }
+
+        .dm-list {
+            max-width: 940px;
+            margin: 0 auto;
+            background: var(--ds-sand);
+            border: 1px solid rgba(221, 161, 94, 0.55);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 14px 30px rgba(83, 112, 49, 0.08);
+        }
+
+        .dm-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(221, 161, 94, 0.55);
+            background: var(--ds-sand);
+        }
+
+        .dm-list-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ds-ink);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dm-home {
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ds-white);
+            background: var(--ds-green);
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+
+        .dm-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(221, 161, 94, 0.45);
+            text-decoration: none;
+            color: inherit;
+            background: var(--ds-sand);
+            transition: background 0.2s ease;
+        }
+
+        .dm-row-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            text-decoration: none;
+            color: inherit;
+            min-width: 0;
+        }
+
+        .dm-row:hover {
+            background: #fff7e8;
+        }
+
+        .dm-row:last-child {
+            border-bottom: none;
+        }
+
+        .dm-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--ds-cream);
+            background: var(--ds-green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .dm-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dm-row-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dm-row-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ds-ink);
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dm-row-preview {
+            font-size: 13px;
+            color: var(--ds-green-light);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dm-row-time {
+            font-size: 12px;
+            color: var(--ds-orange);
+            white-space: nowrap;
+        }
+
+        .dm-empty {
+            text-align: center;
+            color: var(--ds-green-light);
+            padding: 60px 20px;
+        }
+
+        .dm-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .dm-swipe {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dm-swipe-actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            background: #f6e3d1;
+            padding: 0 12px;
+        }
+
+        .dm-swipe-actions button {
+            border: none;
+            background: transparent;
+            color: var(--ds-orange-dark);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .dm-swipe-content {
+            transform: translateX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dm-swipe.open .dm-swipe-content {
+            transform: translateX(-110px);
+        }
+
+        .dm-swipe-handle {
+            border: none;
+            background: transparent;
+            color: var(--ds-orange-dark);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 0 6px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('.dm-swipe');
+
+        rows.forEach(row => {
+            const handle = row.querySelector('.dm-swipe-handle');
+            let startX = 0;
+            let currentX = 0;
+            let touching = false;
+
+            function openRow() {
+                row.classList.add('open');
+            }
+
+            function closeRow() {
+                row.classList.remove('open');
+            }
+
+            if (handle) {
+                handle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    row.classList.toggle('open');
+                });
+            }
+
+            row.addEventListener('touchstart', function(e) {
+                if (e.touches.length !== 1) return;
+                touching = true;
+                startX = e.touches[0].clientX;
+                currentX = startX;
+            });
+
+            row.addEventListener('touchmove', function(e) {
+                if (!touching) return;
+                currentX = e.touches[0].clientX;
+            });
+
+            row.addEventListener('touchend', function() {
+                if (!touching) return;
+                const deltaX = currentX - startX;
+                if (deltaX < -30) {
+                    openRow();
+                } else if (deltaX > 30) {
+                    closeRow();
+                }
+                touching = false;
+            });
+
+            row.addEventListener('click', function(e) {
+                if (row.classList.contains('open') && !e.target.closest('.dm-swipe-actions')) {
+                    closeRow();
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="dm-list-wrap">
+    <div class="dm-list">
+        <div class="dm-list-header">
+            <h1 class="dm-list-title">
+                <i class="bi bi-chat-dots" style="color: var(--ds-orange);"></i>
+                Messages
+            </h1>
+            <a class="dm-home" href="?controleur=Index&methode=render">Accueil</a>
+        </div>
+
+        {% if conversationListe is defined and conversationListe|length > 0 %}
+            {% for conversation in conversationListe %}
+                <div class="dm-swipe" data-conversation-id="{{ conversation.idConversation }}">
+                    <div class="dm-swipe-actions">
+                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');">
+                            <input type="hidden" name="id_conversation" value="{{ conversation.idConversation }}">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </div>
+
+                    <div class="dm-row dm-swipe-content">
+                        <a class="dm-row-link" href="?controleur=message&methode=afficherParConversation&id_conversation={{ conversation.idConversation }}">
+                            <div class="dm-avatar">
+                                {% if conversation.autre_utilisateur is defined and conversation.autre_utilisateur.photoProfil is not empty %}
+                                    <img src="images/utilisateur/{{ conversation.autre_utilisateur.photoProfil }}" alt="{{ conversation.autre_utilisateur.pseudo }}">
+                                {% else %}
+                                    <i class="bi bi-person" style="font-size: 20px; color: #FEFAE0;"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="dm-row-main">
+                                <div class="dm-row-name">
+                                    {% if conversation.titre %}
+                                        {{ conversation.titre }}
+                                    {% elseif conversation.autre_utilisateur is defined %}
+                                        {{ conversation.autre_utilisateur.pseudo }}
+                                    {% else %}
+                                        Conversation #{{ conversation.idConversation }}
+                                    {% endif %}
+                                </div>
+                                <p class="dm-row-preview">
+                                    {% if conversation.dernier_message %}
+                                        {{ conversation.dernier_message|length > 80 ? conversation.dernier_message|slice(0, 80) ~ '...' : conversation.dernier_message }}
+                                    {% else %}
+                                        Aucun message pour le moment
+                                    {% endif %}
+                                </p>
+                            </div>
+
+                            <div class="dm-row-time">
+                                {% if conversation.date_dernier_message %}
+                                    {{ conversation.date_dernier_message|date('d/m H:i') }}
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="dm-actions">
+                            <button type="button" class="dm-swipe-handle" aria-label="Actions">...</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="dm-empty">
+                <i class="bi bi-chat-dots" style="font-size: 40px; color: var(--ds-orange);"></i>
+                <div style="margin-top: 10px;">Aucune conversation</div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
