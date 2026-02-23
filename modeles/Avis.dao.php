@@ -204,4 +204,22 @@ class AvisDAO
             ':id_utilisateur_note' => $avis->getIdUtilisateurNote(),
         ]);
     }
+
+    /**
+     * @brief Modifie un champ spécifique d'un avis.
+     *
+     * @param int|string $id_avis Identifiant de l'avis.
+     * @param string $champ Nom du champ à modifier.
+     * @param mixed $nouvelleValeur Nouvelle valeur à appliquer.
+     * @return bool|null Succès de la modification ou null si erreur.
+     */
+    public function modifierChamp($id_avis, $champ, $nouvelleValeur): ?bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "Avis SET $champ = :nouvelleValeur WHERE id_avis = :id_avis";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute([
+            ':nouvelleValeur' => $nouvelleValeur,
+            ':id_avis' => $id_avis
+        ]);
+    }
 }

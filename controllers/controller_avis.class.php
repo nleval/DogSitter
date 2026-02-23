@@ -6,8 +6,8 @@
  * @extends parent<Controller>
  * @brief Permet de gérer les actions liées aux pages concernant les avis
  * @author Campistron Julian
- * @version 1.0
- * @date 2025-12-19
+ * @version 1.2
+ * @date 2026-01-26
  */
 
 class ControllerAvis extends Controller
@@ -265,6 +265,11 @@ class ControllerAvis extends Controller
             }
             
 
+            //Temporaire
+            $id_promenade = 26;
+            $id_utilisateur_note = 2;
+            //
+
             $regles = [
                 'note' => [
                     'obligatoire' => true,
@@ -366,6 +371,85 @@ class ControllerAvis extends Controller
         $template = $this->getTwig()->load('confirmation_creation_avis.html.twig');
         echo $template->render();
 
+    }
+
+    /**
+     * @brief Modifier un avis spécifique
+     * @param int $id_avis Identifiant de l'avis à afficher
+     */
+    public function modifierAvis($id_avis = null)
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+                header('Location: index.php?controleur=utilisateur&methode=authentification');
+                exit();
+            }
+
+        // ---------- ID AVIS ----------
+        if ($id_avis === null) {
+            $id_avis = $_GET['id_avis'] ?? null;
+        }
+
+        if (!$id_avis) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig');
+            return;
+        }
+
+        // ---------- AVIS ----------
+        $managerAvis = new AvisDAO($this->getPDO());
+        $avis = $managerAvis->findById($id_avis);
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
+
+        if (!$avis || $avis->getIdUtilisateur() != $id_utilisateur) {
+            http_response_code(403);
+            echo $this->getTwig()->render('403.html.twig', [
+                'message' => "Accès interdit."
+            ]);
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $regles = [
+                'note' => [
+                    'obligatoire' => true,
+                    'type' => 'numeric',
+                    'plage_min' => 1,
+                    'plage_max' => 5
+                ],
+                'texte_commentaire' => [
+                    'obligatoire' => false,
+                    'type' => 'string',
+                    'longueur_max' => 50
+                ]
+            ];
+
+            $validator = new Validator($regles);
+            $valide = $validator->valider($_POST);
+            $erreurs = $validator->getMessagesErreurs();
+
+            if (!$valide) {
+                echo $this->getTwig()->render('modifier_avis.html.twig', [
+                    'avis' => $avis,
+                    'erreurs' => $erreurs,
+                    'donnees' => $_POST
+                ]);
+                return;
+            }
+
+            $managerAvis->modifierChamp($id_avis, 'note', $_POST['note']);
+            $managerAvis->modifierChamp($id_avis, 'texte_commentaire', $_POST['texte_commentaire']);
+
+            //header('Location: index.php?controleur=avis&methode=afficherAvis&id_annonce=' . $id_annonce); //A IMPLEMENTER QUAND CE SERA PLUS STATIQUE
+            header('Location: index.php?controleur=avis&methode=afficherAvis');
+            exit();
+        }
+
+        echo $this->getTwig()->render('modifier_avis.html.twig', [
+            'avis' => $avis
+        ]);
     }
 
 }
