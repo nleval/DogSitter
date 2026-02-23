@@ -1,0 +1,117 @@
+﻿{% extends 'base_template.twig' %}
+
+{% block title %}Archives des annonces — DogSynergie{% endblock %}
+
+{% block content %}
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0 20px 40px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title"><i class="bi bi-archive me-2"></i>Archives des annonces</h1>
+                <p class="ds-profile-hero-subtitle">Annonces qui ont une ou plusieurs promenades terminées</p>
+            </div>
+        </div>
+
+        {% if annonces|length > 0 %}
+            <!-- Liste d'annonces archivées -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+                {% for annonce in annonces %}
+                    <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08); transition: all 0.3s ease; border-left: 4px solid #BC6C25;" onmouseover="this.style.transform='translateX(4px)'; this.style.boxShadow='0 4px 20px rgba(83, 112, 49, 0.15)'" onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='0 2px 12px rgba(83, 112, 49, 0.08)'">
+                        
+                        <!-- En-tête annonce -->
+                        <div style="padding: 25px; background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%); border-bottom: 1px solid #eee;">
+                            <div style="display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;">
+                                <div>
+                                    <h2 style="color: #537031; margin: 0 0 8px 0; font-size: 20px; font-weight: 600;">{{ annonce.titre }}</h2>
+                                    <p style="color: #999; margin: 0; font-size: 14px;">
+                                        <i class="bi bi-calendar-event"></i> 
+                                        Prévue le <strong>{{ annonce.datePromenade }} à {{ annonce.horaire }}</strong>
+                                    </p>
+                                </div>
+                                <span style="display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; background-color: #ffe8d4; color: #8b4513; white-space: nowrap;">
+                                    <i class="bi bi-archive"></i> Archivée
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Contenu -->
+                        <div style="padding: 25px;">
+                            
+                            <!-- Description -->
+                            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                                <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">{{ annonce.description }}</p>
+                            </div>
+
+                            <!-- Détails annonce en grille -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-geo-alt"></i> Lieu</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.endroitPromenade }}</p>
+                                </div>
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-clock"></i> Durée</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.duree }} min</p>
+                                </div>
+                                <div style="padding: 12px; background-color: #f9f9f9; border-radius: 8px;">
+                                    <p style="color: #999; margin: 0; font-size: 12px;"><i class="bi bi-tag"></i> Tarif</p>
+                                    <p style="color: #537031; margin: 4px 0 0 0; font-weight: 600;">{{ annonce.tarif }}€</p>
+                                </div>
+                            </div>
+
+                            <!-- Promenades de cette annonce -->
+                            {% if annonce.promenades %}
+                                <div style="background-color: #f5f5f5; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                                    <h4 style="color: #537031; margin: 0 0 12px 0; font-size: 14px; font-weight: 600;">
+                                        <i class="bi bi-list-check"></i> Promenades archivées
+                                    </h4>
+                                    <div style="display: grid; gap: 10px;">
+                                        {% for promenade in annonce.promenades %}
+                                            {% if promenade.statut == 'archivee' %}
+                                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: white; border-radius: 6px; border-left: 3px solid #BC6C25;">
+                                                    <div style="flex: 1;">
+                                                        <p style="margin: 0; font-size: 13px; color: #537031; font-weight: 500;">
+                                                            <i class="bi bi-archive" style="color: #BC6C25;"></i> 
+                                                            Archivée
+                                                        </p>
+                                                    </div>
+                                                    {% if promenade.date_promenade %}
+                                                        <p style="margin: 0; font-size: 12px; color: #999;">
+                                                            {{ promenade.date_promenade|date('d/m/Y') }}
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Actions -->
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                <a href="?controleur=annonce&methode=afficherAnnonce&id_annonce={{ annonce.id_annonce }}" style="flex: 1; min-width: 150px; text-align: center; padding: 12px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                                    <i class="bi bi-eye"></i> Voir l'annonce
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Aucune archive -->
+            <div style="background: white; border-radius: 12px; padding: 100px 40px; text-align: center; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
+                <i class="bi bi-archive" style="font-size: 64px; color: #ddd; margin-bottom: 20px; display: block;"></i>
+                <h3 style="color: #537031; margin: 0 0 10px 0; font-size: 22px; font-weight: 600;">Aucune annonce archivée</h3>
+                <p style="color: #999; margin: 0 0 30px 0; font-size: 14px;">Vous n'avez pas encore d'annonces avec des promenades réalisées.</p>
+                <a href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateurConnecte.id }}" style="display: inline-block; padding: 12px 28px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                    <i class="bi bi-arrow-left"></i> Retour aux annonces
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+
+
+

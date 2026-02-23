@@ -110,8 +110,8 @@ class UtilisateurDAO
         $utilisateur = new Utilisateur();
         $utilisateur->setId($tableauAssoc['id_utilisateur'] ?? null);
         $utilisateur->setEmail($tableauAssoc['email'] ?? null);
-        $utilisateur->setEstMaitre($tableauAssoc['estMaitre'] ?? null);
-        $utilisateur->setEstPromeneur($tableauAssoc['estPromeneur'] ?? null);
+        $utilisateur->setEstMaitre(((int) ($tableauAssoc['estMaitre'] ?? 0)) === 1);
+        $utilisateur->setEstPromeneur(((int) ($tableauAssoc['estPromeneur'] ?? 0)) === 1);
         $utilisateur->setAdresse($tableauAssoc['adresse'] ?? null);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse'] ?? null);
         $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);
@@ -165,7 +165,7 @@ class UtilisateurDAO
      * @param string $email
      * @return bool
      */
-    public function emailExist(string $email): bool
+    public function emailExiste(string $email): bool
     {
         $sql = "SELECT COUNT(*) FROM " . PREFIXE_TABLE . "Utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
@@ -206,7 +206,7 @@ class UtilisateurDAO
         if (!$this->estRobuste($utilisateur->getMotDePasse())) {
             throw new Exception("Le mot de passe n'est pas assez robuste.");
         }
-        if ($this->emailExist($utilisateur->getEmail())) {
+        if ($this->emailExiste($utilisateur->getEmail())) {
             throw new Exception("L'email existe déjà.");
         }
 

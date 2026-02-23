@@ -162,5 +162,75 @@ class ChienDAO{
 
         return $chiens;
     }
+
+    /**
+     * @brief Crée un nouveau chien dans la base de données.
+     *
+     * @param Chien $chien Objet Chien à créer.
+     * @return bool True si la création a réussi, false sinon.
+     */
+    public function creer(Chien $chien): bool
+    {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "Chien (nom_chien, poids, taille, race, cheminPhoto, id_utilisateur)
+                VALUES (:nom_chien, :poids, :taille, :race, :cheminPhoto, :id_utilisateur)";
+
+        $stmt = $this->pdo->prepare($sql);
+        
+        $stmt->bindParam(':nom_chien', $chien->getNom_Chien(), PDO::PARAM_STR);
+        $stmt->bindParam(':poids', $chien->getPoids(), PDO::PARAM_STR);
+        $stmt->bindParam(':taille', $chien->getTaille(), PDO::PARAM_STR);
+        $stmt->bindParam(':race', $chien->getRace(), PDO::PARAM_STR);
+        $stmt->bindParam(':cheminPhoto', $chien->getCheminPhoto(), PDO::PARAM_STR);
+        $stmt->bindParam(':id_utilisateur', $chien->getid_Utilisateur(), PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * @brief Met a jour un chien.
+     *
+     * @param Chien $chien Objet Chien a mettre a jour.
+     * @return bool True si la mise a jour a reussi, false sinon.
+     */
+    public function mettreAJour(Chien $chien): bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "Chien
+                SET nom_chien = :nom_chien,
+                    poids = :poids,
+                    taille = :taille,
+                    race = :race,
+                    cheminPhoto = :cheminPhoto
+                WHERE id_chien = :id_chien AND id_utilisateur = :id_utilisateur";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute([
+            ':nom_chien' => $chien->getNom_Chien(),
+            ':poids' => $chien->getPoids(),
+            ':taille' => $chien->getTaille(),
+            ':race' => $chien->getRace(),
+            ':cheminPhoto' => $chien->getCheminPhoto(),
+            ':id_chien' => $chien->getId_Chien(),
+            ':id_utilisateur' => $chien->getid_Utilisateur()
+        ]);
+    }
+
+    /**
+     * @brief Supprime un chien par son identifiant et son proprietaire.
+     *
+     * @param int $id_chien Identifiant du chien.
+     * @param int $id_utilisateur Identifiant du proprietaire.
+     * @return bool True si la suppression a reussi, false sinon.
+     */
+    public function supprimerParIdEtUtilisateur(int $id_chien, int $id_utilisateur): bool
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "Chien WHERE id_chien = :id_chien AND id_utilisateur = :id_utilisateur";
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute([
+            ':id_chien' => $id_chien,
+            ':id_utilisateur' => $id_utilisateur
+        ]);
+    }
 }
 ?>

@@ -1,96 +1,206 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
 {% block title %}
-    Détails de l’utilisateur — DogSitter
+    Détails de l’utilisateur — DogSynergie
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-8">
-                {% if utilisateur is defined %}
-                    <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius:12px;">
-                        <div class="card-header d-flex align-items-center gap-3"
-                            style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                            {% if utilisateur.photoProfil is not empty %}
-                                <img src="images/utilisateur/{{ utilisateur.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+    <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+        {% if utilisateur is defined %}
+            <!-- Header professionnel avec identité graphique -->
+            <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 50px 40px; display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; flex-wrap: wrap; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
+                <!-- Section photo + infos -->
+                <div style="display: flex; align-items: flex-start; gap: 30px; flex: 1; min-width: 300px;">
+                    {% if utilisateur.photoProfil is not empty %}
+                        <img src="images/utilisateur/{{ utilisateur.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="110" height="110" style="object-fit: cover; flex-shrink: 0; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); border: 5px solid #FEFAE0;">
+                    {% else %}
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 110px; height: 110px; background-color: #9AAD5A; flex-shrink: 0; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); border: 5px solid #FEFAE0;">
+                            <i class="bi bi-person" style="font-size: 50px; color: #FEFAE0;"></i>
+                        </div>
+                    {% endif %}
+                    <div style="flex: 1; padding-top: 6px;">
+                        <h1 class="mb-3" style="font-size: 36px; font-weight: 600; color: #FEFAE0; margin: 0; letter-spacing: -0.5px;">{{ utilisateur.pseudo }}</h1>
+                        {% if est_profil_public is defined and est_profil_public or not (est_profil_public is defined) %}
+                            {% if utilisateur.estPromeneur %}
+                                <a href="?controleur=utilisateur&methode=afficherAvisPromeneur&id_utilisateur={{ utilisateur.id }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background-color: rgba(254, 250, 224, 0.15); border: 1px solid rgba(254, 250, 224, 0.35); border-radius: 999px; color: #FEFAE0; font-size: 13px; font-weight: 600; margin-bottom: 12px; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='rgba(254, 250, 224, 0.25)'; this.style.transform='scale(1.05)'" onmouseout="this.style.backgroundColor='rgba(254, 250, 224, 0.15)'; this.style.transform='scale(1)'">
+                                    <i class="bi bi-star-fill" style="color: #DDA15E;"></i>
+                                    {% if statsAvis is defined and statsAvis.total > 0 %}
+                                        {{ statsAvis.moyenne|number_format(1, '.', '') }}/5 ({{ statsAvis.total }})
+                                    {% else %}
+                                        Aucun avis
+                                    {% endif %}
+                                </a>
                             {% endif %}
-                            <h4 class="mb-0">{{ utilisateur.pseudo }}</h4>
+                        {% endif %}
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             {% if utilisateur.estMaitre %}
-                            <a href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateur.id }}"
-                                class="btn btn-outline-light btn-sm ms-auto"
-                                title="Voir les annonces de {{ utilisateur.pseudo }}">
-                                Mes annonces
-                            </a>
+                                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+                                    <i class="bi bi-house-heart" style="font-size: 14px;"></i> Maître
+                                </span>
+                            {% endif %}
+                            {% if utilisateur.estPromeneur %}
+                                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #DDA15E; color: #FEFAE0; border-radius: 20px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+                                    <i class="bi bi-person-walking" style="font-size: 14px;"></i> Promeneur
+                                </span>
                             {% endif %}
                         </div>
+                    </div>
+                </div>
 
-                    <table class="table table-striped" style="background-color:#F8F4E8;">
-                        <tbody>
-                            <tr>
-                                <th>Pseudo</th>
-                                <td>{{ utilisateur.pseudo }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email</th>
-                                <td>{{ utilisateur.email }}</td>
-                            </tr>
-                            <tr>
-                                <th>Téléphone</th>
-                                <td>{{ utilisateur.numTelephone }}</td>
-                            </tr>
-                            <tr>
-                                <th>Adresse</th>
-                                <td>{{ utilisateur.adresse }}</td>
-                            </tr>
-                            <tr>
-                                <th>Est maître ?</th>
-                                <td>
-                                    {% if utilisateur.estMaitre %}
-                                        <span class="badge bg-success">Oui</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Non</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Est promeneur ?</th>
-                                <td>
-                                    {% if utilisateur.estPromeneur %}
-                                        <span class="badge bg-success">Oui</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Non</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Menu dropdown avec identité -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    {% if est_profil_public is defined and est_profil_public %}
+                        <!-- Bouton envoyer un message -->
+                        <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ utilisateur.id }}" class="btn" style="background-color: #DDA15E; color: #FEFAE0; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); text-decoration: none;">
+                            <i class="bi bi-chat-dots"></i> Envoyer un message
+                        </a>
+                    {% endif %}
+                    {% if not (est_profil_public is defined and est_profil_public) %}
+                    <div class="dropdown">
+                        <button class="btn" type="button" id="menuDeroulant" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #FEFAE0; color: #537031; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+                            <i class="bi bi-list"></i> Menu
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuDeroulant" style="background-color: #FAF6E9; border: 2px solid #DDA15E; font-size: 14px; min-width: 240px; border-radius: 8px; box-shadow: 0 8px 24px rgba(83, 112, 49, 0.2);">
+                            {% if utilisateur.estMaitre %}
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateur.id }}" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-bookmark-heart me-2" style="color: #9AAD5A; font-size: 15px;"></i> Mes annonces
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=voirCandidatures" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-clipboard-check me-2" style="color: #9AAD5A; font-size: 15px;"></i> Candidatures
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=archivesAnnonces" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-archive me-2" style="color: #BC6C25; font-size: 15px;"></i> Archives
+                            </a></li>
+                            {% if utilisateur.estPromeneur %}
+                                <li><hr class="dropdown-divider" style="margin: 8px 0; border-color: #DDA15E; opacity: 0.3;"></li>
+                            {% endif %}
+                        {% endif %}
+                        {% if utilisateur.estPromeneur %}
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=verMesCandidatures" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-hand-thumbs-up me-2" style="color: #DDA15E; font-size: 15px;"></i> Mes candidatures
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=mesPromenades&statut=a_venir" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-map me-2" style="color: #DDA15E; font-size: 15px;"></i> Mes promenades
+                            </a></li>
+                            <li><a class="dropdown-item" href="?controleur=annonce&methode=mesPromenades&statut=archivee" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                                <i class="bi bi-archive me-2" style="color: #BC6C25; font-size: 15px;"></i> Archives
+                            </a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider" style="margin: 8px 0; border-color: #DDA15E; opacity: 0.3;"></li>
+                        <li><a class="dropdown-item" href="?controleur=utilisateur&methode=afficherModif&id_utilisateur={{ utilisateur.id }}" style="color: #537031; padding: 11px 16px; font-weight: 500;">
+                            <i class="bi bi-pencil me-2" style="color: #9AAD5A; font-size: 15px;"></i> Modifier profil
+                        </a></li>
+                        <li><a class="dropdown-item" href="?controleur=utilisateur&methode=deconnexion" style="color: #BC6C25; padding: 11px 16px; font-weight: 500;">
+                            <i class="bi bi-box-arrow-right me-2" style="font-size: 15px;"></i> Déconnexion
+                        </a></li>
+                    </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
 
-                            <div class="mt-3 d-flex">
-                                <a href="?controleur=Index&methode=render"
-                                    class="btn px-4"
-                                    style="background-color:#DDA15E; color:white;">
-                                    Retour à l’accueil
-                                </a>
-                                <a href="?controleur=utilisateur&methode=afficherModif&id_utilisateur={{ utilisateur.id }}"
-                                    class="btn ms-3 px-4"
-                                    style="background-color:#DDA15E; color:white;">
-                                    Modifier
-                                </a>
-                                <a href="?controleur=utilisateur&methode=deconnexion"
-                                    class="btn btn-outline-danger ms-3 px-4"
-                                    style="border-color:#BC6C25; color:#BC6C25;">
-                                    Se déconnecter
+            <!-- Contenu principal spacieux avec charte graphique -->
+            <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
+                <div style="width: 100%; max-width: 900px;">
+                    <!-- Section Informations -->
+                    <div style="margin-bottom: 50px;">
+                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Informations de contact</h2>
+                        <div class="row g-3">
+                            <!-- Email -->
+                            <div class="col-12">
+                                <div style="background-color: #FAF6E9; padding: 24px 26px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); border-left: 5px solid #9AAD5A;">
+                                    <p style="color: #537031; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Email</p>
+                                    <p style="color: #2c2c2c; font-size: 15px; margin: 0; word-break: break-all; line-height: 1.6; font-weight: 500;">{{ utilisateur.email }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Téléphone et Adresse -->
+                            {% if utilisateur.numTelephone %}
+                                <div class="col-12 col-md-6">
+                                    <div style="background-color: #FAF6E9; padding: 24px 26px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); border-left: 5px solid #DDA15E; height: 100%;">
+                                        <p style="color: #BC6C25; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Téléphone</p>
+                                        <p style="color: #2c2c2c; font-size: 15px; margin: 0; line-height: 1.6; font-weight: 500;">{{ utilisateur.numTelephone }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if utilisateur.adresse %}
+                                <div class="col-12 col-md-6">
+                                    <div style="background-color: #FAF6E9; padding: 24px 26px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); border-left: 5px solid #9AAD5A; height: 100%;">
+                                        <p style="color: #537031; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Adresse</p>
+                                        <p style="color: #2c2c2c; font-size: 15px; margin: 0; line-height: 1.6; font-weight: 500;">{{ utilisateur.adresse }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Section Mes chiens -->
+                    {% if utilisateur.estMaitre %}
+                    <div style="margin-bottom: 50px;">
+                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Mes chiens</h2>
+                        <div class="row g-3">
+                            {% if chiens is defined and chiens|length > 0 %}
+                                {% for chien in chiens %}
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div style="background-color: #FAF6E9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); border-left: 5px solid #9AAD5A; text-align: center; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.2s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.15)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.08)'; this.style.transform='translateY(0)';">
+                                            {% if chien.cheminPhoto is not empty %}
+                                                <img src="images/chiens/{{ chien.cheminPhoto }}" alt="Photo de {{ chien.nom_Chien }}" class="rounded-circle" width="80" height="80" style="object-fit: cover; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border: 3px solid #FEFAE0;">
+                                            {% else %}
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background-color: #9AAD5A; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border: 3px solid #FEFAE0;">
+                                                    <i class="bi bi-paw" style="font-size: 40px; color: #FEFAE0;"></i>
+                                                </div>
+                                            {% endif %}
+                                            <p style="color: #537031; font-size: 14px; font-weight: 600; margin: 0 0 10px 0; text-transform: capitalize;">{{ chien.nom_Chien }}</p>
+                                            {% if not (est_profil_public is defined and est_profil_public) %}
+                                            <div style="display: flex; gap: 8px;">
+                                                <a href="?controleur=chien&methode=afficherFormulaireModification&id_chien={{ chien.id_chien }}" style="flex: 1; background-color: #FEFAE0; color: #537031; padding: 8px 10px; font-size: 12px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; text-decoration: none;" onmouseover="this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
+                                                    <i class="bi bi-pencil" style="margin-right: 4px;"></i>Modifier
+                                                </a>
+                                                <form method="post" action="?controleur=chien&methode=supprimerChien" style="flex: 1;" onsubmit="return confirm('Supprimer ce chien ?');">
+                                                    <input type="hidden" name="id_chien" value="{{ chien.id_chien }}">
+                                                    <button type="submit" style="width: 100%; background-color: #FAF6E9; color: #BC6C25; padding: 8px 10px; font-size: 12px; border: 1px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer;" onmouseover="this.style.borderColor='#BC6C25'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.borderColor='#DDA15E'; this.style.backgroundColor='#FAF6E9';">
+                                                        <i class="bi bi-trash" style="margin-right: 4px;"></i>Supprimer
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <!-- Bouton ajouter chien -->
+                            {% if not (est_profil_public is defined and est_profil_public) %}
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a href="?controleur=chien&methode=afficherFormulaire" style="background-color: #FEFAE0; border: 2px dashed #9AAD5A; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-decoration: none; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.15)'; this.style.borderColor='#537031'; this.style.backgroundColor='#F0F8EC';" onmouseout="this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.08)'; this.style.borderColor='#9AAD5A'; this.style.backgroundColor='#FEFAE0';">
+                                    <i class="bi bi-plus-circle" style="font-size: 36px; color: #9AAD5A; margin-bottom: 8px;"></i>
+                                    <p style="color: #537031; font-size: 13px; font-weight: 600; margin: 0; text-transform: uppercase;">Ajouter un chien</p>
                                 </a>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
-                {% else %}
-                    <div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
-                        Aucun utilisateur trouvé.
+                    {% endif %}
+
+                    <!-- Bouton Retour -->
+                    <div style="text-align: center;">
+                        <a href="?controleur=Index&methode=render" class="btn" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 40px; font-size: 14px; border: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; transition: transform 0.2s; cursor: pointer; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);">
+                            <i class="bi bi-house-door"></i> Retour à l'accueil
+                        </a>
                     </div>
-                {% endif %}
+                </div>
             </div>
-        </div>
+        {% else %}
+            <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #FEFAE0;">
+                <div style="text-align: center; padding: 40px; max-width: 480px; background-color: #FAF6E9; border-radius: 12px; border: 2px solid #DDA15E; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
+                    <i class="bi bi-exclamation-circle" style="font-size: 48px; color: #DDA15E; display: block; margin-bottom: 20px;"></i>
+                    <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 500;">Aucun utilisateur trouvé.</p>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
+
+
+
+

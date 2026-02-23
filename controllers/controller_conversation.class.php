@@ -23,14 +23,70 @@ class ControllerConversation extends Controller
      */
     public function afficherConversation()
     {
-        // Récupérer une conversation spécifique depuis la base de données
+        // Vérifier que l'utilisateur est connecté
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $idUtilisateurConnecte = $utilisateurConnecte->getId();
+        
+        // Récupérer l'ID de la conversation depuis GET
+        $id_conversation = isset($_GET['id_conversation']) ? (int) $_GET['id_conversation'] : null;
+        
+        if (!$id_conversation) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig', ['message' => 'Conversation non trouvée.']);
+            return;
+        }
+        
+        // Récupérer la conversation
         $managerconversation = new ConversationDAO($this->getPDO());
-        $conversation = $managerconversation->findById(1); // Exemple avec l'ID 1
+        $conversation = $managerconversation->findById($id_conversation);
+        
+        if (!$conversation) {
+            http_response_code(404);
+            echo $this->getTwig()->render('404.html.twig', ['message' => 'Conversation non trouvée.']);
+            return;
+        }
+        
+        // SÉCURITÉ : Vérifier que l'utilisateur fait partie de la conversation
+        if (!$managerconversation->utilisateurFaitPartieConversation($id_conversation, $idUtilisateurConnecte)) {
+            http_response_code(403);
+            $template = $this->getTwig()->load('403.html.twig');
+            echo $template->render(['message' => "Accès refusé : vous ne faites pas partie de cette conversation."]);
+            return;
+        }
+
+        // Récupérer les messages de la conversation
+        $messageDAO = new MessageDAO($this->getPDO());
+        $messageListe = $messageDAO->findByConversation($id_conversation);
+        
+        // Récupérer l'autre utilisateur de la conversation
+        $utilisateurDAO = new UtilisateurDAO($this->getPDO());
+        $participants = $managerconversation->getParticipants($id_conversation);
+        
+        $autreUtilisateur = null;
+        foreach ($participants as $id_participant) {
+            if ($id_participant != $idUtilisateurConnecte) {
+                $autreUtilisateur = $utilisateurDAO->findById($id_participant);
+                break;
+            }
+        }
+        
+        // Enrichir les messages avec les infos utilisateurs
+        foreach ($messageListe as $message) {
+            $message->utilisateur = $utilisateurDAO->findById($message->getIdUtilisateur());
+        }
 
         // Rendre la vue avec la conversation
-        $template = $this->getTwig()->load('conversation.html.twig');
-        echo $template->render([
-            'conversation' => $conversation
+        echo $this->getTwig()->render('conversation_active.html.twig', [
+            'conversation' => $conversation,
+            'messageListe' => $messageListe,
+            'idConversation' => $id_conversation,
+            'autreUtilisateur' => $autreUtilisateur,
+            'utilisateurConnecte' => $utilisateurConnecte
         ]);
     }
 
@@ -57,8 +113,12 @@ class ControllerConversation extends Controller
                 exit();
             }
 
-        $utilisateurConnecte = $_SESSION['utilisateur'];
-        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $idUtilisateur = $utilisateurConnecte->getId();
+
+        // Ouvrir la messagerie = considérer les notifications de messages comme consultées
+        $notificationDAO = new NotificationDAO($this->getPDO());
+        $notificationDAO->marquerCommeLuesParType($idUtilisateur, 'nouveau_message');
 
         $managerConversation = new ConversationDAO($this->getPdo());
         $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
@@ -66,16 +126,111 @@ class ControllerConversation extends Controller
         echo $this->getTwig()->render('messages.html.twig', [
             'conversationListe' => $conversationListe
         ]);
-    
-        $utilisateurConnecte = $_SESSION['utilisateur'];
-        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+    }
 
+    /**
+     * @brief Créer une conversation avec un utilisateur et rediriger vers la page de messages
+     */
+    public function creerConversationAvecUtilisateur()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $idUtilisateurConnecte = $utilisateurConnecte->getId();
+        
+        $idAutreUtilisateur = isset($_GET['id_utilisateur']) ? (int) $_GET['id_utilisateur'] : null;
+        
+        if (!$idAutreUtilisateur) {
+            http_response_code(400);
+            echo "Utilisateur cible non spécifié.";
+            exit();
+        }
+        
+        // Créer ou récupérer la conversation
         $managerConversation = new ConversationDAO($this->getPdo());
-        $conversationListe = $managerConversation->findByUtilisateur($idUtilisateur);
+        $id_conversation = $managerConversation->creerConversation($idUtilisateurConnecte, $idAutreUtilisateur);
+        
+        if ($id_conversation) {
+            // Rediriger vers la conversation
+            header("Location: index.php?controleur=message&methode=afficherParConversation&id_conversation={$id_conversation}");
+            exit();
+        } else {
+            http_response_code(500);
+            echo "Erreur lors de la création de la conversation.";
+            exit();
+        }
+    }
 
-        echo $this->getTwig()->render('messages.html.twig', [
-            'conversationListe' => $conversationListe
-        ]);
+    /**
+     * @brief Renommer une conversation
+     */
+    public function renommerConversation()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $idUtilisateur = $utilisateurConnecte->getId();
+
+        $id_conversation = isset($_POST['id_conversation']) ? (int) $_POST['id_conversation'] : null;
+        $titre = isset($_POST['titre']) ? trim($_POST['titre']) : '';
+
+        if (!$id_conversation || $titre === '') {
+            http_response_code(400);
+            echo "Parametres manquants.";
+            return;
+        }
+
+        $conversationDAO = new ConversationDAO($this->getPdo());
+        if (!$conversationDAO->utilisateurFaitPartieConversation($id_conversation, $idUtilisateur)) {
+            http_response_code(403);
+            echo "Acces refuse.";
+            return;
+        }
+
+        $conversationDAO->renommerConversation($id_conversation, $titre);
+
+        header("Location: index.php?controleur=conversation&methode=afficherMesConversations");
+        exit();
+    }
+
+    /**
+     * @brief Supprimer une conversation
+     */
+    public function supprimerConversation()
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
+            exit();
+        }
+
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $idUtilisateur = $utilisateurConnecte->getId();
+
+        $id_conversation = isset($_POST['id_conversation']) ? (int) $_POST['id_conversation'] : null;
+
+        if (!$id_conversation) {
+            http_response_code(400);
+            echo "Parametre manquant.";
+            return;
+        }
+
+        $conversationDAO = new ConversationDAO($this->getPdo());
+        if (!$conversationDAO->utilisateurFaitPartieConversation($id_conversation, $idUtilisateur)) {
+            http_response_code(403);
+            echo "Acces refuse.";
+            return;
+        }
+
+        $conversationDAO->supprimerConversation($id_conversation);
+
+        header("Location: index.php?controleur=conversation&methode=afficherMesConversations");
+        exit();
     }
 
 

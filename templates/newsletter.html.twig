@@ -1,94 +1,71 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Newsletter — DogSitter{% endblock %}
+{% block title %}Newsletter — DogSynergie{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-5" style="background-color:#FEFAE0; min-height:100vh;">
-
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8 col-xl-6">
-
-            <div class="card shadow-lg border-0 p-4"
-                 style="background-color:#FAF6E9; border-radius:12px;">
-
-                <h2 class="fw-bold mb-3" style="color:#537031;">
-                    Inscription à la newsletter
-                </h2>
-
-                <p class="mb-4 text-secondary">
-                    Recevez des nouvelles de <strong>DogSitter</strong>, des conseils
-                    pour le bien-être des chiens et des informations sur nos actions
-                    favorisant le lien intergénérationnel.
-                </p>
-
-                {# ===== FORMULAIRE NEWSLETTER ===== #}
-                <form method="post"
-                      action="index.php?controleur=index&methode=render">
-
-                    <label class="form-label fw-semibold" style="color:#537031;">
-                        Adresse email <span aria-hidden="true">★</span>
-                    </label>
-
-                    <input type="email"
-                           name="email"
-                           class="form-control mb-3"
-                           placeholder="exemple@email.com"
-                           style="background-color:#F8F4E8; border-radius:10px;"
-                           required>
-
-                    <button class="btn w-100 mb-3"
-                            style="background-color:#537031; color:white; border-radius:10px;">
-                        S’inscrire à la newsletter
-                    </button>
-
-                    <p class="small text-muted mb-0">
-                        🔒 En vous inscrivant, vous acceptez notre <strong>politique de confidentialité</strong> </br>
-                        Vous pouvez vous désinscrire à tout moment.
-                    </p>
-                </form>
-
-                <hr class="my-4">
-
-                {# ===== AVANTAGES ===== #}
-                <div class="row text-center">
-                    <div class="col-md-4 mb-3">
-                        <div class="fw-semibold" style="color:#537031;">
-                            🤝 Lien social
-                        </div>
-                        <small class="text-muted">
-                            Favoriser les échanges entre générations
-                        </small>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <div class="fw-semibold" style="color:#537031;">
-                            🐶 Bien-être animal
-                        </div>
-                        <small class="text-muted">
-                            Conseils et actualités pour vos chiens
-                        </small>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <div class="fw-semibold" style="color:#537031;">
-                            🔐 Données protégées
-                        </div>
-                        <small class="text-muted">
-                            Votre email reste confidentiel
-                        </small>
-                    </div>
-                </div>
-
-                <div class="text-end mt-4">
-                    <a href="index.php?controleur=Index&methode=render"
-                       class="btn px-4"
-                       style="background-color:#DDA15E; color:white; border-radius:10px;">
-                        Retour
-                    </a>
-                </div>
-
+    <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Inscription à la newsletter</h1>
+                <p class="ds-profile-hero-subtitle">Recevez les actualités et conseils de DogSynergie</p>
             </div>
         </div>
-    </div>
-</div>
+
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
+            <div style="width: 100%; max-width: 600px;">
+                <div style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1); margin-bottom: 30px;">
+                    <p style="color: #537031; font-size: 14px; line-height: 1.6; margin-bottom: 30px;">
+                        Recevez des nouvelles de <strong>DogSynergie</strong>, des conseils pour le bien-être des chiens et des informations sur nos actions favorisant le lien intergénérationnel.
+                    </p>
+
+                    <form method="post" action="index.php?controleur=index&methode=render">
+                        <!-- Email -->
+                        <div style="margin-bottom: 28px;">
+                            <label for="email" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Adresse email *</label>
+                            <input type="email" id="email" name="email" placeholder="exemple@email.com" required style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                        </div>
+
+                        <!-- Bouton -->
+                        <button type="submit" style="width: 100%; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2); margin-bottom: 20px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                            <i class="bi bi-check-circle me-2"></i> S'inscrire à la newsletter
+                        </button>
+
+                        <!-- Message confidentialité -->
+                        <p style="font-size: 12px; color: #9AAD5A; margin: 0; text-align: center;">
+                            🔒 Votre email reste confidentiel • Vous pouvez vous désinscrire à tout moment
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Avantages -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 40px;">
+                    <div style="background-color: #FAF6E9; padding: 24px; border-radius: 8px; text-align: center; border-left: 5px solid #9AAD5A;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🤝</div>
+                        <div style="color: #537031; font-weight: 600; font-size: 13px; margin-bottom: 6px;">Lien social</div>
+                        <p style="color: #9AAD5A; font-size: 12px; margin: 0;">Favoriser les échanges entre générations</p>
+                    </div>
+
+                    <div style="background-color: #FAF6E9; padding: 24px; border-radius: 8px; text-align: center; border-left: 5px solid #DDA15E;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🐶</div>
+                        <div style="color: #537031; font-weight: 600; font-size: 13px; margin-bottom: 6px;">Bien-être animal</div>
+                        <p style="color: #9AAD5A; font-size: 12px; margin: 0;">Conseils et actualités pour vos chiens</p>
+                    </div>
+
+                    <div style="background-color: #FAF6E9; padding: 24px; border-radius: 8px; text-align: center; border-left: 5px solid #BC6C25;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🔐</div>
+                        <div style="color: #537031; font-weight: 600; font-size: 13px; margin-bottom: 6px;">Données protégées</div>
+                        <p style="color: #9AAD5A; font-size: 12px; margin: 0;">Votre email reste confidentiel</p>
+                    </div>
+                </div>
+
+                <!-- Bouton Retour -->
+                <a href="index.php?controleur=Index&methode=render" style="display: inline-block; background-color: #FAF6E9; color: #537031; padding: 12px 40px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                    <i class="bi bi-house-door me-2"></i> Retour
+                </a>
 {% endblock %}
+
+
+
+
+

@@ -56,12 +56,12 @@ class AvisDAO
     }
 
     /**
-     * @function findAll
+     * @function trouverTous
      * @details Cette fonction permet de récupérer tous les avis en base de données
      * @uses hydrateAll
      * @return array
      */
-    public function findAll(): array
+    public function trouverTous(): array
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis";
         $pdoStatement  = $this->pdo->prepare($sql);
@@ -73,12 +73,12 @@ class AvisDAO
     }
 
     /**
-     * @function findById
+     * @function trouverParId
      * @details Cette fonction permet de récupérer l'avis en base de données dont l'ID est donné en paramètre
      * @param Avis|null $id_avis
      * @return array
      */
-    public function findById($id_avis): ?Avis
+    public function trouverParId($id_avis): ?Avis
     {
         if ($id_avis === null) {
             return null;
@@ -94,12 +94,12 @@ class AvisDAO
     }
 
     /**
-     * @function findByIdUtilisateurNote
+     * @function trouverParIdUtilisateurNote
      * @details Cette fonction permet de récupérer tous les avis en base de données dont l'ID de l'utilisateur noté est donné en paramètre
      * @param int $id_utilisateur_note
      * @return array
      */
-    public function findByIdUtilisateurNote($id_utilisateur_note): array
+    public function trouverParIdUtilisateurNote($id_utilisateur_note): array
     {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_utilisateur_note =".$id_utilisateur_note;
         $pdoStatement  = $this->pdo->prepare($sql);
@@ -108,6 +108,44 @@ class AvisDAO
         $avis = $pdoStatement->fetchAll();
         
         return $this->hydrateAll($avis);
+    }
+
+    /**
+     * @function trouverParIdAnnonce
+     * @details Cette fonction permet de recuperer tous les avis d'une annonce
+     * @param int $id_annonce
+     * @return array
+     */
+    public function trouverParIdAnnonce($id_annonce): array
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_annonce = :id_annonce";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':id_annonce' => $id_annonce]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $avis = $pdoStatement->fetchAll();
+
+        return $this->hydrateAll($avis);
+    }
+
+    /**
+     * @function getStatsParUtilisateurNote
+     * @details Retourne la moyenne et le nombre d'avis pour un utilisateur note
+     * @param int $id_utilisateur_note
+     * @return array{moyenne: float, total: int}
+     */
+    public function getStatsParUtilisateurNote(int $id_utilisateur_note): array
+    {
+        $sql = "SELECT AVG(CAST(note AS DECIMAL(10,2))) AS moyenne, COUNT(*) AS total
+                FROM " . PREFIXE_TABLE . "Avis
+                WHERE id_utilisateur_note = :id_utilisateur_note";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id_utilisateur_note' => $id_utilisateur_note]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return [
+            'moyenne' => isset($row['moyenne']) ? (float) $row['moyenne'] : 0.0,
+            'total' => isset($row['total']) ? (int) $row['total'] : 0
+        ];
     }
 
     /**
@@ -138,7 +176,7 @@ class AvisDAO
         $avis->setNote($tableauAssoc['note'] ?? null);
         $avis->setTexteCommentaire($tableauAssoc['texte_commentaire'] ?? null);
         $avis->setIdUtilisateur($tableauAssoc['id_utilisateur'] ?? null);
-        $avis->setIdPromenade($tableauAssoc['id_promenade'] ?? null);
+        $avis->setIdAnnonce($tableauAssoc['id_annonce'] ?? null);
         $avis->setIdUtilisateurNote($tableauAssoc['id_utilisateur_note'] ?? null);
 
         return $avis;
@@ -150,19 +188,19 @@ class AvisDAO
      * @param ?Avis $avis Objet Avis à insérer.
      * @return bool Succès de l'insertion.
      */
-    public function ajouterAvis(?Avis $avis): bool
+    public function ajouter(?Avis $avis): bool
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO " . PREFIXE_TABLE . "Avis 
-            (note, texte_commentaire, id_utilisateur, id_promenade, id_utilisateur_note)
-            VALUES (:note, :texte_commentaire, :id_utilisateur, :id_promenade, :id_utilisateur_note)
+            (note, texte_commentaire, id_utilisateur, id_annonce, id_utilisateur_note)
+            VALUES (:note, :texte_commentaire, :id_utilisateur, :id_annonce, :id_utilisateur_note)
         ");
 
         return $stmt->execute([
             ':note' => $avis->getNote(),
             ':texte_commentaire' => $avis->getTexteCommentaire(),
             ':id_utilisateur' => $avis->getIdUtilisateur(),
-            ':id_promenade' => $avis->getIdPromenade(),
+            ':id_annonce' => $avis->getIdAnnonce(),
             ':id_utilisateur_note' => $avis->getIdUtilisateurNote(),
         ]);
     }

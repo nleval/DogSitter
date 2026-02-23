@@ -1,0 +1,86 @@
+﻿{% extends 'base_template.twig' %}
+
+{% block title %}Mes conversations — DogSynergie{% endblock %}
+
+{% block content %}
+<div class="dm-list-wrap">
+    <div class="ds-profile-hero">
+        <div class="ds-profile-hero-inner">
+            <h1 class="ds-profile-hero-title"><i class="bi bi-chat-dots-fill me-2"></i>Mes conversations</h1>
+            <p class="ds-profile-hero-subtitle">Consultez vos conversations actives.</p>
+        </div>
+    </div>
+
+    <div class="dm-list">
+        <div class="dm-list-header">
+            <h1 class="dm-list-title">
+                <i class="bi bi-chat-dots dm-title-icon"></i>
+                Messages
+            </h1>
+            <a class="dm-home" href="?controleur=Index&methode=render">Accueil</a>
+        </div>
+
+        {% if conversationListe is defined and conversationListe|length > 0 %}
+            {% for conversation in conversationListe %}
+                <div class="dm-swipe" data-conversation-id="{{ conversation.idConversation }}">
+                    <div class="dm-swipe-actions">
+                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');">
+                            <input type="hidden" name="id_conversation" value="{{ conversation.idConversation }}">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </div>
+
+                    <div class="dm-row dm-swipe-content">
+                        <a class="dm-row-link" href="?controleur=message&methode=afficherParConversation&id_conversation={{ conversation.idConversation }}">
+                            <div class="dm-avatar">
+                                {% if conversation.autre_utilisateur is defined and conversation.autre_utilisateur.photoProfil is not empty %}
+                                    <img src="images/utilisateur/{{ conversation.autre_utilisateur.photoProfil }}" alt="{{ conversation.autre_utilisateur.pseudo }}">
+                                {% else %}
+                                    <i class="bi bi-person dm-avatar-icon-sm"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="dm-row-main">
+                                <div class="dm-row-name">
+                                    {% if conversation.titre %}
+                                        {{ conversation.titre }}
+                                    {% elseif conversation.autre_utilisateur is defined %}
+                                        {{ conversation.autre_utilisateur.pseudo }}
+                                    {% else %}
+                                        Conversation #{{ conversation.idConversation }}
+                                    {% endif %}
+                                </div>
+                                <p class="dm-row-preview">
+                                    {% if conversation.dernier_message %}
+                                        {{ conversation.dernier_message|length > 80 ? conversation.dernier_message|slice(0, 80) ~ '...' : conversation.dernier_message }}
+                                    {% else %}
+                                        Aucun message pour le moment
+                                    {% endif %}
+                                </p>
+                            </div>
+
+                            <div class="dm-row-time">
+                                {% if conversation.date_dernier_message %}
+                                    {{ conversation.date_dernier_message|date('d/m H:i') }}
+                                {% endif %}
+                            </div>
+                        </a>
+
+                        <div class="dm-actions">
+                            <button type="button" class="dm-swipe-handle" aria-label="Actions">...</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="dm-empty">
+                <i class="bi bi-chat-dots dm-empty-icon"></i>
+                <div class="dm-empty-text">Aucune conversation</div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+

@@ -31,6 +31,16 @@ class Message {
      * @brief ?string $idConversation Identifiant de la conversation associée.
      */
     private ?string $idConversation;
+
+    /**
+     * @brief ?int $est_modifie Indique si le message a ete modifie.
+     */
+    private ?int $est_modifie;
+    
+    /**
+     * @brief ?Utilisateur $utilisateur Utilisateur auteur du message (propriété dynamique)
+     */
+    public ?Utilisateur $utilisateur = null;
         
     /**
      * @brief Constructeur de la classe Message.
@@ -46,13 +56,15 @@ class Message {
         ?string $contenu = null,
         ?string $dateHeureMessage = null,
         ?string $idUtilisateur = null,
-        ?string $idConversation = null
+        ?string $idConversation = null,
+        ?int $est_modifie = 0
     ) {
         $this->idMessage = $idMessage;
         $this->contenu = $contenu;
         $this->dateHeureMessage = $dateHeureMessage;
         $this->idUtilisateur = $idUtilisateur;
         $this->idConversation = $idConversation;
+        $this->est_modifie = $est_modifie;
     }
 
     /**
@@ -145,38 +157,22 @@ class Message {
         $this->idConversation = $idConversation;
     }
 
-/**
- * Récupère tous les messages d'une conversation
- *
- * @param int $idConversation
- * @return Message[]
- */
-public function findByConversation(int $idConversation): array
-{
-    $messages = [];
-
-    $stmt = $this->pdo->prepare("
-        SELECT * FROM " . PREFIXE_TABLE . "Message
-        WHERE id_conversation = :idConversation
-        ORDER BY DateHeureMessage ASC
-    ");
-    $stmt->bindParam(':idConversation', $idConversation, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($results as $row) {
-        $messages[] = new Message(
-            $row['id_message'],
-            $row['contenu'],
-            $row['DateHeureMessage'],
-            $row['id_utilisateur'],
-            $row['id_conversation']
-        );
+    /**
+     * @brief Indique si le message a ete modifie.
+     *
+     * @return ?int 1 si modifie, 0 sinon.
+     */
+    public function getEstModifie(): ?int {
+        return $this->est_modifie;
     }
 
-    return $messages;
-}
-
+    /**
+     * @brief Definit le statut de modification du message.
+     *
+     * @param ?int $est_modifie 1 si modifie, 0 sinon.
+     */
+    public function setEstModifie(?int $est_modifie): void {
+        $this->est_modifie = $est_modifie;
+    }
 }
 ?>

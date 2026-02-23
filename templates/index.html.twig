@@ -1,10 +1,32 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
 {% block title %}
-    Accueil — DogSitter : Promenade de Chiens
+    Accueil — DogSynergie : Promenade de Chiens
 {% endblock %}
 
 {% block content %}
+    {% set estConnecte = utilisateurConnecte is not null %}
+    {% set estMaitre = estConnecte and utilisateurConnecte.estMaitre in [1, '1', true, 'true', 'TRUE'] %}
+    {% set estPromeneur = estConnecte and utilisateurConnecte.estPromeneur in [1, '1', true, 'true', 'TRUE'] %}
+    {% set idUtilisateurConnecte = estConnecte ? utilisateurConnecte.id : null %}
+
+    {% set peutPublierAnnonce = estMaitre %}
+    {% set peutTrouverPromenade = estPromeneur %}
+    {% set peutVoirAvis = estMaitre or estPromeneur %}
+
+    {% if estMaitre and not estPromeneur %}
+        {% set ctaPrincipalTexte = 'Publier une annonce' %}
+        {% set ctaPrincipalLien = '?controleur=Annonce&methode=creerAnnonce' %}
+        {% set ctaPrincipalIcone = 'bi-pencil-square' %}
+    {% else %}
+        {% set ctaPrincipalTexte = 'Trouver une promenade' %}
+        {% set ctaPrincipalLien = '?controleur=Annonce&methode=afficherAllAnnonces' %}
+        {% set ctaPrincipalIcone = 'bi-search' %}
+    {% endif %}
+
+    {% set nbCartesServices = (peutPublierAnnonce ? 1 : 0) + (peutTrouverPromenade ? 1 : 0) + (peutVoirAvis ? 1 : 0) %}
+    {% set classeColService = nbCartesServices == 3 ? 'col-md-4' : (nbCartesServices == 2 ? 'col-md-6' : 'col-md-8 mx-auto') %}
+
     {# 1. BANNIÈRE INTRO #}
     <header class="text-center py-5 shadow-sm" style="background-color: #FEFAE0;">
         <div class="container">
@@ -15,18 +37,27 @@
                 Propriétaires : publiez vos annonces facilement. Sitters : trouvez les promenades qui vous conviennent.
             </p>
 
-            <a href="?controleur=Annonce&methode=afficherAllAnnonces"
-                class="btn btn-lg shadow-lg fw-bold text-white"
-                style="background-color:#BC6C25;">
-                <i class="bi bi-search me-2"></i> Trouver une promenade
-            </a>
-            <div class="mt-4">
-                <a href="?controleur=Annonce&methode=creerAnnonce"
-                    class="fw-bold text-decoration-none"
-                    style="color:#DDA15E;">
-                    Publier une annonce <i class="bi bi-arrow-right-circle-fill ms-1"></i>
+            {% if estConnecte and (peutTrouverPromenade or peutPublierAnnonce) %}
+                <a href="{{ ctaPrincipalLien }}"
+                    class="btn btn-lg shadow-lg fw-bold text-white"
+                    style="background-color:#BC6C25; min-width:280px;">
+                    <i class="bi {{ ctaPrincipalIcone }} me-2"></i> {{ ctaPrincipalTexte }}
                 </a>
-            </div>
+
+                {% if estMaitre and estPromeneur %}
+                    <a href="?controleur=Annonce&methode=creerAnnonce"
+                        class="btn btn-lg shadow-lg fw-bold text-white ms-2 mt-3 mt-md-0"
+                        style="background-color:#537031; min-width:280px;">
+                        <i class="bi bi-pencil-square me-2"></i> Publier une annonce
+                    </a>
+                {% endif %}
+            {% elseif not estConnecte %}
+                <a href="?controleur=utilisateur&methode=authentification"
+                    class="btn btn-lg shadow-lg fw-bold text-white"
+                    style="background-color:#BC6C25; min-width:280px;">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
+                </a>
+            {% endif %}
         </div>
     </header>
 
@@ -36,69 +67,148 @@
             <h2 class="text-center mb-5 fw-bold" style="color:#537031;">
                 Comment ça fonctionne
             </h2>
-            <div class="row text-center">
-                {# Carte 1: Poster une annonce #}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
-                        <div class="card-body">
-                            <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
-                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
-                                Publier une annonce
-                            </h5>
-                            <p class="card-text text-muted">
-                                Les propriétaires publient leurs demandes de promenades selon leurs besoins.
-                            </p>
-                            <a href="?controleur=Annonce&methode=creerAnnonce"
-                                class="fw-bold text-decoration-none"
-                                style="color:#DDA15E;">
-                                Publier maintenant
-                            </a>
+            {% if not estConnecte %}
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <div class="card-body">
+                                <i class="bi bi-person-plus display-5" style="color:#DDA15E;"></i>
+                                <h5 class="card-title fw-bold mt-3" style="color:#537031;">Créez votre compte</h5>
+                                <p class="card-text text-muted">Inscrivez-vous gratuitement en tant que propriétaire, promeneur, ou les deux.</p>
+                                <a href="?controleur=utilisateur&methode=ajouterUtilisateur" class="fw-bold text-decoration-none" style="color:#DDA15E;">S'inscrire</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <div class="card-body">
+                                <i class="bi bi-search-heart display-5" style="color:#DDA15E;"></i>
+                                <h5 class="card-title fw-bold mt-3" style="color:#537031;">Trouvez votre match</h5>
+                                <p class="card-text text-muted">Consultez les annonces, les profils et les avis pour choisir en confiance.</p>
+                                <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Découvrir</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <div class="card-body">
+                                <i class="bi bi-chat-dots display-5" style="color:#DDA15E;"></i>
+                                <h5 class="card-title fw-bold mt-3" style="color:#537031;">Échangez et organisez</h5>
+                                <p class="card-text text-muted">Discutez via la messagerie, validez la promenade et suivez vos activités.</p>
+                                <a href="?controleur=utilisateur&methode=authentification" class="fw-bold text-decoration-none" style="color:#DDA15E;">Se connecter</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                {# Carte 2: Parcourir les annonces pour les Sitters #}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
-                        <div class="card-body">
-                            <i class="bi bi-search display-5" style="color:#DDA15E;"></i>
-                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
-                                Parcourir les annonces
-                            </h5>
-                            <p class="card-text text-muted">
-                                Consultez les demandes de promenades publiées par les propriétaires et choisissez celles
-                                que vous pouvez réaliser.
-                            </p>
-                            <a href="?controleur=Annonce&methode=afficherAllAnnonces"
-                                class="fw-bold text-decoration-none"
-                                style="color:#DDA15E;">
-                                Voir toutes les annonces
-                            </a>
+            {% else %}
+                <div class="row text-center">
+                    {% if estMaitre and not estPromeneur %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Publier une annonce</h5>
+                                    <p class="card-text text-muted">Créez rapidement une demande de promenade adaptée à votre chien.</p>
+                                    <a href="?controleur=Annonce&methode=creerAnnonce" class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                {# Carte 3: Avis et Confiance pour les Sitters #}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
-                        <div class="card-body">
-                            <i class="bi bi-star-fill display-5" style="color:#DDA15E;"></i>
-                            <h5 class="card-title fw-bold mt-3" style="color:#537031;">
-                                Avis des propriétaires
-                            </h5>
-                            <p class="card-text text-muted">
-                                Consultez les évaluations laissées par les propriétaires pour mieux connaître leur
-                                expérience et choisir les annonces adaptées.
-                            </p>
-                            <a href="?controleur=Avis&methode=afficherAllAvis"
-                                class="fw-bold text-decoration-none"
-                                style="color:#DDA15E;">
-                                Lire les avis
-                            </a>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-megaphone display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer mes annonces</h5>
+                                    <p class="card-text text-muted">Modifiez vos annonces, suivez leur statut et consultez les détails.</p>
+                                    <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mes annonces</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-clipboard-check display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Valider les candidatures</h5>
+                                    <p class="card-text text-muted">Consultez les promeneurs intéressés et acceptez le bon profil.</p>
+                                    <a href="?controleur=annonce&methode=voirCandidatures" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les candidatures</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif estPromeneur and not estMaitre %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-search display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Parcourir les annonces</h5>
+                                    <p class="card-text text-muted">Trouvez des promenades proches de vous selon vos disponibilités.</p>
+                                    <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-send-check display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Suivre mes candidatures</h5>
+                                    <p class="card-text text-muted">Vérifiez les réponses des propriétaires à vos demandes envoyées.</p>
+                                    <a href="?controleur=annonce&methode=verMesCandidatures" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes candidatures</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-map display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer mes promenades</h5>
+                                    <p class="card-text text-muted">Retrouvez vos promenades validées et suivez leur avancement.</p>
+                                    <a href="?controleur=annonce&methode=mesPromenades&statut=a_venir" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes promenades</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif estMaitre and estPromeneur %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Publier une annonce</h5>
+                                    <p class="card-text text-muted">Publiez vos demandes de promenade quand vous êtes en mode maître.</p>
+                                    <a href="?controleur=Annonce&methode=creerAnnonce" class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-search-heart display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Trouver et candidater</h5>
+                                    <p class="card-text text-muted">Passez en mode promeneur pour trouver des annonces et envoyer vos candidatures.</p>
+                                    <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-grid-3x3-gap display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer tout depuis mon espace</h5>
+                                    <p class="card-text text-muted">Retrouvez vos annonces, candidatures, promenades et échanges au même endroit.</p>
+                                    <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mon espace</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                                <div class="card-body">
+                                    <i class="bi bi-person-check display-5" style="color:#DDA15E;"></i>
+                                    <h5 class="card-title fw-bold mt-3" style="color:#537031;">Compléter mon profil</h5>
+                                    <p class="card-text text-muted">Activez votre rôle maître ou promeneur pour débloquer toutes les fonctionnalités.</p>
+                                    <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mon profil</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-            </div>
+            {% endif %}
         </div>
     </section>
 
@@ -112,17 +222,18 @@
             </h2>
             <blockquote class="blockquote fst-italic mx-auto" style="max-width: 700px;">
                 <p style="color:#DDA15E;">
-                    "Mon chien, Lilian, adore ses promenades avec son Sitter. Je me sens en confiance et le système de
+                    "Mon chien, Brice, adore ses promenades avec son Sitter. Je me sens en confiance et le système de
                     messagerie est très pratique !"
                 </p>
                 <footer class="blockquote-footer mt-2" style="color:#537031;">
-                    Alice Martin, <cite title="Source Title">Propriétaire de Lilian</cite>
+                    Guénolé Mourzelas, <cite title="Source Title">Propriétaire de Brice</cite>
                 </footer>
             </blockquote>
         </div>
     </section>
 
     {# 4. LIENS DE DÉVELOPPEMENT #}
+    {% if estConnecte %}
     <div class="container my-5">
         <button class="btn btn-sm text-light"
             type="button"
@@ -138,33 +249,41 @@
                 <h5 class="card-title" style="color:#537031;">
                     {{ message }}
                 </h5>
+                {% set liensDev = [
+                    {'label': 'Utilisateur (seul)', 'url': '?controleur=Utilisateur&methode=afficherUtilisateur&id_utilisateur=' ~ idUtilisateurConnecte, 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Tous Utilisateurs', 'url': '?controleur=Utilisateur&methode=afficherAllUtilisateurs', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Ajouter Utilisateur', 'url': '?controleur=Utilisateur&methode=ajouterUtilisateur', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Modifier Utilisateur', 'url': '?controleur=Utilisateur&methode=afficherFormulaire&id_utilisateur=' ~ idUtilisateurConnecte, 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Avis (seul)', 'url': '?controleur=Avis&methode=afficherAvis&id_avis=1', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Tous Avis', 'url': '?controleur=Avis&methode=afficherTousAvis', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Avis vers un utilisateur', 'url': '?controleur=Avis&methode=afficherAvisParIdUtilisateurNote&id_utilisateur_note', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Ajouter un avis', 'url': '?controleur=Avis&methode=creerAvis', 'roles': ['maitre']},
+                    {'label': 'Annonce (seule)', 'url': '?controleur=Annonce&methode=afficherAnnonce&id_annonce=1', 'roles': ['promeneur']},
+                    {'label': 'Toutes Annonces', 'url': '?controleur=Annonce&methode=afficherAllAnnonces', 'roles': ['promeneur']},
+                    {'label': 'Annonces par User', 'url': '?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur=' ~ idUtilisateurConnecte, 'roles': ['maitre']},
+                    {'label': 'Tous Chiens', 'url': '?controleur=Chien&methode=afficherAllChiens', 'roles': ['maitre']},
+                    {'label': 'Chien (seul)', 'url': '?controleur=Chien&methode=afficherChien&id_chien=1', 'roles': ['maitre']},
+                    {'label': 'Toutes Conv. (Liste)', 'url': '?controleur=conversation&methode=afficherAllConversation', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Conv. (active)', 'url': '?controleur=conversation&methode=afficherConversation&id_conversation=1', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Tous Messages', 'url': '?controleur=Message&methode=afficherAllMessage', 'roles': ['maitre', 'promeneur']},
+                    {'label': 'Message (seul)', 'url': '?controleur=Message&methode=afficherMessage&id_message=1', 'roles': ['maitre', 'promeneur']}
+                ] %}
                 <ul class="list-unstyled row">
-                    {% for key, link in {
-                        'Utilisateur (seul)': '?controleur=Utilisateur&methode=afficherUtilisateur&id_utilisateur=1',
-                        'Tous Utilisateurs': '?controleur=Utilisateur&methode=afficherAllUtilisateurs',
-                        'Ajouter Utilisateur': '?controleur=Utilisateur&methode=ajouterUtilisateur',
-                        'Modifier Utilisateur': '?controleur=Utilisateur&methode=afficherFormulaire&id_utilisateur=1',
-                        'Avis (seul)': '?controleur=Avis&methode=afficherAvis&id_avis=1',
-                        'Tous Avis': '?controleur=Avis&methode=afficherAllAvis',
-                        'Avis vers un utilisateur': '?controleur=Avis&methode=afficherAvisParIdUtilisateurNote&id_utilisateur_note',
-                        'Ajouter un avis': '?controleur=Avis&methode=creerAvis',
-                        'Modifier un avis': '?controleur=Avis&methode=modifierAvis&id_avis=6',
-                        'Annonce (seule)': '?controleur=Annonce&methode=afficherAnnonce&id_annonce=1',
-                        'Toutes Annonces': '?controleur=Annonce&methode=afficherAllAnnonces',
-                        'Annonces par User': '?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur=1',
-                        'Tous Chiens': '?controleur=Chien&methode=afficherAllChiens',
-                        'Chien (seul)': '?controleur=Chien&methode=afficherChien&id_chien=1',
-                        'Toutes Conv. (Liste)': '?controleur=conversation&methode=afficherAllConversation',
-                        'Conv. (active)': '?controleur=conversation&methode=afficherConversation&id_conversation=1',
-                        'Tous Messages': '?controleur=Message&methode=afficherAllMessage',
-                        'Message (seul)': '?controleur=Message&methode=afficherMessage&id_message=1'
-                    } %}
-                        <li class="col-md-4">
-                            <a href="{{ link }}" class="text-decoration-none" style="color:#DDA15E;">{{ key }}</a>
-                        </li>
+                    {% for item in liensDev %}
+                        {% set roleAutorise = ('maitre' in item.roles and estMaitre) or ('promeneur' in item.roles and estPromeneur) %}
+                        {% if roleAutorise %}
+                            <li class="col-md-4">
+                                <a href="{{ item.url }}" class="text-decoration-none" style="color:#DDA15E;">{{ item.label }}</a>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}
+
+
+
+

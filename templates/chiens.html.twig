@@ -1,10 +1,16 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Chiens — DogSitter
+{% block title %}Chiens — DogSynergie
 {% endblock %}
 
 {% block content %}
 	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: calc(100vh - 150px);">
+		<div class="ds-profile-hero">
+			<div class="ds-profile-hero-inner">
+				<h1 class="ds-profile-hero-title"><i class="bi bi-paw-fill me-2"></i>Liste des chiens</h1>
+				<p class="ds-profile-hero-subtitle">Consultez les chiens enregistrés sur la plateforme.</p>
+			</div>
+		</div>
 		<div class="row justify-content-center">
 			<div class="col-12 col-lg-11">
 				<div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
@@ -58,3 +64,7 @@
 		Aucun chien trouvé.
 	</div>
 {% endif %}{% endblock %}
+
+
+
+

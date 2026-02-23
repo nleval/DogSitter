@@ -1,0 +1,148 @@
+﻿{% extends 'base_template.twig' %}
+
+{% block title %}Conversation — DogSynergie{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block body_class %}ds-conversation-page{% endblock %}
+
+{% block content %}
+<div class="dm-shell">
+    <div class="dm-card">
+        <div class="dm-header">
+            <a class="dm-back" href="?controleur=conversation&methode=afficherMesConversations" title="Retour">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+
+            <div class="dm-user">
+                <div class="dm-avatar">
+                    {% if autreUtilisateur and autreUtilisateur.photoProfil %}
+                        <img src="images/utilisateur/{{ autreUtilisateur.photoProfil }}" alt="{{ autreUtilisateur.pseudo }}">
+                    {% else %}
+                        <i class="bi bi-person dm-avatar-icon-lg"></i>
+                    {% endif %}
+                </div>
+
+                <div class="dm-meta">
+                    <h1>
+                        {% if autreUtilisateur %}
+                            {{ autreUtilisateur.pseudo }}
+                        {% else %}
+                            Conversation
+                        {% endif %}
+                    </h1>
+                    <span>Conversation active</span>
+                </div>
+            </div>
+
+            <div class="dm-header-actions">
+                {% if autreUtilisateur %}
+                    <a class="dm-profile" href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ autreUtilisateur.id }}">
+                        Voir le profil
+                    </a>
+                {% endif %}
+                <button type="button" class="dm-actions-btn" id="openConversationSheet" title="Options">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="dm-messages">
+            <div class="dm-stream">
+                {% if messageListe and messageListe|length > 0 %}
+                    {% for message in messageListe %}
+                        {% set est_moi = (message.idUtilisateur == utilisateurConnecte.id) %}
+
+                        <div class="dm-row {{ est_moi ? 'me' : 'them' }}">
+                            {% if not est_moi %}
+                                <div class="dm-avatar dm-avatar-sm">
+                                    {% if message.utilisateur and message.utilisateur.photoProfil %}
+                                        <img src="images/utilisateur/{{ message.utilisateur.photoProfil }}" alt="{{ message.utilisateur.pseudo }}">
+                                    {% else %}
+                                        <i class="bi bi-person dm-avatar-icon-sm"></i>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <div class="dm-bubble {{ est_moi ? 'me' : 'them' }} message-content">
+                                    <p class="dm-msg-text">{{ message.contenu }}</p>
+                                </div>
+                                <div class="dm-time {{ est_moi ? 'text-end' : '' }}">
+                                    {{ message.dateHeureMessage|date('d/m/Y H:i') }}
+                                    {% if message.estModifie %}
+                                        · modifié
+                                    {% endif %}
+                                </div>
+                                {% if est_moi %}
+                                    <div class="dm-msg-actions">
+                                        <button
+                                            type="button"
+                                            class="dm-msg-more"
+                                            data-message-id="{{ message.idMessage }}"
+                                            data-message-text="{{ message.contenu|e('html_attr') }}"
+                                            title="Options">
+                                            ...
+                                        </button>
+                                        <div class="dm-msg-popover">
+                                            <button type="button" class="dm-edit-trigger" data-message-id="{{ message.idMessage }}" data-message-text="{{ message.contenu|e('html_attr') }}">Modifier</button>
+                                            <form method="post" action="?controleur=message&methode=supprimerMessage" onsubmit="return confirm('Supprimer ce message pour tous ?');">
+                                                <input type="hidden" name="id_message" value="{{ message.idMessage }}">
+                                                <button type="submit">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="dm-empty">
+                        <i class="bi bi-chat-dots dm-empty-icon"></i>
+                        <div class="dm-empty-text">Aucun message pour le moment.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dm-composer">
+            <div class="dm-edit-bar" id="editBar">
+                <span>Edition du message</span>
+                <button type="button" id="cancelEdit">Annuler</button>
+            </div>
+            <form method="post" action="?controleur=message&methode=envoyerMessage" class="dm-form">
+                <input type="hidden" name="id_conversation" value="{{ idConversation }}">
+                <input type="hidden" name="edit_message_id" id="editMessageId" value="">
+                <input type="text" name="contenu" id="messageInput" placeholder="Message..." required>
+                <button type="submit" id="sendButton">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="dm-sheet" id="conversationSheet">
+    <div class="dm-sheet-backdrop" data-sheet-close></div>
+    <div class="dm-sheet-panel">
+        <div class="dm-sheet-title">Conversation</div>
+        <form method="post" action="?controleur=conversation&methode=renommerConversation">
+            <input type="hidden" name="id_conversation" value="{{ idConversation }}">
+            <input class="dm-sheet-field" type="text" name="titre" maxlength="80" placeholder="Renommer la conversation" required>
+            <div class="dm-sheet-actions">
+                <button class="dm-sheet-primary" type="submit">Enregistrer</button>
+                <button class="dm-sheet-danger" type="button" data-sheet-close>Annuler</button>
+            </div>
+        </form>
+        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');" class="dm-sheet-delete">
+            <input type="hidden" name="id_conversation" value="{{ idConversation }}">
+            <button class="dm-sheet-danger w-100" type="submit">Supprimer</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+
+

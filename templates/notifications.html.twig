@@ -1,0 +1,77 @@
+﻿{% extends 'base_template.twig' %}
+
+{% block title %}
+    Notifications — DogSynergie
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pt-0" style="background-color: #FEFAE0; min-height: 100vh;">
+    <div class="ds-profile-hero">
+        <div class="ds-profile-hero-inner">
+            <h1 class="ds-profile-hero-title"><i class="bi bi-bell-fill me-2"></i>Notifications</h1>
+            <p class="ds-profile-hero-subtitle">Historique de vos notifications</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <!-- Filtres -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm" style="position: sticky; top: 100px; background-color:#FAF6E9; border:1px solid #DDA15E;">
+                    <div class="card-body" style="background-color:#FAF6E9;">
+                        <h6 class="fw-bold text-uppercase" style="color: #537031; font-size: 12px; letter-spacing: 0.5px;">Filtrer par type</h6>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-sm text-start filter-btn active" 
+                                    type="button"
+                                    data-filter="all"
+                                    style="background: none; border: 1px solid #ddd; color: #537031; transition: all 0.2s;">
+                                <i class="bi bi-funnel" style="width: 16px;"></i> Toutes les notifications
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    type="button"
+                                    data-filter="candidature_soumise"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-check2" style="width: 16px;"></i> Candidatures soumises
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    type="button"
+                                    data-filter="candidature_reçue"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-inbox" style="width: 16px;"></i> Candidatures reçues
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    type="button"
+                                    data-filter="candidature_acceptée"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-check-lg" style="width: 16px;"></i> Acceptées
+                            </button>
+                            <button class="btn btn-sm text-start filter-btn" 
+                                    type="button"
+                                    data-filter="candidature_refusée"
+                                    style="background: none; border: 1px solid #ddd; color: #666;">
+                                <i class="bi bi-x-lg" style="width: 16px;"></i> Refusées
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="col-lg-9">
+                <div id="notificationsListContainer">
+                    <div class="text-center py-5">
+                        <div class="spinner-border" style="color: #9AAD5A; width: 40px; height: 40px;" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p style="color: #666; margin-top: 1rem; font-size: 14px;">Chargement des notifications...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+

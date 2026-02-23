@@ -1,74 +1,378 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}
-    Mes Annonces
+{% block title %}Mes Annonces — DogSynergie{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <style>
+        .myads-page {
+            background: linear-gradient(180deg, #FEFAE0 0%, #F8F4E8 100%);
+            min-height: calc(100vh - 88px);
+            padding: 0 16px 40px;
+        }
+
+        .myads-shell {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .myads-alert {
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .myads-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .myads-filter {
+            text-decoration: none;
+            font-size: 0.84rem;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 8px 14px;
+            border: 1px solid #d8d8d8;
+            color: #537031;
+            background: #fff;
+        }
+
+        .myads-filter.active {
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .myads-filter.active.is-active {
+            background: #537031;
+        }
+
+        .myads-filter.active.is-pending {
+            background: #9AAD5A;
+        }
+
+        .myads-filter.active.is-archived {
+            background: #BC6C25;
+        }
+
+        .myads-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .myads-card {
+            background: #FAF6E9;
+            border: 1px solid #ead8bf;
+            border-left: 5px solid #537031;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(83, 112, 49, 0.1);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .myads-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(83, 112, 49, 0.14);
+        }
+
+        .myads-card.is-pending {
+            border-left-color: #9AAD5A;
+        }
+
+        .myads-card.is-archived {
+            border-left-color: #BC6C25;
+        }
+
+        .myads-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 18px;
+            background: #fffaf2;
+            border-bottom: 1px solid #ead8bf;
+        }
+
+        .myads-title {
+            margin: 0;
+            color: #537031;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .myads-date {
+            margin: 6px 0 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .myads-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: #d4e8d4;
+            color: #385020;
+            white-space: nowrap;
+        }
+
+        .myads-status.is-pending {
+            background: #e6f3ff;
+            color: #0066cc;
+        }
+
+        .myads-status.is-archived {
+            background: #ffe8d4;
+            color: #8b4513;
+        }
+
+        .myads-body {
+            padding: 16px 18px;
+        }
+
+        .myads-desc {
+            margin: 0 0 14px;
+            color: #5f5f5f;
+            line-height: 1.55;
+            font-size: 0.93rem;
+        }
+
+        .myads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .myads-kpi {
+            background: #fff;
+            border: 1px solid #ead8bf;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .myads-kpi-label {
+            margin: 0;
+            color: #7f7f7f;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: .2px;
+        }
+
+        .myads-kpi-value {
+            margin: 4px 0 0;
+            color: #537031;
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+
+        .myads-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .myads-btn {
+            flex: 1;
+            min-width: 150px;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: none;
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            color: #fff;
+        }
+
+        .myads-btn-edit {
+            background: #DDA15E;
+        }
+
+        .myads-btn-delete {
+            background: #E57373;
+        }
+
+        .myads-empty {
+            background: #FAF6E9;
+            border: 1px dashed #DDA15E;
+            border-radius: 14px;
+            padding: 38px 20px;
+            text-align: center;
+        }
+
+        .myads-empty i {
+            font-size: 2.6rem;
+            color: #9AAD5A;
+        }
+
+        .myads-empty h3 {
+            margin: 12px 0 8px;
+            color: #537031;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .myads-empty p {
+            margin: 0 0 18px;
+            color: #7a7a7a;
+        }
+
+        .myads-btn-create {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #537031 0%, #4a5f28 100%);
+            color: #FEFAE0;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 6px 14px rgba(83, 112, 49, 0.2);
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        }
+
+        .myads-btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(83, 112, 49, 0.28);
+            filter: brightness(1.03);
+        }
+
+        .myads-btn-create:focus-visible {
+            outline: 3px solid rgba(83, 112, 49, 0.25);
+            outline-offset: 2px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid pt-4" style="background-color: #FEFAE0; min-height: 100vh;">
-        <h2 class="fw-bold mb-4 text-center" style="color:#537031; font-family: 'Poppins', sans-serif;">
-            Mes Annonces
-        </h2>
+{% if not estMaitre %}
+    <div class="myads-page">
+        <div class="myads-shell">
+            <div class="alert myads-alert text-center" style="background-color:#DDA15E; color:white;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Accès refusé : seuls les maîtres peuvent gérer des annonces.
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="myads-page">
+        <div class="myads-shell">
+            <div class="ds-profile-hero">
+                <div class="ds-profile-hero-inner">
+                    <h1 class="ds-profile-hero-title"><i class="bi bi-megaphone-fill me-2"></i>Mes Annonces</h1>
+                    <p class="ds-profile-hero-subtitle">Gérez vos annonces et suivez leur statut en un coup d’œil.</p>
+                </div>
+            </div>
 
-        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
-            <div class="d-grid gap-3">
+            <div class="myads-filters">
+                <a class="myads-filter {% if statut == 'active' %}active is-active{% endif %}"
+                   href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=active">
+                    <i class="bi bi-lightning-charge-fill"></i> Actives
+                </a>
+                <a class="myads-filter {% if statut == 'indisponible' %}active is-pending{% endif %}"
+                   href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=indisponible">
+                    <i class="bi bi-hourglass-split"></i> En attente
+                </a>
+                <a class="myads-filter {% if statut == 'archivee' %}active is-archived{% endif %}"
+                   href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ id_utilisateur }}&statut=archivee">
+                    <i class="bi bi-archive"></i> Archivées
+                </a>
+            </div>
+
+        {% if annoncesListe|length > 0 %}
+            <div class="myads-list">
                 {% for annonce in annoncesListe %}
-                    <div class="card shadow-lg border-0"
-                        style="background-color: #FEFAE0; border-left: 6px solid #9AAD5A;">
-                        <div class="card-body d-flex p-3">
-                            <div class="flex-shrink-0 me-3 d-flex align-items-center justify-content-center"
-                                style="width: 100px; height: 100px; background-color: #FEFAE0; 
-                                    border: 2px dashed #DDA15E; border-radius: 12px; font-size: 3rem;">
-                                🐶
+                    {% set annonce_status = annonce.status|lower %}
+                    <div class="myads-card {% if annonce_status == 'archivee' %}is-archived{% elseif annonce_status == 'indisponible' %}is-pending{% endif %}">
+                        <div class="myads-head">
+                            <div>
+                                <h2 class="myads-title">{{ annonce.titre }}</h2>
+                                <p class="myads-date">
+                                    <i class="bi bi-calendar-event"></i>
+                                    Prévue le <strong>{{ annonce.datePromenade }} à {{ annonce.horaire }}</strong>
+                                </p>
                             </div>
 
-                            <div class="flex-grow-1 d-flex flex-column justify-content-between">
-                                <p class="mb-2" style="color:#537031; font-weight: bold;">
-                                    {{ annonce.titre }}
-                                </p>
-                                <p class="mb-2 text-muted">
-                                    {{ (annonce.description|slice(0, 150)) ~ '...' }} ({{ annonce.datePromenade }} à {{
-                                        annonce.endroitPromenade
-                                    }})
-                                </p>
+                            <span class="myads-status {% if annonce_status == 'archivee' %}is-archived{% elseif annonce_status == 'indisponible' %}is-pending{% endif %}">
+                                {% if annonce_status == 'archivee' %}
+                                    <i class="bi bi-archive"></i> Archivée
+                                {% elseif annonce_status == 'indisponible' %}
+                                    <i class="bi bi-hourglass-split"></i> En attente
+                                {% else %}
+                                    <i class="bi bi-lightning-charge-fill"></i> Active
+                                {% endif %}
+                            </span>
+                        </div>
 
-                                <div class="d-flex gap-2 mt-2">
-                                    <!-- Bouton Modifier -->
-                                    <a href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{
-                                        annonce.getIdAnnonce
-                                        }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#BC6C25; color:white; white-space:nowrap;">
-                                        Modifier
-                                    </a>
+                        <div class="myads-body">
+                            <p class="myads-desc">{{ annonce.description }}</p>
 
-                                    <!-- Bouton Supprimer -->
-                                    <a href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{
-                                        annonce.getIdAnnonce
-                                        }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#D00000; color:white; white-space:nowrap;"
-                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
-                                        Supprimer
-                                    </a>
+                            <div class="myads-grid">
+                                <div class="myads-kpi">
+                                    <p class="myads-kpi-label"><i class="bi bi-geo-alt"></i> Lieu</p>
+                                    <p class="myads-kpi-value">{{ annonce.endroitPromenade }}</p>
                                 </div>
+                                <div class="myads-kpi">
+                                    <p class="myads-kpi-label"><i class="bi bi-clock"></i> Durée</p>
+                                    <p class="myads-kpi-value">{{ annonce.duree }} min</p>
+                                </div>
+                                <div class="myads-kpi">
+                                    <p class="myads-kpi-label"><i class="bi bi-tag"></i> Tarif</p>
+                                    <p class="myads-kpi-value">{{ annonce.tarif }} €</p>
+                                </div>
+                                <div class="myads-kpi">
+                                    <p class="myads-kpi-label"><i class="bi bi-telephone"></i> Téléphone</p>
+                                    <p class="myads-kpi-value">{{ annonce.telephone }}</p>
+                                </div>
+                            </div>
+
+                            <div class="myads-actions">
+                                <a class="myads-btn myads-btn-edit"
+                                   href="?controleur=Annonce&methode=modifierAnnonce&id_annonce={{ annonce.getIdAnnonce }}">
+                                    <i class="bi bi-pencil"></i> Modifier
+                                </a>
+                                <a class="myads-btn myads-btn-delete"
+                                   href="?controleur=Annonce&methode=supprimerAnnonce&id_annonce={{ annonce.getIdAnnonce }}"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            {% if id_utilisateur == utilisateurConnecte.id %}
-                <div class="alert text-center"
-                    role="alert"
-                    style="background-color: #DDA15E; color: white; font-weight:bold;">
-                    Vous n'avez aucune annonce pour le moment.
-                </div>
-            {% else %}
-                <div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
-                    Cet utilisateur n'a aucune annonce pour le moment.
-                </div>
-            {% endif %}
+            <div class="myads-empty">
+                <i class="bi bi-inbox"></i>
+                <h3>Aucune annonce</h3>
+                <p>
+                    {% if statut == 'archivee' %}
+                        Vous n'avez pas encore d'annonces archivées.
+                    {% elseif statut == 'indisponible' %}
+                        Vous n'avez pas d'annonces en attente.
+                    {% else %}
+                        Vous n'avez pas encore créé d'annonce active.
+                    {% endif %}
+                </p>
+                {% if statut != 'archivee' %}
+                    <a class="myads-btn-create" href="?controleur=Annonce&methode=creerAnnonce">
+                        <i class="bi bi-plus-circle"></i> Créer une annonce
+                    </a>
+                {% endif %}
+            </div>
         {% endif %}
+        </div>
     </div>
+{% endif %}
 {% endblock %}
+
+
+
+

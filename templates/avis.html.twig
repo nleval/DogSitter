@@ -1,95 +1,187 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Avis — DogSitter{% endblock %}
+{% block title %}Avis — DogSynergie{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
-    <div class="container my-4">
-        {% if avisListe is defined and avisListe|length > 0 %}
-            <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis :</h2>
-            <ul>
-                {% for element in avisListe %}
-                    {% set avis = element.avis %}
-                    {% set proprietaire = element.proprietaire %}
+    <div style="background-color: #FEFAE0; min-height: 100vh; display: flex; flex-direction: column;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">
+                    {% if avisUtilisateurNote is defined %}
+                        Avis reçus
+                    {% else %}
+                        Tous les avis
+                    {% endif %}
+                </h1>
+                <p class="ds-profile-hero-subtitle">Découvrez les expériences partagées par la communauté</p>
+            </div>
+        </div>
 
-                    <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
-                        <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                            {% if proprietaire.photoProfil is not empty %}
-                                <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;"
-                                    class="rounded-circle" width="56" height="56">
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 0 40px 40px; max-width: 1200px; margin: 0 auto; width: 100%;">
+            {% if avisListe is defined and avisListe|length > 0 %}
+                <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));">
+                    {% for element in avisListe %}
+                        {% set avis = element.avis %}
+                        {% set proprietaire = element.proprietaire %}
+                        
+                        <div style="background-color: #FAF6E9; border: 1px solid #DDA15E; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(83, 112, 49, 0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.1)';">
+                            <!-- Auteur -->
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #DDA15E;">
+                                {% if proprietaire.photoProfil is not empty %}
+                                    <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" 
+                                         style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                {% else %}
+                                    <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #DDA15E; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; flex-shrink: 0;">
+                                        {{ proprietaire.pseudo|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <p style="margin: 0; font-size: 14px; font-weight: 600; color: #537031;">{{ proprietaire.pseudo }}</p>
+                                    <p style="margin: 4px 0 0 0; font-size: 12px; color: #9AAD5A;">Avis vérifiés</p>
+                                </div>
+                            </div>
+
+                            <!-- Note (étoiles) -->
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                {% for i in 1..5 %}
+                                    {% if i <= avis.note %}
+                                        <i class="bi bi-star-fill" style="font-size: 18px; color: #DDA15E;"></i>
+                                    {% else %}
+                                        <i class="bi bi-star" style="font-size: 18px; color: #DDA15E; opacity: 0.3;"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="margin-left: 8px; font-size: 14px; font-weight: 600; color: #537031;">{{ avis.note }}/5</span>
+                            </div>
+
+                            <!-- Commentaire -->
+                            {% if avis.getTexteCommentaire() is not empty %}
+                                <p style="margin: 0; color: #2c2c2c; font-size: 14px; line-height: 1.6;">
+                                    {{ avis.getTexteCommentaire() }}
+                                </p>
+                            {% else %}
+                                <p style="margin: 0; color: #9AAD5A; font-size: 14px; font-style: italic;">
+                                    Aucun commentaire fourni
+                                </p>
                             {% endif %}
-                            <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
                         </div>
-
-                        <div class="p-4">
-                            <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
-                            <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
-                            <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
-                            <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
-                            <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
-                            <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
-                        </div>
-                    </div>
-                {% endfor %}
-
-            </ul>
-
-        {% elseif avis is defined %}
-            <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Un avis :</h2>
-            <ul>
-                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
-                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
-                        {% if proprietaire.photoProfil is not empty %}
-                            <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
-                        {% endif %}
-                        <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
-                    </div>
-                    <div class="p-4">
-                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
-                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
-                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
-                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
-                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
-                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
-                    </div>
+                    {% endfor %}
                 </div>
-            </ul>
 
-        {% elseif avisUtilisateurNote is defined %}
-           <h2 style="color:#537031; font-family: 'Poppins', sans-serif; ">Liste des avis donnés à l'utilisateur {{ id_utilisateur_note }} :</h2>
-            <ul>
-                {% for element in avisUtilisateurNote %}
-                {% set avis = element.avis %}
-                {% set proprietaire = element.proprietaire %}
-
-                <div class="card shadow-lg border-0 m-4" style="background-color: #FAF6E9; border-radius:12px;">
-                    <div class="card-header" style="background-color:#537031; color:white; border-radius:10px 10px 0 0;">
+            {% elseif avis is defined %}
+                <div style="background-color: #FAF6E9; border: 1px solid #DDA15E; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1);">
+                    <!-- Auteur -->
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #DDA15E;">
                         {% if proprietaire.photoProfil is not empty %}
-                            <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                            <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" 
+                                 style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                        {% else %}
+                            <div style="width: 64px; height: 64px; border-radius: 50%; background-color: #DDA15E; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 24px; flex-shrink: 0;">
+                                {{ proprietaire.pseudo|first|upper }}
+                            </div>
                         {% endif %}
-                        <h4 class="mb-0">{{ proprietaire.pseudo }}</h4>
+                        <div>
+                            <p style="margin: 0; font-size: 16px; font-weight: 600; color: #537031;">{{ proprietaire.pseudo }}</p>
+                            <p style="margin: 4px 0 0 0; font-size: 13px; color: #9AAD5A;">Avis vérifiés</p>
+                        </div>
                     </div>
 
-                    <div class="p-4">
-                        <strong style="color:#BC6C25">ID : {{ avis.id }}</strong><br>
-                        <strong style="color:#BC6C25">Note : {{ avis.note }}</strong><br>
-                        <strong style="color:#BC6C25">Commentaire : {{ avis.textecommentaire }}</strong><br>
-                        <strong style="color:#BC6C25">ID de l'utilisateur maître : {{ avis.idutilisateur }}</strong><br>
-                        <strong style="color:#BC6C25">ID de la promenade : {{ avis.idpromenade }}</strong><br>
-                        <strong style="color:#BC6C25">ID du promeneur : {{ avis.idutilisateurnote }}</strong><br>
+                    <!-- Note (étoiles) -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                        {% for i in 1..5 %}
+                            {% if i <= avis.note %}
+                                <i class="bi bi-star-fill" style="font-size: 22px; color: #DDA15E;"></i>
+                            {% else %}
+                                <i class="bi bi-star" style="font-size: 22px; color: #DDA15E; opacity: 0.3;"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span style="margin-left: 12px; font-size: 16px; font-weight: 600; color: #537031;">{{ avis.note }}/5</span>
                     </div>
+
+                    <!-- Commentaire -->
+                    {% if avis.getTexteCommentaire() is not empty %}
+                        <p style="margin: 0; color: #2c2c2c; font-size: 15px; line-height: 1.8;">
+                            {{ avis.getTexteCommentaire() }}
+                        </p>
+                    {% else %}
+                        <p style="margin: 0; color: #9AAD5A; font-size: 15px; font-style: italic;">
+                            Aucun commentaire fourni
+                        </p>
+                    {% endif %}
+                </div>
+
+            {% elseif avisUtilisateurNote is defined and avisUtilisateurNote|length > 0 %}
+                <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));">
+                    {% for element in avisUtilisateurNote %}
+                        {% set avis = element.avis %}
+                        {% set proprietaire = element.proprietaire %}
+                        
+                        <div style="background-color: #FAF6E9; border: 1px solid #DDA15E; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(83, 112, 49, 0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.1)';">
+                            <!-- Auteur -->
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #DDA15E;">
+                                {% if proprietaire.photoProfil is not empty %}
+                                    <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo de profil" 
+                                         style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                {% else %}
+                                    <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #DDA15E; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; flex-shrink: 0;">
+                                        {{ proprietaire.pseudo|first|upper }}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <p style="margin: 0; font-size: 14px; font-weight: 600; color: #537031;">{{ proprietaire.pseudo }}</p>
+                                    <p style="margin: 4px 0 0 0; font-size: 12px; color: #9AAD5A;">Avis vérifiés</p>
+                                </div>
+                            </div>
+
+                            <!-- Note (étoiles) -->
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                {% for i in 1..5 %}
+                                    {% if i <= avis.note %}
+                                        <i class="bi bi-star-fill" style="font-size: 18px; color: #DDA15E;"></i>
+                                    {% else %}
+                                        <i class="bi bi-star" style="font-size: 18px; color: #DDA15E; opacity: 0.3;"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="margin-left: 8px; font-size: 14px; font-weight: 600; color: #537031;">{{ avis.note }}/5</span>
+                            </div>
+
+                            <!-- Commentaire -->
+                            {% if avis.getTexteCommentaire() is not empty %}
+                                <p style="margin: 0; color: #2c2c2c; font-size: 14px; line-height: 1.6;">
+                                    {{ avis.getTexteCommentaire() }}
+                                </p>
+                            {% else %}
+                                <p style="margin: 0; color: #9AAD5A; font-size: 14px; font-style: italic;">
+                                    Aucun commentaire fourni
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
-                <h3>Aucun avis trouvé.</h3>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <p>Aucun avis à afficher.</p>
-        {% endif %}
+                <div style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center;">
+                    <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
+                        <i class="bi bi-star" style="margin-right: 8px; color: #DDA15E;"></i>Aucun avis à afficher
+                    </p>
+                    <p style="color: #9AAD5A; margin-top: 8px; font-size: 14px;">
+                        Soyez le premier à partager votre expérience!
+                    </p>
+                </div>
+            {% endif %}
 
-        <a href="?controleur=Index&methode=render" class="btn px-4" style="background-color:#DDA15E; color:white;">Accueil</a>
+            <!-- Bouton de retour -->
+            <div style="margin-top: 40px; text-align: center;">
+                <a href="?controleur=Index&methode=render" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 28px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-block; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                    <i class="bi bi-arrow-left" style="margin-right: 6px;"></i>Retour à l'accueil
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+
     {% block footer %}
     {% endblock %}
 {% endblock %}
+
+
+
+

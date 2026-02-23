@@ -5,79 +5,117 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid pt-4" style="background-color: #FEFAE0;">
-        <h2 class="fw-bold mb-4" style="color:#537031; font-family: 'Poppins', sans-serif;">
-            Les Annonces
-        </h2>
-
-        <div class="card p-3 mb-4 shadow-sm border-0" style="background-color: #F8F4E8;">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="villeCodePostal" class="form-label text-muted">Ville ou code postal</label>
-                    <input type="text" class="form-control" id="villeCodePostal" style="border: 1px solid #DDA15E;" />
-                </div>
-                <div class="col-md-3">
-                    <label for="disponibilites" class="form-label text-muted">Disponibilités</label>
-                    <input type="text" class="form-control" id="disponibilites" style="border: 1px solid #DDA15E;" />
-                </div>
-                <div class="col-md-3">
-                    <label for="dureePromenade" class="form-label text-muted">Durée de la promenade</label>
-                    <input type="text" class="form-control" id="dureePromenade" style="border: 1px solid #DDA15E;" />
-                </div>
-                <div class="col-md-2 d-flex justify-content-end">
-                    <button class="btn btn-sm" style="background-color: #BC6C25; color: white;">Autres options</button>
-                </div>
+    <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Les Annonces</h1>
+                <p class="ds-profile-hero-subtitle">Explorez toutes les annonces de promenade près de chez vous</p>
             </div>
         </div>
-        {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
-            <div class="d-grid gap-3">
-                {% for annonce in annoncesListe %}
-                    <div class="card shadow-lg border-0"
-                        style="background-color: #FAF6E9; border-left: 6px solid #9AAD5A;">
-                        <div class="card-body d-flex p-3">
-                            <div class="flex-shrink-0 me-3 d-flex align-items-center justify-content-center"
-                                style="width: 100px; height: 100px; background-color: #FAF6E9; 
-            border: 2px dashed #DDA15E; border-radius: 12px; font-size: 3rem;">
-                                🐶
+
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%;">
+            <!-- Filtres -->
+            <div style="background-color: transparent; padding: 0; margin-bottom: 40px;">
+                <h3 style="font-size: 14px; color: #537031; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 20px 0;">Filtres de recherche</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+                    <div>
+                        <label for="villeCodePostal" style="display: block; color: #537031; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Ville ou code postal</label>
+                        <input type="text" id="villeCodePostal" placeholder="Ex: Paris" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
+                    </div>
+                    <div>
+                        <label for="disponibilites" style="display: block; color: #537031; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Disponibilités</label>
+                        <input type="date" id="disponibilites" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
+                    </div>
+                    <div>
+                        <label for="dureePromenade" style="display: block; color: #537031; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Durée max (min)</label>
+                        <input type="number" id="dureePromenade" placeholder="Ex: 45" min="0" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <button id="searchBtn" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 6px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 10px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(83, 112, 49, 0.2)';">
+                            <i class="bi bi-search"></i> Chercher
+                        </button>
+                        <button id="resetBtn" style="flex: 1; background-color: #FEFAE0; color: #537031; padding: 12px 16px; font-size: 13px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FEFAE0'; this.style.borderColor='#9AAD5A';">
+                            <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des annonces -->
+            {% if annoncesListe is defined and (annoncesListe|length) > 0 %}
+                <div id="annoncesContainer" style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+                    {% for annonce in annoncesListe %}
+                        <div class="annonce-card" data-ville="{{ annonce.endroitPromenade|lower }}" data-date="{{ annonce.datePromenade }}" data-duree="{{ annonce.duree }}" style="background-color: #FAF6E9; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1); border: 1px solid #DDA15E; transition: all 0.3s; display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(83, 112, 49, 0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.1)';">
+                            <!-- Image / Icône -->
+                            <div style="background-color: #FEFAE0; padding: 30px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDA15E;">
+                                <i class="bi bi-paw" style="font-size: 48px; color: #537031;"></i>
                             </div>
 
-                            <div class="flex-grow-1 d-flex flex-column justify-content-between">
-                                <p class="mb-2" style="color:#537031; font-weight: bold;">
+                            <!-- Contenu -->
+                            <div style="flex: 1; padding: 24px; display: flex; flex-direction: column;">
+                                <!-- Titre -->
+                                <h3 style="margin: 0 0 12px 0; color: #537031; font-size: 18px; font-weight: 600; line-height: 1.4;">
                                     {{ annonce.titre }}
-                                </p>
-                                <p class="mb-2 text-muted">
-                                    {{ (annonce.description|slice(0, 150)) ~ '...' }} ({{ annonce.datePromenade }} à {{
-                                        annonce.endroitPromenade
-                                    }})
+                                </h3>
+
+                                <!-- Localisation et date -->
+                                <div style="display: flex; gap: 12px; margin-bottom: 12px; font-size: 13px; color: #9AAD5A;">
+                                    <span><i class="bi bi-geo-alt" style="margin-right: 4px; color: #9AAD5A;"></i>{{ annonce.endroitPromenade }}</span>
+                                    <span><i class="bi bi-calendar" style="margin-right: 4px; color: #9AAD5A;"></i>{{ annonce.datePromenade }}</span>
+                                </div>
+
+                                <!-- Description -->
+                                <p style="margin: 0 0 16px 0; color: #2c2c2c; font-size: 14px; line-height: 1.5; flex: 1;">
+                                    {{ (annonce.description|slice(0, 120)) ~ '...' }}
                                 </p>
 
-                                <div class="d-flex justify-content-between align-items-end mt-2">
-                                    <a href="tel:{{ annonce.telephone }}"
-                                        class="btn btn-sm"
-                                        style="background-color:#BC6C25; color:white; white-space:nowrap;">
-                                        <i class="bi bi-telephone-fill me-1"></i>{{ annonce.telephone }}
+                                <!-- Info supplémentaire -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #DDA15E;">
+                                    <div style="text-align: center; padding: 8px; background-color: #FEFAE0; border-radius: 6px;">
+                                        <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Durée</p>
+                                        <p style="margin: 4px 0 0 0; font-size: 16px; color: #537031; font-weight: 600;">{{ annonce.duree }} min</p>
+                                    </div>
+                                    <div style="text-align: center; padding: 8px; background-color: #FEFAE0; border-radius: 6px;">
+                                        <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Tarif</p>
+                                        <p style="margin: 4px 0 0 0; font-size: 16px; color: #537031; font-weight: 600;">{{ annonce.tarif }}€</p>
+                                    </div>
+                                </div>
+
+                                <!-- Boutons -->
+                                <div style="display: flex; gap: 12px;">
+                                    <a href="tel:{{ annonce.telephone }}" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 12px 16px; font-size: 13px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                                        <i class="bi bi-telephone"></i> Appeler
                                     </a>
-
-                                    <a href="?controleur=Annonce&methode=afficherAnnonce&id_annonce={{
-                                        annonce.idAnnonce
-                                        }}"
-                                        class="btn"
-                                        style="background-color:#537031; color:white; white-space:nowrap;">
-                                        Consulter l'annonce
+                                    <a href="?controleur=Annonce&methode=afficherAnnonce&id_annonce={{ annonce.idAnnonce }}" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                        Détails <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="alert alert-warning text-center" role="alert" style="background-color: #DDA15E; color: white;">
-                <p>
-                    Aucune annonce trouvée.
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div id="noResults" style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center;">
+                    <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
+                        <i class="bi bi-search" style="margin-right: 8px; color: #DDA15E;"></i>Aucune annonce trouvée
+                    </p>
+                    <p style="color: #9AAD5A; margin-top: 8px; font-size: 14px;">
+                        Essayez de modifier vos critères de recherche
+                    </p>
+                </div>
+            {% endif %}
+
+            <!-- Message "Aucune annonce" après filtrage -->
+            <div id="noResultsFiltered" style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center; display: none;">
+                <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
+                    <i class="bi bi-search" style="margin-right: 8px; color: #DDA15E;"></i>Aucune annonce ne correspond à vos critères
+                </p>
+                <p style="color: #9AAD5A; margin-top: 8px; font-size: 14px;">
+                    Essayez d'ajuster vos filtres de recherche
                 </p>
             </div>
-        {% endif %}
+        </div>
     </div>
 
     {% block footer %}

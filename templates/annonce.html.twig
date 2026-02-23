@@ -5,149 +5,247 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: 100vh;">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-11">
-                <div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius:12px;">
-                    {% if chiens is not empty and annonce is not null %}
-                        <div class="row">
-                            <aside class="col-12 col-md-4 mb-3">
-                                <h4 class="fw-bold mb-3" style="color:#537031; font-size:1.1rem;">
-                                    Les Chiens ({{ chiens|length }})
-                                </h4>
+    <div style="background-color: #FEFAE0; min-height: 100vh; display: flex; flex-direction: column;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Détails de l'Annonce</h1>
+                <p class="ds-profile-hero-subtitle">Découvrez les détails et les chiens à promener</p>
+            </div>
+        </div>
 
+        {# Messages de validation - signal pour notifications #}
+        {% if reponse == 'ok' %}
+            <div id="candidature-success-trigger" data-trigger="1" hidden></div>
+        {% endif %}
+        
+        {% if erreur is defined and erreur %}
+            <div style="max-width: 1200px; margin: 30px auto; width: 100%; padding: 0 40px;">
+                <div style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 16px; border-radius: 4px; display: flex; gap: 12px; align-items: flex-start;">
+                    <i class="bi bi-exclamation-circle" style="font-size: 24px; color: #DDA15E; flex-shrink: 0; margin-top: 2px;"></i>
+                    <div style="color: #537031; margin: 0; font-weight: 500; font-size: 14px;">{{ erreur }}</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Contenu principal -->
+        <div style="flex: 1; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%;">
+            {% if chiens is not empty and annonce is not null %}
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                    <!-- Sidebar - Chiens -->
+                    <aside>
+                        <div style="background-color: #FAF6E9; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);">
+                            <h3 style="font-size: 18px; font-weight: 600; color: #537031; margin: 0 0 24px 0; text-transform: uppercase; letter-spacing: 0.5px;">Les Chiens ({{ chiens|length }})</h3>
+
+                            <div style="display: flex; flex-direction: column; gap: 24px;">
                                 {% for chien in chiens %}
-                                    <div class="text-center mb-4 pb-2 border-bottom">
-                                        {# Image du chien #}
-                                        <div style="width: 100px; height: 100px; border: 1px solid #ccc; background-color: #F0F0F0; margin-bottom: 5px;"
-                                            class="rounded-circle mx-auto d-flex align-items-center justify-content-center overflow-hidden">
+                                    <div style="text-align: center; padding-bottom: 24px; border-bottom: 1px solid #DDA15E;">
+                                        <!-- Photo du chien -->
+                                        <div style="width: 120px; height: 120px; margin: 0 auto 16px; border-radius: 12px; overflow: hidden; background-color: #FEFAE0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.1);">
                                             {% if chien.getCheminPhoto() %}
-                                                <img src="{{ chien.getCheminPhoto() }}"
-                                                    alt="Photo de {{ chien.getNom_Chien() }}"
-                                                    class="img-fluid"
-                                                    style="width: 100%; height: 100%; object-fit: cover;" />
+                                                <img src="images/chiens/{{ chien.getCheminPhoto() }}" alt="Photo de {{ chien.getNom_Chien() }}" style="width: 100%; height: 100%; object-fit: cover;" />
                                             {% else %}
-                                                <i class="bi bi-person-circle" style="font-size: 2.5rem; color: #aaa;"> </i>
+                                                <i class="bi bi-paw" style="font-size: 48px; color: #9AAD5A;"></i>
                                             {% endif %}
                                         </div>
 
-                                        {# Informations du chien #}
-                                        <p class="mb-1 fw-bold" style="color:#BC6C25; font-size:1rem;">
-                                            {{ chien.getNom_Chien() }}
-                                        </p>
-                                        <ul class="list-unstyled text-start small mt-1 text-center">
-                                            <li><strong>Race :</strong> {{ chien.getRace() }}</li>
-                                            <li><strong>Poids :</strong> {{ chien.getPoids() }}</li>
-                                            <li><strong>Taille :</strong> {{ chien.getTaille() }}</li>
-                                        </ul>
+                                        <!-- Nom du chien -->
+                                        <h4 style="font-size: 16px; font-weight: 600; color: #537031; margin: 0 0 12px 0;">{{ chien.getNom_Chien() }}</h4>
+
+                                        <!-- Caractéristiques -->
+                                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+                                            <div style="background-color: #FEFAE0; padding: 8px 12px; border-radius: 6px; color: #2c2c2c;">
+                                                <strong style="color: #537031;">Race :</strong> {{ chien.getRace() }}
+                                            </div>
+                                            <div style="background-color: #FEFAE0; padding: 8px 12px; border-radius: 6px; color: #2c2c2c;">
+                                                <strong style="color: #537031;">Poids :</strong> {{ chien.getPoids() }} kg
+                                            </div>
+                                            <div style="background-color: #FEFAE0; padding: 8px 12px; border-radius: 6px; color: #2c2c2c;">
+                                                <strong style="color: #537031;">Taille :</strong> {{ chien.getTaille() }}
+                                            </div>
+                                        </div>
                                     </div>
                                 {% endfor %}
+                            </div>
 
-                                <p class="mb-0 d-flex align-items-center" style="font-size:0.9rem; color:#537031; gap:8px;">
-                                    {% if proprietaire.photoProfil is not empty %}
-                                        <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo" width="32" height="32" class="rounded-circle" style="object-fit:cover;">
-                                    {% endif %}
-                                    Propriétaire: {{ proprietaire.pseudo|default('Inconnu') }}
-                                </p>
-                            </aside>
-
-                            <main class="col-12 col-md-8 ps-md-3">
-                                {# Titre de l'annonce #}
-                                <h3 class="fw-bold mb-3" style="color:#537031; font-size:1.3rem;">
-                                    Promenade demandée le {{ annonce.datePromenade }}
-                                </h3>
-
-                                <p class="mb-3" style="font-size:1rem;">
-                                    <span class="fw-bold" style="color:#BC6C25;">Heure :</span>
-                                    {{ annonce.horaire }} (Durée: {{ annonce.duree }} min) | <span class="fw-bold"
-                                        style="color:#BC6C25;">
-                                        Lieu :
-                                    </span>
-                                    {{ annonce.endroitPromenade }}
-                                </p>
-
-                                <hr style="border-color: #DDA15E;" />
-
-                                <div class="row">
-                                    <div class="col-md-7 mb-3">
-                                        <p class="fw-bold mb-2" style="color:#537031;">
-                                            Description Complète :
-                                        </p>
-                                        <div class="p-3 border rounded description-bubble"
-                                            style="background-color: #F8F4E8; font-size:0.95rem; max-height:220px; overflow-y:auto; overflow-x:hidden; padding:1rem; white-space:pre-line; overflow-wrap:anywhere;">
-                                            {{ annonce.description|default('Aucune description fournie par le propriétaire.') | e | nl2br | raw }}
-                                        </div>
-                                            <span style="color:grey; font-size:0.8rem;">(max 500 caractères)</span><br>
-
+                            <!-- Propriétaire -->
+                            <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-top: 24px;">
+                                {% if proprietaire.photoProfil is not empty %}
+                                    <img src="images/utilisateur/{{ proprietaire.photoProfil }}" alt="Photo" width="48" height="48" style="border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                                {% else %}
+                                    <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #DDA15E; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 20px;">
+                                        {{ proprietaire.pseudo|first|upper }}
                                     </div>
-                                    
-
-                                    <div class="col-md-5 mb-3">
-                                        <p class="fw-bold mb-2" style="color:#537031;">
-                                            Informations d'Annonce :
-                                        </p>
-                                        <ul class="list-unstyled ps-3" style="font-size:0.95rem;">
-                                            <li>
-                                                <strong>Tarif demandé :</strong>
-                                                <span class="fw-bold" style="color:#BC6C25;">
-                                                    {{ annonce.tarif }} €
-                                                </span>
-                                            </li>
-                                            <li><strong>Statut actuel :</strong> {{ annonce.status }}</li>
-                                            <li>
-                                                <strong>Numéro Tél. :</strong>
-                                                {{ proprietaire.getNumTelephone()|default('Non public') }}
-                                            </li>
-                                            <li>
-                                                <strong>Adresse Prop. :</strong>
-                                                {{ proprietaire.getAdresse()|default('Non spécifiée') }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <hr style="border-color: #DDA15E;" />
-
-                                <div class="d-flex justify-content-end align-items-center mt-4 gap-3">
-                                    {% if userConnecte.estPromeneur %}
-                                    <a href="?controleur=Conversation&methode=afficherConversation&id_conversation={{
-                                        conversationId
-                                        }}"
-                                        class="btn"
-                                        style="background-color:#DDA15E; color:white;">
-                                        Envoyer un message
-                                    </a>
-
-                                    {% if annonce.status == 'Disponible' %}
-                                        <a href="?controleur=Annonce&methode=reserverAnnonce&id_annonce={{
-                                            annonce.getIdAnnonce()
-                                            }}"
-                                            class="btn"
-                                            style="background-color:#537031; color:white;">
-                                            Postuler pour l'annonce
-                                        </a>
-                                    {% else %}
-                                        <button class="btn" style="background-color:#537031; color:white;" disabled>
-                                            Statut: {{ annonce.status }}
-                                        </button>
-                                    {% endif %}
-                                    {% else %}
-                                     <button class="btn" style="background-color:#ccc; color:white;" disabled>
-                                        Seuls les promeneurs peuvent postuler
-                                     </button>
-                                    {% endif %}
+                                {% endif %}
+                                <div>
+                                    <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Propriétaire</p>
+                                    <p style="margin: 4px 0 0 0; font-size: 14px; color: #537031; font-weight: 600;">{{ proprietaire.pseudo|default('Inconnu') }}</p>
                                 </div>
                             </div>
                         </div>
-                    {% else %}
-                        <div class="alert alert-warning text-center"
-                            role="alert"
-                            style="background-color: #F8F4E8; color: #BC6C25;">
-                            Les détails de cette annonce sont introuvables.
+                    </aside>
+
+                    <!-- Main content -->
+                    <main>
+                        <div style="background-color: #FAF6E9; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);">
+                            <!-- Titre principal -->
+                            <h2 style="font-size: 28px; font-weight: 600; color: #537031; margin: 0 0 24px 0;">Promenade demandée le {{ annonce.datePromenade }}</h2>
+
+                            <!-- Info principales -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid #DDA15E;">
+                                <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px;">
+                                    <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Horaire</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 18px; color: #537031; font-weight: 600;">{{ annonce.horaire }}</p>
+                                </div>
+                                <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px;">
+                                    <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Durée</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 18px; color: #537031; font-weight: 600;">{{ annonce.duree }} min</p>
+                                </div>
+                                <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px;">
+                                    <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Lieu</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 18px; color: #537031; font-weight: 600;"><i class="bi bi-geo-alt" style="margin-right: 6px; color: #9AAD5A;"></i>{{ annonce.endroitPromenade }}</p>
+                                </div>
+                                <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px;">
+                                    <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600; text-transform: uppercase;">Tarif</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 18px; color: #537031; font-weight: 600;">{{ annonce.tarif }}€</p>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div style="margin-bottom: 32px;">
+                                <h3 style="font-size: 14px; font-weight: 600; color: #537031; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Description</h3>
+                                <div style="background-color: #FEFAE0; padding: 16px; border-radius: 8px; border-left: 4px solid #9AAD5A; font-size: 14px; color: #2c2c2c; line-height: 1.6; white-space: pre-line; overflow-wrap: break-word;">
+                                    {{ annonce.description|default('Aucune description fournie par le propriétaire.') | e | nl2br | raw }}
+                                </div>
+                            </div>
+
+                            <!-- Infos supplémentaires -->
+                            <div style="background-color: #FEFAE0; padding: 20px; border-radius: 8px; margin-bottom: 32px;">
+                                <h3 style="font-size: 14px; font-weight: 600; color: #537031; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 16px 0;">Informations de Contact</h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div>
+                                        <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600;">Téléphone</p>
+                                        <p style="margin: 4px 0 0 0; font-size: 14px; color: #537031; font-weight: 500;">
+                                            {{ proprietaire.getNumTelephone()|default('Non public') }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0; font-size: 12px; color: #9AAD5A; font-weight: 600;">Adresse</p>
+                                        <p style="margin: 4px 0 0 0; font-size: 14px; color: #537031; font-weight: 500;">
+                                            {{ proprietaire.getAdresse()|default('Non spécifiée') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Statut -->
+                            <div style="background-color: {% if annonce.status == 'active' %}#E8F5E9{% else %}#FFE8E8{% endif %}; padding: 16px; border-radius: 8px; margin-bottom: 32px; border-left: 4px solid {% if annonce.status == 'active' %}#4CAF50{% else %}#F44336{% endif %};">
+                                <p style="margin: 0; font-size: 12px; color: #537031; font-weight: 600; text-transform: uppercase;">Statut de l'annonce</p>
+                                <p style="margin: 4px 0 0 0; font-size: 16px; color: #537031; font-weight: 600;">
+                                    {% if annonce.status == 'active' %}
+                                        <i class="bi bi-check-circle" style="margin-right: 6px; color: #4CAF50;"></i>Disponible
+                                    {% else %}
+                                        <i class="bi bi-circle-fill" style="margin-right: 6px; color: #F44336;"></i>{{ annonce.status }}
+                                    {% endif %}
+                                </p>
+                            </div>
+
+                            <!-- Boutons d'action -->
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                {% if annonce.getIdUtilisateur() != userConnecte.getId() %}
+                                    {% if userConnecte.estPromeneur %}
+                                        <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ annonce.getIdUtilisateur() }}"
+                                            style="flex: 1; min-width: 200px; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                                            <i class="bi bi-chat-dots"></i> Envoyer un message
+                                        </a>
+
+                                        {% if annonce.status == 'active' %}
+                                            <a href="?controleur=Annonce&methode=repondreAnnonce&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                                <i class="bi bi-check-circle"></i> Postuler pour l'annonce
+                                            </a>
+                                        {% else %}
+                                            <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;">
+                                                Statut: {{ annonce.status }}
+                                            </button>
+                                        {% endif %}
+                                    {% else %}
+                                        <button style="flex: 1; min-width: 200px; background-color: #ccc; color: white; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6;" disabled>
+                                            Seuls les promeneurs peuvent postuler
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <!-- Avis du propriétaire -->
+                            <div style="margin-top: 40px; padding-top: 32px; border-top: 2px solid #DDA15E;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                                    <h3 style="font-size: 18px; font-weight: 600; color: #537031; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <i class="bi bi-star-fill" style="margin-right: 8px; color: #DDA15E;"></i>Avis de cette promenade
+                                    </h3>
+                                    {% if userConnecte and userConnecte.estMaitre and userConnecte.getId() == proprietaire.getId() %}
+                                        {% if acceptedCandidatId %}
+                                            <a href="?controleur=Avis&methode=creerAvis&id_utilisateur_note={{ acceptedCandidatId }}&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 10px 16px; font-size: 12px; border: none; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2); cursor: pointer; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                                                <i class="bi bi-pencil" style="margin-right: 4px;"></i>Laisser un avis
+                                            </a>
+                                        {% else %}
+                                            <div style="background-color: #FAF6E9; color: #9AAD5A; padding: 10px 16px; font-size: 12px; border: 1px solid #9AAD5A; border-radius: 6px; font-weight: 600; text-align: center; cursor: not-allowed; white-space: nowrap;">
+                                                <i class="bi bi-lock" style="margin-right: 4px;"></i>Aucun promeneur accepte
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                {% if avisPromenade is defined and avisPromenade|length > 0 %}
+                                    <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                                        {% for avis in avisPromenade %}
+                                            <div style="background-color: #FEFAE0; border: 1px solid #9AAD5A; border-radius: 8px; padding: 16px; display: flex; flex-direction: column;">
+                                                <!-- Note (étoiles) -->
+                                                <div style="display: flex; gap: 4px; margin-bottom: 12px;">
+                                                    {% for i in 1..5 %}
+                                                        {% if i <= avis.note %}
+                                                            <i class="bi bi-star-fill" style="font-size: 16px; color: #DDA15E;"></i>
+                                                        {% else %}
+                                                            <i class="bi bi-star" style="font-size: 16px; color: #DDA15E; opacity: 0.3;"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <span style="margin-left: 6px; font-size: 13px; font-weight: 600; color: #537031;">{{ avis.note }}/5</span>
+                                                </div>
+
+                                                <!-- Commentaire -->
+                                                {% if avis.getTexteCommentaire() is not empty %}
+                                                    <p style="margin: 0; color: #2c2c2c; font-size: 13px; line-height: 1.5; flex: 1;">
+                                                        {{ avis.getTexteCommentaire() }}
+                                                    </p>
+                                                {% else %}
+                                                    <p style="margin: 0; color: #9AAD5A; font-size: 13px; font-style: italic;">
+                                                        Aucun commentaire
+                                                    </p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div style="background-color: #FEFAE0; border: 1px dashed #9AAD5A; padding: 16px; border-radius: 8px; text-align: center;">
+                                        <p style="margin: 0; color: #9AAD5A; font-size: 13px; font-style: italic;">
+                                            <i class="bi bi-star" style="margin-right: 6px;"></i>Pas encore d'avis pour cette promenade
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
-                    {% endif %}
+                    </main>
                 </div>
-            </div>
+            {% else %}
+                <div style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center;">
+                    <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
+                        <i class="bi bi-exclamation-circle" style="margin-right: 8px; color: #DDA15E;"></i>Les détails de cette annonce sont introuvables
+                    </p>
+                    <p style="color: #9AAD5A; margin-top: 8px; font-size: 14px;">
+                        Veuillez réessayer ou retourner à la liste des annonces.
+                    </p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
