@@ -175,15 +175,15 @@ class ChienDAO{
                 VALUES (:nom_chien, :poids, :taille, :race, :cheminPhoto, :id_utilisateur)";
 
         $stmt = $this->pdo->prepare($sql);
-        
-        $stmt->bindParam(':nom_chien', $chien->getNom_Chien(), PDO::PARAM_STR);
-        $stmt->bindParam(':poids', $chien->getPoids(), PDO::PARAM_STR);
-        $stmt->bindParam(':taille', $chien->getTaille(), PDO::PARAM_STR);
-        $stmt->bindParam(':race', $chien->getRace(), PDO::PARAM_STR);
-        $stmt->bindParam(':cheminPhoto', $chien->getCheminPhoto(), PDO::PARAM_STR);
-        $stmt->bindParam(':id_utilisateur', $chien->getid_Utilisateur(), PDO::PARAM_INT);
 
-        return $stmt->execute();
+        return $stmt->execute([
+            ':nom_chien' => $chien->getNom_Chien(),
+            ':poids' => $chien->getPoids(),
+            ':taille' => $chien->getTaille(),
+            ':race' => $chien->getRace(),
+            ':cheminPhoto' => $chien->getCheminPhoto(),
+            ':id_utilisateur' => $chien->getid_Utilisateur()
+        ]);
     }
 
     /**
