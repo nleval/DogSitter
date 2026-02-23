@@ -65,9 +65,7 @@ class ControllerAnnonce extends Controller
         echo $template->render([
             'annonce' => $annonce,
             'chiens' => $chienConcernes,
-            'proprietaire' => $proprietaire,
-            'userConnecte' => $sessionUser
-            
+            'proprietaire' => $proprietaire            
         ]);
     }
 
