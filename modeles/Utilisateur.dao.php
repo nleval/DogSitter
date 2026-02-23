@@ -110,8 +110,8 @@ class UtilisateurDAO
         $utilisateur = new Utilisateur();
         $utilisateur->setId($tableauAssoc['id_utilisateur'] ?? null);
         $utilisateur->setEmail($tableauAssoc['email'] ?? null);
-        $utilisateur->setEstMaitre($tableauAssoc['estMaitre'] ?? null);
-        $utilisateur->setEstPromeneur($tableauAssoc['estPromeneur'] ?? null);
+        $utilisateur->setEstMaitre(((int) ($tableauAssoc['estMaitre'] ?? 0)) === 1);
+        $utilisateur->setEstPromeneur(((int) ($tableauAssoc['estPromeneur'] ?? 0)) === 1);
         $utilisateur->setAdresse($tableauAssoc['adresse'] ?? null);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse'] ?? null);
         $utilisateur->setNumTelephone($tableauAssoc['numTelephone'] ?? null);

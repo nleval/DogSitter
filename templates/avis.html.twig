@@ -1,25 +1,24 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Avis — DogSitter{% endblock %}
+{% block title %}Avis — DogSynergie{% endblock %}
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 1200px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">
                     {% if avisUtilisateurNote is defined %}
                         Avis reçus
                     {% else %}
                         Tous les avis
                     {% endif %}
                 </h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Découvrez les expériences partagées par la communauté</p>
+                <p class="ds-profile-hero-subtitle">Découvrez les expériences partagées par la communauté</p>
             </div>
         </div>
 
         <!-- Contenu principal -->
-        <div style="flex: 1; padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%;">
+        <div style="flex: 1; padding: 0 40px 40px; max-width: 1200px; margin: 0 auto; width: 100%;">
             {% if avisListe is defined and avisListe|length > 0 %}
                 <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));">
                     {% for element in avisListe %}
@@ -182,3 +181,7 @@
     {% block footer %}
     {% endblock %}
 {% endblock %}
+
+
+
+

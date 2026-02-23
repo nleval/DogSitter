@@ -33,10 +33,10 @@ class Avis
     private ?int $id_utilisateur;
 
     /**
-     * @brief Identifiant de la promenade
+     * @brief Identifiant de l'annonce (promenade)
      * @var int|null
      */
-    private ?int $id_promenade;
+    private ?int $id_annonce;
 
     /**
      * @brief Identifiant de l'utilisateur noté par l'avis
@@ -51,7 +51,7 @@ class Avis
      * @param string|null $note
      * @param string|null $texte_commentaire
      * @param int|null $id_utilisateur
-     * @param int|null $id_promenade
+    * @param int|null $id_annonce
      * @param int|null $id_utilisateur_note
      * @return void
      */
@@ -60,14 +60,14 @@ class Avis
         $note = null, 
         $texte_commentaire = null, 
         ?int $id_utilisateur = null, 
-        ?int $id_promenade = null, 
+        ?int $id_annonce = null, 
         ?int $id_utilisateur_note = null
     ){
         $this->id_avis = $id_avis;
         $this->note = $note;
         $this->texte_commentaire = $texte_commentaire;
         $this->id_utilisateur = $id_utilisateur;
-        $this->id_promenade = $id_promenade;
+        $this->id_annonce = $id_annonce;
         $this->id_utilisateur_note = $id_utilisateur_note;
     }
 
@@ -150,22 +150,22 @@ class Avis
     }
 
     /**
-     * @function getIdPromenade
-     * @details Cette fonction permet de récupérer l'identifiant de la promenade concernée par l'avis
+    * @function getIdAnnonce
+    * @details Cette fonction permet de récupérer l'identifiant de l'annonce concernée par l'avis
      * @return int|null
      */
-    public function getIdPromenade(): ?int {
-        return $this->id_promenade;
+    public function getIdAnnonce(): ?int {
+        return $this->id_annonce;
     }
 
     /**
-     * @function setIdPromenade
-     * @details Cette fonction permet de définir l'identifiant de la promenade concernée par l'avis
-     * @param int|null $id_promenade
+    * @function setIdAnnonce
+    * @details Cette fonction permet de définir l'identifiant de l'annonce concernée par l'avis
+    * @param int|null $id_annonce
      * @return void
      */
-    public function setIdPromenade(?int $id_promenade): void {
-        $this->id_promenade = $id_promenade;
+    public function setIdAnnonce(?int $id_annonce): void {
+        $this->id_annonce = $id_annonce;
     }
 
     /**

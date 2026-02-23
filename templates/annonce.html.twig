@@ -6,40 +6,16 @@
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 1200px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Détails de l'Annonce</h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Découvrez les détails et les chiens à promener</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Détails de l'Annonce</h1>
+                <p class="ds-profile-hero-subtitle">Découvrez les détails et les chiens à promener</p>
             </div>
         </div>
 
         {# Messages de validation - signal pour notifications #}
         {% if reponse == 'ok' %}
-            <script>
-                // Force affichage immédiat de la notification
-                window.showCandidatureSuccess = true;
-                // Attend que le DOM soit chargé
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(() => {
-                        if (window.notificationManager) {
-                            window.notificationManager.show(
-                                '🎉 Candidature Soumise avec Succès!',
-                                'Votre candidature a été bien enregistrée. Le maître de l\'annonce sera notifié et vous contactera très bientôt pour les détails de la promenade. 🐾',
-                                'success',
-                                7000
-                            );
-                            
-                            // Force la vérification des notifications côté maître
-                            setTimeout(() => {
-                                if (window.candidatureChecker) {
-                                    window.candidatureChecker.check();
-                                }
-                            }, 500);
-                        }
-                    }, 100);
-                }, { once: true });
-            </script>
+            <div id="candidature-success-trigger" data-trigger="1" hidden></div>
         {% endif %}
         
         {% if erreur is defined and erreur %}

@@ -8,6 +8,580 @@
  * - Utilitaires
  */
 
+(function initGlobalWindowContext() {
+    const body = document.body;
+    if (!body) return;
+
+    const isConnected = body.dataset.userIsConnected === 'true';
+    const isMaitre = body.dataset.userIsMaitre === 'true';
+    const userIdRaw = body.dataset.userId;
+
+    window.userIsConnected = isConnected;
+    window.userIsMaitre = isMaitre;
+    window.userId = userIdRaw ? Number(userIdRaw) : null;
+})();
+
+function initTarteAuCitron() {
+    if (typeof tarteaucitron === 'undefined') return;
+
+    tarteaucitron.init({
+        highPrivacy: true,
+        AcceptAllCta: true,
+        DenyAllCta: true,
+        privacyUrl: "",
+        orientation: "bottom",
+        showAlertSmall: false,
+        cookieslist: true
+    });
+
+    tarteaucitron.user.gajsUa = 'G-F2W0X2M53T';
+    tarteaucitron.user.gajsMore = function () {};
+    tarteaucitron.job = tarteaucitron.job || [];
+    tarteaucitron.job.push('gajs');
+}
+
+function initAnnonceFiltersPage() {
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const annoncesContainer = document.getElementById('annoncesContainer');
+    const noResultsFiltered = document.getElementById('noResultsFiltered');
+    if (!searchBtn || !resetBtn || !annoncesContainer || !noResultsFiltered) return;
+
+    function filterAnnonces() {
+        const ville = (document.getElementById('villeCodePostal')?.value || '').toLowerCase().trim();
+        const date = document.getElementById('disponibilites')?.value || '';
+        const duree = parseInt(document.getElementById('dureePromenade')?.value || '0', 10) || 0;
+
+        const cards = document.querySelectorAll('.annonce-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            let match = true;
+
+            if (ville && !(card.dataset.ville || '').includes(ville)) {
+                match = false;
+            }
+
+            if (date && (card.dataset.date || '') !== date) {
+                match = false;
+            }
+
+            if (duree > 0 && parseInt(card.dataset.duree || '0', 10) > duree) {
+                match = false;
+            }
+
+            card.style.display = match ? 'flex' : 'none';
+            if (match) visibleCount++;
+        });
+
+        if (visibleCount === 0) {
+            noResultsFiltered.style.display = 'block';
+            annoncesContainer.style.display = 'none';
+        } else {
+            noResultsFiltered.style.display = 'none';
+            annoncesContainer.style.display = 'grid';
+        }
+    }
+
+    function resetFilters() {
+        const villeInput = document.getElementById('villeCodePostal');
+        const dateInput = document.getElementById('disponibilites');
+        const dureeInput = document.getElementById('dureePromenade');
+        if (villeInput) villeInput.value = '';
+        if (dateInput) dateInput.value = '';
+        if (dureeInput) dureeInput.value = '';
+
+        document.querySelectorAll('.annonce-card').forEach(card => {
+            card.style.display = 'flex';
+        });
+
+        noResultsFiltered.style.display = 'none';
+        annoncesContainer.style.display = 'grid';
+    }
+
+    searchBtn.addEventListener('click', filterAnnonces);
+    resetBtn.addEventListener('click', resetFilters);
+}
+
+function initAjouterAvisStars() {
+    const rating = document.querySelector('.rating');
+    const input = document.getElementById('note');
+    if (!rating || !input) return;
+
+    const stars = rating.querySelectorAll('img[data-star]');
+
+    function renderStars(value) {
+        stars.forEach(star => {
+            const starValue = parseInt(star.dataset.star || '0', 10);
+            star.src = starValue <= value ? 'images/Nonos2.svg' : 'images/Nonos.svg';
+        });
+    }
+
+    const initial = parseInt(input.value || rating.dataset.value || '3', 10);
+    renderStars(initial);
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = parseInt(star.dataset.star || '0', 10);
+            input.value = value;
+            renderStars(value);
+        });
+    });
+}
+
+function initAjouterChienDropzone() {
+    const dropZone = document.getElementById('dropZone');
+    const form = document.getElementById('chienForm');
+    const fileInput = document.getElementById('photo');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    if (!dropZone || !form || !fileInput || !fileInfo || !fileName) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    const maxFileSize = 2 * 1024 * 1024;
+
+    function updateFileInfo() {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            fileInfo.style.display = 'none';
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Format invalide. Utilisez JPEG ou PNG.');
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            return;
+        }
+
+        if (file.size > maxFileSize) {
+            alert('Fichier trop volumineux. Maximum 2MB.');
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            return;
+        }
+
+        fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+        fileInfo.style.display = 'block';
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', event => {
+        event.preventDefault();
+    });
+    dropZone.addEventListener('dragleave', () => {});
+    dropZone.addEventListener('drop', event => {
+        event.preventDefault();
+        if (event.dataTransfer.files.length > 0) {
+            fileInput.files = event.dataTransfer.files;
+            updateFileInfo();
+        }
+    });
+
+    fileInput.addEventListener('change', updateFileInfo);
+    form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            form.reportValidity();
+        }
+    });
+}
+
+function initMessagesListSwipe() {
+    const rows = document.querySelectorAll('.dm-swipe');
+    if (!rows.length) return;
+
+    const closeRow = row => {
+        const content = row.querySelector('.dm-swipe-content');
+        row.classList.remove('open');
+        if (content) {
+            content.style.transform = '';
+        }
+    };
+
+    const closeOtherRows = currentRow => {
+        rows.forEach(row => {
+            if (row !== currentRow) {
+                closeRow(row);
+            }
+        });
+    };
+
+    rows.forEach(row => {
+        const handle = row.querySelector('.dm-swipe-handle');
+        const actions = row.querySelector('.dm-swipe-actions');
+        const content = row.querySelector('.dm-swipe-content');
+        let startX = 0;
+        let currentX = 0;
+        let touching = false;
+
+        const getRevealWidth = () => {
+            if (!actions) return 110;
+            const width = Math.ceil(actions.getBoundingClientRect().width);
+            return width > 0 ? width : 110;
+        };
+
+        const openRow = () => {
+            closeOtherRows(row);
+            row.classList.add('open');
+            if (content) {
+                content.style.transform = `translateX(-${getRevealWidth()}px)`;
+            }
+        };
+
+        const closeCurrentRow = () => closeRow(row);
+
+        if (handle) {
+            handle.addEventListener('click', event => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (row.classList.contains('open')) {
+                    closeCurrentRow();
+                } else {
+                    openRow();
+                }
+            });
+        }
+
+        row.addEventListener('touchstart', event => {
+            if (event.touches.length !== 1) return;
+            touching = true;
+            startX = event.touches[0].clientX;
+            currentX = startX;
+        });
+
+        row.addEventListener('touchmove', event => {
+            if (!touching) return;
+            currentX = event.touches[0].clientX;
+        });
+
+        row.addEventListener('touchend', () => {
+            if (!touching) return;
+            const deltaX = currentX - startX;
+            if (deltaX < -30) {
+                openRow();
+            } else if (deltaX > 30) {
+                closeCurrentRow();
+            }
+            touching = false;
+        });
+
+        row.addEventListener('click', event => {
+            if (row.classList.contains('open') && !event.target.closest('.dm-swipe-actions')) {
+                closeCurrentRow();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (row.classList.contains('open')) {
+                openRow();
+            }
+        });
+    });
+}
+
+function initConversationActivePage() {
+    const messagesContainer = document.querySelector('.dm-messages');
+    const conversationSheet = document.getElementById('conversationSheet');
+    const openConversationSheet = document.getElementById('openConversationSheet');
+    const editBar = document.getElementById('editBar');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const editMessageId = document.getElementById('editMessageId');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    if (!messagesContainer || !conversationSheet || !messageInput || !sendButton) return;
+
+    document.querySelectorAll('.message-content p').forEach(element => {
+        const text = element.innerText;
+        const urlRegex = /(index\.php\?[^\s]+)/g;
+        element.innerHTML = text.replace(urlRegex, url => (
+            `<a href="${url}" style="color: #537031; text-decoration: underline; font-weight: 600;">Lien annonce</a>`
+        ));
+    });
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    const openSheet = () => conversationSheet.classList.add('active');
+    const closeSheet = () => conversationSheet.classList.remove('active');
+
+    if (openConversationSheet) {
+        openConversationSheet.addEventListener('click', openSheet);
+    }
+
+    document.querySelectorAll('.dm-msg-more').forEach(button => {
+        button.addEventListener('click', event => {
+            event.stopPropagation();
+            const container = button.closest('.dm-msg-actions');
+            const popover = container ? container.querySelector('.dm-msg-popover') : null;
+            if (!popover) return;
+
+            document.querySelectorAll('.dm-msg-popover').forEach(el => {
+                if (el !== popover) {
+                    el.style.display = 'none';
+                }
+            });
+
+            popover.style.display = popover.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+
+    document.querySelectorAll('.dm-edit-trigger').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!editBar || !editMessageId) return;
+            editMessageId.value = button.getAttribute('data-message-id') || '';
+            messageInput.value = button.getAttribute('data-message-text') || '';
+            editBar.style.display = 'flex';
+            sendButton.textContent = 'Modifier';
+            messageInput.focus();
+
+            const popover = button.closest('.dm-msg-popover');
+            if (popover) popover.style.display = 'none';
+        });
+    });
+
+    if (cancelEdit && editBar && editMessageId) {
+        cancelEdit.addEventListener('click', () => {
+            editMessageId.value = '';
+            messageInput.value = '';
+            editBar.style.display = 'none';
+            sendButton.textContent = 'Envoyer';
+            messageInput.focus();
+        });
+    }
+
+    document.querySelectorAll('[data-sheet-close]').forEach(el => {
+        el.addEventListener('click', closeSheet);
+    });
+
+    document.addEventListener('click', event => {
+        if (!event.target.closest('.dm-msg-actions')) {
+            document.querySelectorAll('.dm-msg-popover').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    });
+}
+
+const NotificationsPage = {
+    allNotifications: [],
+    currentFilter: 'all',
+
+    init() {
+        if (!document.getElementById('notificationsListContainer')) return;
+        this.bindFilterButtons();
+        this.loadAllNotifications();
+    },
+
+    bindFilterButtons() {
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.dataset.filter || 'all';
+                this.filterNotifications(filter);
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+    },
+
+    loadAllNotifications() {
+        fetch('index.php?controleur=annonce&methode=getAllNotifications')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.notifications) {
+                    this.allNotifications = data.notifications;
+                    this.renderNotifications(this.allNotifications);
+                    this.marquerToutesCommeLues();
+                } else {
+                    this.showEmptyState();
+                }
+            })
+            .catch(() => {
+                this.showEmptyState();
+            });
+    },
+
+    renderNotifications(notifications) {
+        const container = document.getElementById('notificationsListContainer');
+        if (!container) return;
+
+        if (!notifications.length) {
+            this.showEmptyState();
+            return;
+        }
+
+        let html = '';
+        notifications.forEach(notif => {
+            const dateCreation = new Date(notif.date_creation).toLocaleDateString('fr-FR', {
+                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            html += `
+                <div class="notification-item ${notif.type} ${notif.lue === 0 ? 'unread-status' : ''}"
+                     data-id="${notif.id_notification}"
+                     data-read="${notif.lue}"
+                     style="cursor: pointer;">
+                    <div class="notification-item-header">
+                        <div style="flex: 1;">
+                            <p class="notification-item-title">${this.escapeHtml(notif.titre)}</p>
+                            <p class="notification-item-message">${this.escapeHtml(notif.message)}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="notification-item-date">${dateCreation}</span>
+                                <span class="notification-badge ${notif.lue === 0 ? 'unread' : ''}">
+                                    ${notif.lue === 0 ? 'Non lue' : 'Lue'}
+                                </span>
+                            </div>
+                        </div>
+                        <button class="notify-remove-btn" type="button" data-dismiss-id="${notif.id_notification}" title="Supprimer">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        this.bindNotificationItems();
+    },
+
+    bindNotificationItems() {
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const id = item.dataset.id;
+                if (id) this.marquerNotificationCommeLue(item, id);
+            });
+        });
+
+        document.querySelectorAll('.notify-remove-btn[data-dismiss-id]').forEach(button => {
+            button.addEventListener('click', event => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.dismissNotification(button, button.dataset.dismissId);
+            });
+        });
+    },
+
+    showEmptyState() {
+        const container = document.getElementById('notificationsListContainer');
+        if (!container) return;
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+                <p class="empty-state-text">Aucune notification pour le moment</p>
+            </div>
+        `;
+    },
+
+    filterNotifications(type) {
+        this.currentFilter = type;
+        const filtered = type === 'all'
+            ? this.allNotifications
+            : this.allNotifications.filter(notification => notification.type === type);
+        this.renderNotifications(filtered);
+    },
+
+    dismissNotification(button, idNotification) {
+        const card = button.closest('.notification-item');
+        if (!card) return;
+        const wasUnread = card.getAttribute('data-read') === '0';
+
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(30px)';
+        card.style.transition = 'all 0.3s ease';
+
+        setTimeout(() => {
+            card.remove();
+            this.allNotifications = this.allNotifications.filter(notification => String(notification.id_notification) !== String(idNotification));
+
+            if (wasUnread) {
+                this.updateHeaderNotificationBadge();
+            }
+
+            const formData = new FormData();
+            formData.append('id_notification', idNotification);
+            fetch('index.php?controleur=annonce&methode=supprimerNotification', {
+                method: 'POST',
+                body: formData
+            }).catch(() => {});
+        }, 300);
+    },
+
+    marquerNotificationCommeLue(element, idNotification) {
+        if (element.getAttribute('data-read') !== '0') return;
+
+        element.classList.add('marked-as-read');
+        const badge = element.querySelector('.notification-badge');
+        if (badge) {
+            badge.textContent = 'Lue';
+            badge.classList.remove('unread');
+        }
+
+        element.setAttribute('data-read', '1');
+
+        const notif = this.allNotifications.find(notification => String(notification.id_notification) === String(idNotification));
+        if (notif) notif.lue = 1;
+
+        const formData = new FormData();
+        formData.append('id_notification', idNotification);
+        fetch('index.php?controleur=annonce&methode=marquerNotificationCommeLue', {
+            method: 'POST',
+            body: formData
+        }).then(() => {
+            this.updateHeaderNotificationBadge();
+        }).catch(() => {});
+    },
+
+    updateHeaderNotificationBadge() {
+        const unreadCount = this.allNotifications.filter(notification => notification.lue === 0).length;
+        const badge = document.getElementById('notificationBadge');
+        const countSpan = document.getElementById('notificationCount');
+
+        if (badge && countSpan) {
+            if (unreadCount > 0) {
+                countSpan.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    },
+
+    marquerToutesCommeLues() {
+        fetch('index.php?controleur=annonce&methode=marquerToutesNotificationsCommeLues', {
+            method: 'POST'
+        }).then(response => response.json())
+        .then(data => {
+            if (!data.success) return;
+
+            this.allNotifications.forEach(notification => {
+                notification.lue = 1;
+            });
+
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.setAttribute('data-read', '1');
+                const badge = item.querySelector('.notification-badge');
+                if (badge) {
+                    badge.textContent = 'Lue';
+                    badge.classList.remove('unread');
+                }
+                item.classList.remove('unread-status');
+            });
+
+            this.updateHeaderNotificationBadge();
+        }).catch(() => {});
+    },
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+};
+
 // ============================================
 // NOTIFICATION MANAGER
 // ============================================
@@ -363,6 +937,18 @@ let candidatureChecker;
 
 // Initialiser au chargement du DOM
 document.addEventListener('DOMContentLoaded', function() {
+    initTarteAuCitron();
+    initAnnonceFiltersPage();
+    initAjouterAvisStars();
+    initAjouterChienDropzone();
+    initMessagesListSwipe();
+    initConversationActivePage();
+    NotificationsPage.init();
+
+    if (document.getElementById('candidature-success-trigger')) {
+        window.showCandidatureSuccess = true;
+    }
+
     notificationManager = new NotificationManager();
     candidatureChecker = new NotificationChecker();
     

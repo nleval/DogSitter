@@ -86,7 +86,9 @@ class AnnonceDAO
                 $row['description'],
                 $row['endroitPromenade'],
                 $row['duree'],
-                $row['id_utilisateur']
+                $row['id_utilisateur'],
+                isset($row['id_promeneur']) ? (int) $row['id_promeneur'] : null,
+                $row['statut_promenade'] ?? null
             );
         }
 
@@ -190,7 +192,9 @@ class AnnonceDAO
             $data['description'] ?? null,
             $data['endroitPromenade'] ?? null,
             $data['duree'] ?? null,
-            $data['id_utilisateur'] ?? null
+            $data['id_utilisateur'] ?? null,
+            isset($data['id_promeneur']) ? (int) $data['id_promeneur'] : null,
+            $data['statut_promenade'] ?? null
         );
     }
 
@@ -394,75 +398,93 @@ public function getCandidatAccepte(int $id_annonce): ?int
 }
 
 /**
- * @brief Récupère l'ID de la promenade pour une annonce et un promeneur
- * @param int $id_annonce Identifiant de l'annonce
+ * @brief Récupère les annonces/promenades d'un promeneur
  * @param int $id_promeneur Identifiant du promeneur
- * @return int|null ID de la promenade ou null
+ * @return Annonce[] Tableau d'annonces associees
  */
-public function getPromenadeIdByAnnonceAndPromeneur(int $id_annonce, int $id_promeneur): ?int
+public function findByPromeneur(int $id_promeneur): array
 {
+    $annonces = [];
     $stmt = $this->pdo->prepare("
-        SELECT id_promenade
-        FROM " . PREFIXE_TABLE . "Promenade
-        WHERE id_annonce = :id_annonce
-          AND id_promeneur = :id_promeneur
-        ORDER BY id_promenade DESC
-        LIMIT 1
+        SELECT * FROM " . PREFIXE_TABLE . "Annonce
+        WHERE id_promeneur = :id_promeneur
+        ORDER BY datePromenade DESC
     ");
 
-    $stmt->execute([
-        ':id_annonce' => $id_annonce,
-        ':id_promeneur' => $id_promeneur
-    ]);
+    $stmt->execute([':id_promeneur' => $id_promeneur]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($row && isset($row['id_promenade'])) {
-        return (int) $row['id_promenade'];
+    foreach ($results as $row) {
+        $annonces[] = $this->hydrate($row);
     }
 
-    return null;
+    return $annonces;
 }
 
 /**
- * @brief Crée une promenade pour une annonce et un promeneur
+ * @brief Associe un promeneur a une annonce et initialise le statut de promenade
  * @param int $id_annonce Identifiant de l'annonce
  * @param int $id_promeneur Identifiant du promeneur
- * @param int $id_proprietaire Identifiant du proprietaire
- * @param string $date_promenade Date/heure de la promenade
- * @param string $statut Statut de la promenade
- * @return int|null ID de la promenade créée ou null
+ * @param string $statut_promenade Statut de la promenade
+ * @return bool Succès de la mise a jour
  */
-public function creerPromenadeParAnnonce(
-    int $id_annonce,
-    int $id_promeneur,
-    int $id_proprietaire,
-    string $date_promenade,
-    string $statut = 'terminee'
-): ?int {
-    try {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO " . PREFIXE_TABLE . "Promenade
-                (id_chien, id_promeneur, id_proprietaire, id_annonce, date_promenade, statut)
-            VALUES
-                (NULL, :id_promeneur, :id_proprietaire, :id_annonce, :date_promenade, :statut)
-        ");
+public function assignerPromeneur(int $id_annonce, int $id_promeneur, string $statut_promenade = 'a_venir'): bool
+{
+    $stmt = $this->pdo->prepare("
+        UPDATE " . PREFIXE_TABLE . "Annonce
+        SET id_promeneur = :id_promeneur,
+            statut_promenade = :statut_promenade
+        WHERE id_annonce = :id_annonce
+    ");
+    $ok = $stmt->execute([
+        ':id_promeneur' => $id_promeneur,
+        ':statut_promenade' => $statut_promenade,
+        ':id_annonce' => $id_annonce
+    ]);
 
-        $ok = $stmt->execute([
-            ':id_promeneur' => $id_promeneur,
-            ':id_proprietaire' => $id_proprietaire,
-            ':id_annonce' => $id_annonce,
-            ':date_promenade' => $date_promenade,
-            ':statut' => $statut
-        ]);
-
-        if ($ok) {
-            return (int) $this->pdo->lastInsertId();
-        }
-    } catch (PDOException $e) {
-        return null;
+    if (!$ok) {
+        $error = $stmt->errorInfo();
+        error_log("❌ assignerPromeneur SQL error: " . implode(' | ', $error));
     }
 
-    return null;
+    return $ok;
+}
+
+/**
+ * @brief Met a jour le statut de promenade d'une annonce
+ * @param int $id_annonce Identifiant de l'annonce
+ * @param string $statut Nouveau statut
+ * @return bool Succes de la mise a jour
+ */
+public function mettreAJourStatutPromenade(int $id_annonce, string $statut): bool
+{
+    $stmt = $this->pdo->prepare("
+        UPDATE " . PREFIXE_TABLE . "Annonce
+        SET statut_promenade = :statut
+        WHERE id_annonce = :id_annonce
+    ");
+
+    return $stmt->execute([
+        ':statut' => $statut,
+        ':id_annonce' => $id_annonce
+    ]);
+}
+
+/**
+ * @brief Archive automatiquement les promenades terminees dont la date est depassee
+ * @return int Nombre d'annonces archivees
+ */
+public function archiverPromenadesDepassees(): int
+{
+    $stmt = $this->pdo->prepare("
+        UPDATE " . PREFIXE_TABLE . "Annonce
+        SET statut_promenade = 'archivee'
+        WHERE statut_promenade = 'terminee'
+          AND STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+    ");
+
+    $stmt->execute();
+    return $stmt->rowCount();
 }
 
 /**
@@ -504,6 +526,7 @@ public function getMesPromenades(int $id_utilisateur): array
             a.endroitPromenade, 
             a.description,
             a.status,
+            a.statut_promenade,
             u.id_utilisateur AS id_maitre,
             u.pseudo AS nom_maitre, 
             u.email AS email_maitre,
@@ -513,13 +536,12 @@ public function getMesPromenades(int $id_utilisateur): array
             c.race,
             c.poids,
             c.taille,
-            r.statut AS statut_candidature,
-            r.date_creation AS date_candidature
+            co.id_annonce AS id_annonce_concerne
         FROM " . PREFIXE_TABLE . "Annonce a
-        INNER JOIN " . PREFIXE_TABLE . "Repond r ON a.id_annonce = r.id_annonce
         INNER JOIN " . PREFIXE_TABLE . "Utilisateur u ON a.id_utilisateur = u.id_utilisateur
-        LEFT JOIN " . PREFIXE_TABLE . "Chien c ON a.id_utilisateur = c.id_utilisateur
-        WHERE r.id_utilisateur = :id_utilisateur AND r.statut = 'acceptée'
+        LEFT JOIN " . PREFIXE_TABLE . "Concerne co ON a.id_annonce = co.id_annonce
+        LEFT JOIN " . PREFIXE_TABLE . "Chien c ON co.id_chien = c.id_chien
+        WHERE a.id_promeneur = :id_utilisateur
         ORDER BY a.datePromenade ASC
     ";
 

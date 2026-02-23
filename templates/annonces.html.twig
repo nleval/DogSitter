@@ -6,11 +6,10 @@
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 1200px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Les Annonces</h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Explorez toutes les annonces de promenade près de chez vous</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Les Annonces</h1>
+                <p class="ds-profile-hero-subtitle">Explorez toutes les annonces de promenade près de chez vous</p>
             </div>
         </div>
 
@@ -118,73 +117,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('searchBtn').addEventListener('click', filterAnnonces);
-        document.getElementById('resetBtn').addEventListener('click', resetFilters);
-
-        function filterAnnonces() {
-            const ville = document.getElementById('villeCodePostal').value.toLowerCase().trim();
-            const date = document.getElementById('disponibilites').value;
-            const duree = parseInt(document.getElementById('dureePromenade').value) || 0;
-
-            const cards = document.querySelectorAll('.annonce-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                let match = true;
-
-                // Filtre ville
-                if (ville && !card.dataset.ville.includes(ville)) {
-                    match = false;
-                }
-
-                // Filtre date
-                if (date && card.dataset.date !== date) {
-                    match = false;
-                }
-
-                // Filtre durée
-                if (duree > 0 && parseInt(card.dataset.duree) > duree) {
-                    match = false;
-                }
-
-                if (match) {
-                    card.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            // Affiche le message "aucune annonce"
-            const container = document.getElementById('annoncesContainer');
-            const noResultsFiltered = document.getElementById('noResultsFiltered');
-
-            if (visibleCount === 0) {
-                noResultsFiltered.style.display = 'block';
-                if (container) container.style.display = 'none';
-            } else {
-                noResultsFiltered.style.display = 'none';
-                if (container) container.style.display = 'grid';
-            }
-        }
-
-        function resetFilters() {
-            document.getElementById('villeCodePostal').value = '';
-            document.getElementById('disponibilites').value = '';
-            document.getElementById('dureePromenade').value = '';
-
-            const cards = document.querySelectorAll('.annonce-card');
-            cards.forEach(card => {
-                card.style.display = 'flex';
-            });
-
-            document.getElementById('noResultsFiltered').style.display = 'none';
-            const container = document.getElementById('annoncesContainer');
-            if (container) container.style.display = 'grid';
-        }
-    </script>
 
     {% block footer %}
 

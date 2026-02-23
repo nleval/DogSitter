@@ -1,16 +1,15 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
 {% block title %}
-    Créer une annonce — DogSitter
+    Créer une annonce — DogSynergie
 {% endblock %}
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 900px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Créer une annonce</h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Publiez une promenade pour votre chien</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Créer une annonce</h1>
+                <p class="ds-profile-hero-subtitle">Publiez une promenade pour votre chien</p>
             </div>
         </div>
 
@@ -81,7 +80,7 @@
 
                         <!-- LIEU + DESCRIPTION -->
                         <div style="margin-bottom: 28px;">
-                            <label for="endroitPromenade" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; color: #9AAD5A;">Lieu</label>
+                            <label for="endroitPromenade" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Lieu</label>
                             <input type="text"
                                 value="{{ donnees.endroitPromenade|default('') }}"
                                 id="endroitPromenade"
@@ -91,7 +90,7 @@
                         </div>
 
                         <div style="margin-bottom: 28px;">
-                            <label for="description" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; color: #9AAD5A;">Description</label>
+                            <label for="description" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Description</label>
                             <textarea
                                 id="description"
                                 name="description"
@@ -159,3 +158,7 @@
         </div>
     </div>
 {% endblock %}
+
+
+
+

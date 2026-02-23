@@ -1,7 +1,7 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
 {% block title %}
-    Annonce publiée avec succès – DogSitter
+    Annonce publiée avec succès – DogSynergie
 {% endblock %}
 
 {% block body %}
@@ -37,14 +37,26 @@
 
             <!-- Boutons -->
             <div class="d-grid gap-3">
-                <a href="index.php?controleur=annonce&methode=afficherAllAnnonces"
-                    class="btn text-white fw-bold"
-                    style="background-color:#BC6C25; border-radius:10px; padding:12px;">
-                    Voir les annonces
-                </a>
+                {% if estMaitre and not estPromeneur %}
+                    <a href="index.php?controleur=annonce&methode=creerAnnonce"
+                        class="btn text-white fw-bold"
+                        style="background-color:#BC6C25; border-radius:10px; padding:12px;">
+                        Publier une annonce
+                    </a>
+                {% else %}
+                    <a href="index.php?controleur=annonce&methode=afficherAllAnnonces"
+                        class="btn text-white fw-bold"
+                        style="background-color:#BC6C25; border-radius:10px; padding:12px;">
+                        Voir les annonces
+                    </a>
+                {% endif %}
 
                 <a href="index.php" class="btn btn-outline-secondary" style="border-radius:10px;">Retour à l’accueil</a>
             </div>
         </div>
     </div>
 {% endblock %}
+
+
+
+

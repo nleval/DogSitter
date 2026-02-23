@@ -111,16 +111,16 @@ class AvisDAO
     }
 
     /**
-     * @function trouverParIdPromenade
-     * @details Cette fonction permet de récupérer tous les avis en base de données d'une promenade
-     * @param int $id_promenade
+     * @function trouverParIdAnnonce
+     * @details Cette fonction permet de recuperer tous les avis d'une annonce
+     * @param int $id_annonce
      * @return array
      */
-    public function trouverParIdPromenade($id_promenade): array
+    public function trouverParIdAnnonce($id_annonce): array
     {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_promenade = :id_promenade";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "Avis WHERE id_annonce = :id_annonce";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute([':id_promenade' => $id_promenade]);
+        $pdoStatement->execute([':id_annonce' => $id_annonce]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $avis = $pdoStatement->fetchAll();
 
@@ -176,7 +176,7 @@ class AvisDAO
         $avis->setNote($tableauAssoc['note'] ?? null);
         $avis->setTexteCommentaire($tableauAssoc['texte_commentaire'] ?? null);
         $avis->setIdUtilisateur($tableauAssoc['id_utilisateur'] ?? null);
-        $avis->setIdPromenade($tableauAssoc['id_promenade'] ?? null);
+        $avis->setIdAnnonce($tableauAssoc['id_annonce'] ?? null);
         $avis->setIdUtilisateurNote($tableauAssoc['id_utilisateur_note'] ?? null);
 
         return $avis;
@@ -192,15 +192,15 @@ class AvisDAO
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO " . PREFIXE_TABLE . "Avis 
-            (note, texte_commentaire, id_utilisateur, id_promenade, id_utilisateur_note)
-            VALUES (:note, :texte_commentaire, :id_utilisateur, :id_promenade, :id_utilisateur_note)
+            (note, texte_commentaire, id_utilisateur, id_annonce, id_utilisateur_note)
+            VALUES (:note, :texte_commentaire, :id_utilisateur, :id_annonce, :id_utilisateur_note)
         ");
 
         return $stmt->execute([
             ':note' => $avis->getNote(),
             ':texte_commentaire' => $avis->getTexteCommentaire(),
             ':id_utilisateur' => $avis->getIdUtilisateur(),
-            ':id_promenade' => $avis->getIdPromenade(),
+            ':id_annonce' => $avis->getIdAnnonce(),
             ':id_utilisateur_note' => $avis->getIdUtilisateurNote(),
         ]);
     }

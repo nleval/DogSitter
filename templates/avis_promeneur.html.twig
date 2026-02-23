@@ -1,10 +1,16 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Avis - {{ utilisateur.pseudo }} — DogSitter{% endblock %}
+{% block title %}Avis - {{ utilisateur.pseudo }} — DogSynergie{% endblock %}
 
 {% block content %}
-<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0 20px 40px;">
     <div style="max-width: 1000px; margin: 0 auto;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title"><i class="bi bi-star-fill me-2"></i>Avis du promeneur</h1>
+                <p class="ds-profile-hero-subtitle">Consultez les avis laissés par les propriétaires.</p>
+            </div>
+        </div>
         
         <!-- Header avec infos promeneur -->
         <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.15); display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
@@ -32,7 +38,7 @@
                 <div style="font-size: 32px; font-weight: 700; color: #DDA15E; margin-bottom: 5px;">
                     <i class="bi bi-star-fill"></i> {{ stats.moyenne|number_format(1, '.', '') }}/5
                 </div>
-                <p style="color: #FEFAE0; margin: 0; font-size: 13px;">{{ stats.total }} avis{{ stats.total != 1 ? 's' : '' }}</p>
+                <p style="color: #FEFAE0; margin: 0; font-size: 13px;">{{ stats.total }} avis{{ stats.total > 1 ? 's' : '' }}</p>
             </div>
         </div>
 
@@ -99,3 +105,7 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+

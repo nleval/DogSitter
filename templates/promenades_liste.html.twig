@@ -1,27 +1,34 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}{{ title }} — DogSitter{% endblock %}
+{% block title %}{{ title }} — DogSynergie{% endblock %}
 
 {% block content %}
-<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+{% if not estPromeneur %}
+<div class="container py-5" style="background-color: #FEFAE0;">
+    <div class="alert text-center fw-bold" style="background-color:#DDA15E; color:white;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Accès refusé : seuls les promeneurs peuvent voir leurs promenades.
+    </div>
+</div>
+{% else %}
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0 20px 40px;">
     <div style="max-width: 1200px; margin: 0 auto;">
-        
-        <!-- Header -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
-            <div>
-                <h1 style="color: #537031; margin: 0 0 10px 0; font-size: 32px; font-weight: 600;">{{ title }}</h1>
-                <p style="color: #999; margin: 0; font-size: 14px;">Gérez vos promenades acceptées</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title"><i class="bi bi-map me-2"></i>{{ title }}</h1>
+                <p class="ds-profile-hero-subtitle">Gérez vos promenades acceptées</p>
             </div>
-            
-            <!-- Filtres par statut -->
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <a href="?controleur=promenade&methode=mesPromenades&statut=a_venir" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'a_venir' %}background-color: #DDA15E; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'a_venir' %}this.style.borderColor='#DDA15E'{% endif %}" onmouseout="{% if statut != 'a_venir' %}this.style.borderColor='#ddd'{% endif %}">
+                <a href="?controleur=annonce&methode=mesPromenades&statut=a_venir" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'a_venir' %}background-color: #DDA15E; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'a_venir' %}this.style.borderColor='#DDA15E'{% endif %}" onmouseout="{% if statut != 'a_venir' %}this.style.borderColor='#ddd'{% endif %}">
                     <i class="bi bi-calendar-check"></i> À venir
                 </a>
-                <a href="?controleur=promenade&methode=mesPromenades&statut=en_cours" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'en_cours' %}background-color: #537031; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'en_cours' %}this.style.borderColor='#537031'{% endif %}" onmouseout="{% if statut != 'en_cours' %}this.style.borderColor='#ddd'{% endif %}">
+                <a href="?controleur=annonce&methode=mesPromenades&statut=en_cours" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'en_cours' %}background-color: #537031; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'en_cours' %}this.style.borderColor='#537031'{% endif %}" onmouseout="{% if statut != 'en_cours' %}this.style.borderColor='#ddd'{% endif %}">
                     <i class="bi bi-play-circle"></i> En cours
                 </a>
-                <a href="?controleur=promenade&methode=mesPromenades&statut=archivee" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'archivee' %}background-color: #BC6C25; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'archivee' %}this.style.borderColor='#BC6C25'{% endif %}" onmouseout="{% if statut != 'archivee' %}this.style.borderColor='#ddd'{% endif %}">
+                <a href="?controleur=annonce&methode=mesPromenades&statut=archivee" style="padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease; {% if statut == 'archivee' %}background-color: #BC6C25; color: #FEFAE0;{% else %}background-color: white; color: #537031; border: 1px solid #ddd;{% endif %}" onmouseover="{% if statut != 'archivee' %}this.style.borderColor='#BC6C25'{% endif %}" onmouseout="{% if statut != 'archivee' %}this.style.borderColor='#ddd'{% endif %}">
                     <i class="bi bi-archive"></i> Archivées
                 </a>
             </div>
@@ -102,11 +109,11 @@
 
                             <!-- Actions -->
                             <div style="display: flex; gap: 8px;">
-                                <a href="?controleur=promenade&methode=afficherPromenade&id_promenade={{ promenade.id_promenade }}" style="flex: 1; text-align: center; padding: 10px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
+                                <a href="?controleur=annonce&methode=afficherPromenade&id_annonce={{ promenade.id_annonce }}" style="flex: 1; text-align: center; padding: 10px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
                                     <i class="bi bi-eye"></i> Détails
                                 </a>
                                 {% if promenade.statut == 'en_cours' %}
-                                    <a href="?controleur=promenade&methode=marquerTerminee&id_promenade={{ promenade.id_promenade }}" style="flex: 1; text-align: center; padding: 10px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#7a8f47'" onmouseout="this.style.backgroundColor='#9AAD5A'">
+                                    <a href="?controleur=annonce&methode=marquerTerminee&id_annonce={{ promenade.id_annonce }}" style="flex: 1; text-align: center; padding: 10px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#7a8f47'" onmouseout="this.style.backgroundColor='#9AAD5A'">
                                         <i class="bi bi-check-circle"></i> Terminer
                                     </a>
                                 {% endif %}
@@ -120,12 +127,18 @@
                 <i class="bi bi-inbox" style="font-size: 56px; color: #ddd; margin-bottom: 20px; display: block;"></i>
                 <h3 style="color: #537031; margin: 0 0 10px 0; font-size: 20px;">Aucune promenade</h3>
                 <p style="color: #999; margin: 0 0 20px 0;">Vous n'avez pas de promenades {% if statut == 'a_venir' %}à venir{% elseif statut == 'en_cours' %}en cours{% elseif statut == 'terminee' %}terminées{% else %}archivées{% endif %}.</p>
-                <a href="?controleur=annonce&methode=afficherAllAnnonces" style="display: inline-block; padding: 12px 24px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
-                    <i class="bi bi-search"></i> Voir les annonces disponibles
-                </a>
-            </div>
-        {% endif %}
+                <div style="display: flex; justify-content: center; margin-top: 8px;">
+                    <a href="?controleur=annonce&methode=afficherAllAnnonces" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; border-radius: 999px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 14px rgba(83, 112, 49, 0.25);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 18px rgba(83, 112, 49, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(83, 112, 49, 0.25)'">
+                        <i class="bi bi-search"></i> Voir les annonces disponibles
+                    </a>
+                </div>
+    {% endif %}
 
     </div>
 </div>
+{% endif %}
 {% endblock %}
+
+
+
+

@@ -178,40 +178,15 @@ class ControllerAvis extends Controller
             return;
         }
 
-        $acceptedCandidatId = $managerAnnonce->getCandidatAccepte((int) $id_annonce);
+        $acceptedCandidatId = $annonce->getIdPromeneur();
+        if (!$acceptedCandidatId) {
+            $acceptedCandidatId = $managerAnnonce->getCandidatAccepte((int) $id_annonce);
+        }
+
         if (!$acceptedCandidatId) {
             $template = $this->getTwig()->load('ajouter_avis.html.twig');
             echo $template->render([
                 'erreurs' => ["Aucun promeneur accepte pour cette annonce."],
-                'id_utilisateur_note' => $id_utilisateur_note,
-                'id_annonce' => $id_annonce
-            ]);
-            return;
-        }
-
-        $id_promenade = $managerAnnonce->getPromenadeIdByAnnonceAndPromeneur(
-            (int) $id_annonce,
-            (int) $acceptedCandidatId
-        );
-
-        if (!$id_promenade) {
-            $datePromenade = (string) $annonce->getDatePromenade();
-            $horaire = (string) $annonce->getHoraire();
-            $dateTime = trim($datePromenade . ' ' . $horaire);
-
-            $id_promenade = $managerAnnonce->creerPromenadeParAnnonce(
-                (int) $id_annonce,
-                (int) $acceptedCandidatId,
-                (int) $annonce->getIdUtilisateur(),
-                $dateTime,
-                'terminee'
-            );
-        }
-
-        if (!$id_promenade) {
-            $template = $this->getTwig()->load('ajouter_avis.html.twig');
-            echo $template->render([
-                'erreurs' => ["Impossible de lier une promenade a cet avis."],
                 'id_utilisateur_note' => $id_utilisateur_note,
                 'id_annonce' => $id_annonce
             ]);
@@ -345,7 +320,7 @@ class ControllerAvis extends Controller
                 $note,
                 $texte_commentaire,
                 $id_utilisateur,          // Qui a écrit l'avis
-                $id_promenade,            // ID de la promenade (nullable)
+                (int) $id_annonce,        // ID de l'annonce (promenade)
                 $id_utilisateur_note      // ID de l'utilisateur noté
             );
 

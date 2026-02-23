@@ -1,14 +1,13 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Newsletter — DogSitter{% endblock %}
+{% block title %}Newsletter — DogSynergie{% endblock %}
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 900px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Inscription à la newsletter</h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Recevez les actualités et conseils de DogSitter</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Inscription à la newsletter</h1>
+                <p class="ds-profile-hero-subtitle">Recevez les actualités et conseils de DogSynergie</p>
             </div>
         </div>
 
@@ -17,7 +16,7 @@
             <div style="width: 100%; max-width: 600px;">
                 <div style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1); margin-bottom: 30px;">
                     <p style="color: #537031; font-size: 14px; line-height: 1.6; margin-bottom: 30px;">
-                        Recevez des nouvelles de <strong>DogSitter</strong>, des conseils pour le bien-être des chiens et des informations sur nos actions favorisant le lien intergénérationnel.
+                        Recevez des nouvelles de <strong>DogSynergie</strong>, des conseils pour le bien-être des chiens et des informations sur nos actions favorisant le lien intergénérationnel.
                     </p>
 
                     <form method="post" action="index.php?controleur=index&methode=render">
@@ -65,4 +64,8 @@
                     <i class="bi bi-house-door me-2"></i> Retour
                 </a>
 {% endblock %}
+
+
+
+
 

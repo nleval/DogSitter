@@ -1,126 +1,92 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Modifier mon profil — DogSitter{% endblock %}
+{% block title %}Modifier mon profil — DogSynergie{% endblock %}
 
 {% block content %}
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); padding: 40px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.2);">
-            <div style="max-width: 900px; margin: 0 auto;">
-                <h1 style="font-size: 32px; font-weight: 600; color: #FEFAE0; margin: 0;">Modifier mon profil</h1>
-                <p style="color: #9AAD5A; margin-top: 8px; font-weight: 500;">Mettez à jour vos informations personnelles</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title">Modifier mon profil</h1>
+                <p class="ds-profile-hero-subtitle">Mettez à jour vos informations personnelles</p>
             </div>
         </div>
 
         <!-- Contenu principal -->
         <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
             <div style="width: 100%; max-width: 600px;">
-                {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
-                    <div style="background-color: #FEFAE0; margin-bottom: 30px; padding: 20px; border-radius: 8px; border: 2px solid #DDA15E;">
-                        <div style="padding: 16px; background-color: #FAF6E9; border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
-                            <i class="bi bi-exclamation-circle" style="font-size: 24px; color: #DDA15E; flex-shrink: 0; margin-top: 2px;"></i>
-                            <div style="color: #537031; margin: 0; font-weight: 500;">
-                                <ul style="margin: 0; padding-left: 20px;">
-                                    {% for message in messagesErreurs %}
-                                        <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
                 <div style="background-color: #FAF6E9; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(83, 112, 49, 0.1);">
-                    <!-- Email -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierEmail" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Email</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="text" name="email" value="{{ utilisateur.email }}" required style="flex: 1; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Pseudo -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierPseudo" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Pseudo</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="text" name="pseudo" value="{{ utilisateur.pseudo }}" required style="flex: 1; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Photo -->
-                    <form method="post" enctype="multipart/form-data" action="index.php?controleur=Utilisateur&methode=modifierPdP" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Photo de profil</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="file" name="photo" accept="image/*" required style="flex: 1; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Téléphone -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierTel" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Téléphone</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="text" name="numTelephone" value="{{ utilisateur.numTelephone }}" style="flex: 1; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Adresse -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierAdresse" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Adresse</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="text" name="adresse" value="{{ utilisateur.adresse }}" style="flex: 1; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Mot de passe -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierMotDePasse" style="margin-bottom: 30px;">
-                        <div style="margin-bottom: 16px;">
-                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe</label>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="password" name="motDePasse" required style="flex: 1; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
-                                <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Modifier</button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Rôles -->
-                    <form method="post" action="index.php?controleur=Utilisateur&methode=modifierRoles" style="margin-bottom: 40px; padding-top: 20px; border-top: 1px solid #DDA15E;">
+                    <form method="post" enctype="multipart/form-data" action="index.php?controleur=Utilisateur&methode=modifierProfil">
+                        <input type="hidden" name="profil_unifie" value="1">
                         <div style="margin-bottom: 20px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Email</label>
+                            <input type="text" name="email" value="{{ utilisateur.email }}" required style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Pseudo</label>
+                            <input type="text" name="pseudo" value="{{ utilisateur.pseudo }}" required style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Photo de profil (optionnel)</label>
+                            <input type="file" name="photo" accept="image/*" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Téléphone</label>
+                            <input type="text" name="numTelephone" value="{{ utilisateur.numTelephone }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Adresse</label>
+                            <input type="text" name="adresse" value="{{ utilisateur.adresse }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe (optionnel)</label>
+                            <input type="password" name="motDePasse" placeholder="Laisser vide pour ne pas changer" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 30px; padding-top: 20px; border-top: 1px solid #DDA15E;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Rôles</label>
                             <div style="display: flex; gap: 24px;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" id="estMaitre" name="estMaitre" {% if utilisateur.getEstMaitre %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer;">
+                                    <input type="checkbox" id="estMaitre" name="estMaitre" {% if utilisateur.getEstMaitre %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer; accent-color: #537031;">
                                     <label for="estMaitre" style="color: #537031; font-weight: 500; cursor: pointer; margin: 0;">Maître</label>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" id="estPromeneur" name="estPromeneur" {% if utilisateur.getEstPromeneur %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer;">
+                                    <input type="checkbox" id="estPromeneur" name="estPromeneur" {% if utilisateur.getEstPromeneur %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer; accent-color: #537031;">
                                     <label for="estPromeneur" style="color: #537031; font-weight: 500; cursor: pointer; margin: 0;">Promeneur</label>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">Enregistrer les rôles</button>
+
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button type="submit" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+                                Enregistrer les modifications
+                            </button>
+                            <a href="?controleur=Index&methode=render" style="flex: 1; min-width: 220px; display: inline-flex; align-items: center; justify-content: center; background-color: #FAF6E9; color: #537031; padding: 12px 24px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
+                                <i class="bi bi-house-door me-2"></i> Retour à l'accueil
+                            </a>
+                        </div>
                     </form>
 
-                    <!-- Bouton Retour -->
-                    <a href="?controleur=Index&methode=render" style="display: inline-block; background-color: #FAF6E9; color: #537031; padding: 12px 40px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
-                        <i class="bi bi-house-door me-2"></i> Retour à l'accueil
-                    </a>
+                    {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                        <div class="alert alert-danger mt-4 mb-0">
+                            <ul class="mb-0">
+                                {% for message in messagesErreurs %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+
+
+

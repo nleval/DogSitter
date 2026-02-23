@@ -1,19 +1,21 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Mes Promenades — DogSitter{% endblock %}
+{% block title %}Mes Promenades — DogSynergie{% endblock %}
 
 {% block content %}
-<div <div class="container py-5" style="background-color: #FEFAE0;">
+<div class="container py-5" style="background-color: #FEFAE0;">
+    <div class="ds-profile-hero">
+        <div class="ds-profile-hero-inner">
+            <h1 class="ds-profile-hero-title"><i class="bi bi-map-fill me-2"></i>Mes Promenades Acceptées</h1>
+            <p class="ds-profile-hero-subtitle">Suivez vos promenades validées et à venir.</p>
+        </div>
+    </div>
     {% if not userConnecte.estPromeneur %}
         <div class="alert text-center fw-bold" style="background-color:#DDA15E; color:white;">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             Accès refusé : seuls les promeneurs peuvent voir leurs promenades.
         </div>
     {% else %}
-        <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family: 'Poppins', sans-serif;">
-            <i class="bi bi-map me-2"></i>Mes Promenades Acceptées
-        </h2>
-
         {% if promenades is empty %}
             <div class="alert text-center" style="background-color:#F8F4E8; color:#537031;">
                 <i class="bi bi-info-circle me-2"></i>
@@ -26,7 +28,7 @@
             <div class="row g-4">
                 {% for p in promenades %}
                     <div class="col-lg-6">
-                        <div class="card h-100 shadow-lg border-0" style="background-color:#FAF6E9; border-left:6px solid #9AAD5A; border-top:3px solid #9AAD5A;">
+                        <div class="card ds-lift-card h-100 shadow-lg border-0" style="background-color:#FAF6E9; border-left:6px solid #9AAD5A; border-top:3px solid #9AAD5A;">
                             
                             <!-- En-tête avec titre et date -->
                             <div class="card-header" style="background-color:#537031; color:white; padding:15px;">
@@ -156,15 +158,7 @@
     {% endif %}
 </div>
 
-<style>
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 20px rgba(83, 112, 49, 0.15);
-    }
-    .text-sm {
-        font-size: 0.875rem;
-    }
-</style>
+
+
+
+

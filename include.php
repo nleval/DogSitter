@@ -36,7 +36,6 @@ require_once 'controllers/controller_chien.class.php';
 require_once 'controllers/controller_message.class.php';
 require_once 'controllers/controller_conversation.class.php';
 require_once 'controllers/controller_newsletter.class.php';
-require_once 'controllers/controller_promenade.class.php';
 
 // === MODÈLES - Classes ===
 require_once 'modeles/Bd.class.php';
@@ -46,7 +45,6 @@ require_once 'modeles/Message.class.php';
 require_once 'modeles/Avis.class.php';
 require_once 'modeles/Annonce.class.php';
 require_once 'modeles/Chien.class.php';
-require_once 'modeles/Promenade.class.php';
 
 // === MODÈLES - DAO ===
 require_once 'modeles/Utilisateur.dao.php';
@@ -55,7 +53,6 @@ require_once 'modeles/Message.dao.php';
 require_once 'modeles/Avis.dao.php';
 require_once 'modeles/Annonce.dao.php';
 require_once 'modeles/Chien.dao.php';
-require_once 'modeles/Promenade.dao.php';
 require_once 'modeles/Notification.dao.php';
 
 // === UTILITAIRES ===

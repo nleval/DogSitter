@@ -1,10 +1,16 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Détails de la promenade — DogSitter{% endblock %}
+{% block title %}Détails de la promenade — DogSynergie{% endblock %}
 
 {% block content %}
-<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0 20px 40px;">
     <div style="max-width: 900px; margin: 0 auto;">
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title"><i class="bi bi-signpost-2-fill me-2"></i>Détails de la promenade</h1>
+                <p class="ds-profile-hero-subtitle">Retrouvez toutes les informations de cette mission.</p>
+            </div>
+        </div>
         
         <!-- Bouton retour -->
         <a href="javascript:history.back()" style="display: inline-flex; align-items: center; gap: 6px; color: #537031; text-decoration: none; margin-bottom: 20px; font-weight: 500; transition: all 0.3s ease;" onmouseover="this.style.color='#4a5f28'; this.style.transform='translateX(-4px)'" onmouseout="this.style.color='#537031'; this.style.transform='translateX(0)'">
@@ -109,7 +115,7 @@
                         <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
                             <i class="bi bi-lightning"></i> Actions
                         </h3>
-                        <a href="?controleur=promenade&methode=marquerTerminee&id_promenade={{ promenade.id_promenade }}" style="display: block; text-align: center; padding: 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; margin-bottom: 12px;" onmouseover="this.style.backgroundColor='#7a8f47'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#9AAD5A'; this.style.transform='translateY(0)'">
+                        <a href="?controleur=annonce&methode=marquerTerminee&id_annonce={{ promenade.id_annonce }}" style="display: block; text-align: center; padding: 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; margin-bottom: 12px;" onmouseover="this.style.backgroundColor='#7a8f47'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#9AAD5A'; this.style.transform='translateY(0)'">
                             <i class="bi bi-check-circle"></i> Marquer comme terminée
                         </a>
                     </div>
@@ -193,3 +199,7 @@
 </div>
 
 {% endblock %}
+
+
+
+

@@ -59,6 +59,16 @@ class Annonce
     private ?string $id_utilisateur;
 
     /**
+     * @brief ?int $id_promeneur Identifiant du promeneur accepte.
+     */
+    private ?int $id_promeneur;
+
+    /**
+     * @brief ?string $statut_promenade Statut de la promenade associee.
+     */
+    private ?string $statut_promenade;
+
+    /**
      * @brief ?string $telephone Téléphone de l'utilisateur ayant créé l'annonce.
      */
     private ?string $telephone;
@@ -94,6 +104,8 @@ class Annonce
         ?string $endroitPromenade = null,
         ?int $duree = null,
         ?string $id_utilisateur = null,
+        ?int $id_promeneur = null,
+        ?string $statut_promenade = null,
         ?string $telephone = null
     ) {
         $this->id_annonce = $id_annonce;
@@ -106,6 +118,8 @@ class Annonce
         $this->endroitPromenade = $endroitPromenade;
         $this->duree = $duree;
         $this->id_utilisateur = $id_utilisateur;
+        $this->id_promeneur = $id_promeneur;
+        $this->statut_promenade = $statut_promenade;
         $this->telephone = $telephone;
     }
 
@@ -288,6 +302,42 @@ class Annonce
      */
     public function setIdUtilisateur(?string $id_utilisateur): void {
         $this->id_utilisateur = $id_utilisateur;
+    }
+
+    /**
+     * @brief Recupere l'identifiant du promeneur accepte.
+     *
+     * @return ?int Identifiant du promeneur.
+     */
+    public function getIdPromeneur(): ?int {
+        return $this->id_promeneur;
+    }
+
+    /**
+     * @brief Definit l'identifiant du promeneur accepte.
+     *
+     * @param ?int $id_promeneur Identifiant du promeneur.
+     */
+    public function setIdPromeneur(?int $id_promeneur): void {
+        $this->id_promeneur = $id_promeneur;
+    }
+
+    /**
+     * @brief Recupere le statut de la promenade.
+     *
+     * @return ?string Statut de la promenade.
+     */
+    public function getStatutPromenade(): ?string {
+        return $this->statut_promenade;
+    }
+
+    /**
+     * @brief Definit le statut de la promenade.
+     *
+     * @param ?string $statut_promenade Statut de la promenade.
+     */
+    public function setStatutPromenade(?string $statut_promenade): void {
+        $this->statut_promenade = $statut_promenade;
     }
 
     /**

@@ -383,360 +383,152 @@ class ControllerUtilisateur extends Controller
     }
        
     /**
-     * @brief Modifie l'email d'un utilisateur
+     * @brief Modifie l'ensemble du profil utilisateur via un formulaire unique
      */
-    public function modifierEmail()
+    public function modifierProfil()
     {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-                $regles = [
-                    'email' => [
-                                'obligatoire' => true,
-                                'type' => 'string',
-                                'longueur_min' => 5,
-                                'longueur_max' => 255,
-                                'format' => FILTER_VALIDATE_EMAIL
-                                ]
-                ];
-
-                $managerutilisateur = new UtilisateurDAO($this->getPDO());
-
-                $id_utilisateur = $utilisateurConnecte->getId();
-                
-                $nouvelEmail = $_POST['email'];
-                $donnes = ['email' => $nouvelEmail];
-
-                $validator = new Validator($regles);
-                $valide = $validator->valider($donnes);
-
-                if (!$valide) {
-                    $messagesErreurs = $validator->getMessagesErreurs();
-                    $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                    echo $template->render([
-                        'messagesErreurs' => $messagesErreurs,
-                        'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                    ]);
-                    return;
-                }
-
-                // Mettre à jour l'email de l'utilisateur dans la base de données
-                $managerutilisateur->modifierChamp($id_utilisateur, 'email', $nouvelEmail);
-
-                $utilisateurConnecte->setEmail($nouvelEmail);
-                $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-                // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
-            }
-        }
-        else {
-            // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-            header('Location: index.php?action=authentification');
+        if (!isset($_SESSION['utilisateur'])) {
+            header('Location: index.php?controleur=utilisateur&methode=authentification');
             exit();
         }
-    }
-       
-    /**
-     * @brief Modifie le pseudo d'un utilisateur
-     */
-    public function modifierPseudo()
-    {
-        if (!isset($_SESSION['utilisateur'])) {
-                header('Location: index.php?controleur=utilisateur&methode=authentification');
-                exit();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+            exit();
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+        $id_utilisateur = $utilisateurConnecte->getId();
 
-            $regles = [
-                'pseudo' => [
-                            'obligatoire' => true,
-                            'type' => 'string',
-                            'longueur_min' => 2,
-                            'longueur_max' => 100
-                            ]
-            ];
+        $utilisateurCourant = $managerutilisateur->findById($id_utilisateur);
 
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        $email = trim($_POST['email'] ?? (string) $utilisateurCourant->getEmail());
+        $pseudo = trim($_POST['pseudo'] ?? (string) $utilisateurCourant->getPseudo());
+        $numTelephone = trim($_POST['numTelephone'] ?? (string) ($utilisateurCourant->getNumTelephone() ?? ''));
+        $adresse = trim($_POST['adresse'] ?? (string) ($utilisateurCourant->getAdresse() ?? ''));
+        $motDePasse = trim($_POST['motDePasse'] ?? '');
+        $estMaitre = isset($_POST['estMaitre']) ? 1 : 0;
+        $estPromeneur = isset($_POST['estPromeneur']) ? 1 : 0;
 
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $id_utilisateur = $utilisateurConnecte->getId();
-                
-            $nouveauPseudo = $_POST['pseudo'];
-            $donnes = ['pseudo' => $nouveauPseudo];
+        $regles = [
+            'email' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 255,
+                'format' => FILTER_VALIDATE_EMAIL,
+            ],
+            'pseudo' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 2,
+                'longueur_max' => 100,
+            ],
+            'numTelephone' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'pattern' => '/^0\d{9}$/',
+            ],
+            'adresse' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 255,
+                'pattern' => '/^[0-9a-zA-ZÀ-ÿ\s,\'\-\.]+$/u',
+            ],
+            'motDePasse' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 8,
+                'longueur_max' => 100,
+            ],
+        ];
 
-            $validator = new Validator($regles);
-            $valide = $validator->valider($donnes);
+        $validator = new Validator($regles);
+        $donnees = [
+            'email' => $email,
+            'pseudo' => $pseudo,
+            'numTelephone' => $numTelephone,
+            'adresse' => $adresse,
+            'motDePasse' => $motDePasse,
+        ];
 
-            if (!$valide) {
-                $messagesErreurs = $validator->getMessagesErreurs();
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'messagesErreurs' => $messagesErreurs,
-                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                ]);
-                return;
-            }
+        $validator->valider($donnees);
+        $messagesErreurs = $validator->getMessagesErreurs();
 
-            // Mettre à jour le pseudo de l'utilisateur dans la base de données
-            $managerutilisateur->modifierChamp($id_utilisateur, 'pseudo', $nouveauPseudo);
-
-            $utilisateurConnecte->setPseudo($nouveauPseudo);
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-            // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
+        if (!$estMaitre && !$estPromeneur) {
+            $messagesErreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
         }
-    }
-       
-    /**
-     * @brief Modifie la photo de profil d'un utilisateur
-     */
-    public function modifierPdP()
-    {
-        if (!isset($_SESSION['utilisateur'])) {
-                header('Location: index.php?controleur=utilisateur&methode=authentification');
-                exit();
-        } else {
-            $regles = [];
-    
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-    
-            $userId = $utilisateurConnecte->getId();
-            $userPseudo = $utilisateurConnecte->getPseudo();
-            $userPseudo = preg_replace('/[^a-zA-Z0-9_-]/', '', $userPseudo);
-            $messages = [];
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            
-            // Vérifier si un fichier a été envoyé
-            if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-                // Valider le fichier photo
-                $validator = new Validator($regles);
-                $photoValide = $validator->validerUploadEtPhoto($_FILES['photo'], $messages);
-                
-                // Si la photo est valide
-                if ($photoValide) {
-                    // Définir le dossier de destination
-                    $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
-                    $uploadDir = 'images/utilisateur/';
-                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
-                    $filePath = $uploadDir . $fileName;
-                    
-                    // Supprimer l'ancienne photo si elle existe
-                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
-                    foreach ($anciennePhoto as $fichier) {
-                        if (is_file($fichier)) {
-                            unlink($fichier);
-                        }
-                    }
-                    
-                    // Déplacer le fichier téléchargé
-                    if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
-                        // Mettre à jour la photo de profil dans la base de données
-                        $reussite = $managerUtilisateur->modifierChamp($userId, 'photoProfil', $fileName);
-                        
-                        if ($reussite) {
-                            $messages[] = "La photo de profil a été mise à jour avec succès.";
-                        } else {
-                            $messages[] = "Erreur lors de la mise à jour de la photo de profil dans la base de données.";
-                        }
-                    } else {
-                        $messages[] = "Erreur lors du téléchargement du fichier.";
-                    }
-                } else {
-                    $messages[] = "La photo de profil n'est pas valide.";
-                }
+
+        if ($motDePasse !== '' && !$managerutilisateur->estRobuste($motDePasse)) {
+            $messagesErreurs[] = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
+        }
+
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($_FILES['photo']['error'] !== 0) {
+                $messagesErreurs[] = "Erreur lors de l'envoi de la photo.";
             } else {
-                $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
+                $validator = new Validator([]);
+                $messagesPhoto = [];
+                $photoValide = $validator->validerUploadEtPhoto($_FILES['photo'], $messagesPhoto);
+                if (!$photoValide) {
+                    $messagesErreurs = array_merge($messagesErreurs, $messagesPhoto);
+                }
             }
-    
-            $utilisateurConnecte->setPhotoProfil($fileName);
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-            // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
-        }
-    }
-       
-    /**
-     * @brief Modifie le numero de telephone d'un utilisateur
-     */
-    public function modifierTel()
-    {
-        if (!isset($_SESSION['utilisateur'])) {
-                header('Location: index.php?controleur=utilisateur&methode=authentification');
-                exit();
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!empty($messagesErreurs)) {
+            $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+            echo $template->render([
+                'messagesErreurs' => $messagesErreurs,
+                'utilisateur' => $managerutilisateur->findById($id_utilisateur)
+            ]);
+            return;
+        }
 
-            $regles = [
-                'numTelephone' => [
-                            'obligatoire' => true,
-                            'type' => 'string',
-                            'pattern' => '/^0\d{9}$/'
-                            ]
-            ];
+        $managerutilisateur->modifierChamp($id_utilisateur, 'email', $email);
+        $managerutilisateur->modifierChamp($id_utilisateur, 'pseudo', $pseudo);
+        $managerutilisateur->modifierChamp($id_utilisateur, 'numTelephone', $numTelephone);
+        $managerutilisateur->modifierChamp($id_utilisateur, 'adresse', $adresse);
+        $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
+        $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
 
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
+        if ($motDePasse !== '') {
+            $motDePasseHache = password_hash($motDePasse, PASSWORD_BCRYPT);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'motDePasse', $motDePasseHache);
+        }
 
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $id_utilisateur = $utilisateurConnecte->getId();
-                
-            $nouveauTel = $_POST['numTelephone'];
-            $donnes = ['numTelephone' => $nouveauTel];
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
+            $userPseudo = preg_replace('/[^a-zA-Z0-9_-]/', '', $pseudo);
+            $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+            $uploadDir = 'images/utilisateur/';
+            $fileName = $id_utilisateur . '_' . $userPseudo . '.' . $fileExtension;
+            $filePath = $uploadDir . $fileName;
 
-            $validator = new Validator($regles);
-            $valide = $validator->valider($donnes);
-
-            if (!$valide) {
-                $messagesErreurs = $validator->getMessagesErreurs();
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'messagesErreurs' => $messagesErreurs,
-                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                ]);
-                return;
+            $anciennePhoto = glob($uploadDir . $id_utilisateur . '_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+            foreach ($anciennePhoto as $fichier) {
+                if (is_file($fichier)) {
+                    unlink($fichier);
+                }
             }
 
-            // Mettre à jour le tel de l'utilisateur dans la base de données
-            $managerutilisateur->modifierChamp($id_utilisateur, 'numTelephone', $nouveauTel);
-
-            $utilisateurConnecte->setNumTelephone($nouveauTel);
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-            // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
-        }
-    }
-       
-    /**
-     * @brief Modifie l'adresse d'un utilisateur
-     */
-    public function modifierAdresse()
-    {
-        if (!isset($_SESSION['utilisateur'])) {
-                header('Location: index.php?controleur=utilisateur&methode=authentification');
-                exit();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $regles = [
-                'adresse' => [
-                            'obligatoire' => true,
-                            'type' => 'string',
-                            'longueur_min' => 5,
-                            'longueur_max' => 255,
-                            'pattern' => '/^[0-9a-zA-ZÀ-ÿ\s,\'\-\.]+$/u'
-                            ]
-            ];
-
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
-
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $id_utilisateur = $utilisateurConnecte->getId();
-                
-            $nouvelleAdresse = $_POST['adresse'];
-            $donnes = ['adresse' => $nouvelleAdresse];
-
-            $validator = new Validator($regles);
-            $valide = $validator->valider($donnes);
-
-            if (!$valide) {
-                $messagesErreurs = $validator->getMessagesErreurs();
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'messagesErreurs' => $messagesErreurs,
-                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                ]);
-                return;
+            if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                $managerutilisateur->modifierChamp($id_utilisateur, 'photoProfil', $fileName);
+                $utilisateurConnecte->setPhotoProfil($fileName);
             }
-
-            // Mettre à jour l'adresse de l'utilisateur dans la base de données
-            $managerutilisateur->modifierChamp($id_utilisateur, 'adresse', $nouvelleAdresse);
-
-            $utilisateurConnecte->setAdresse($nouvelleAdresse);
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-            // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
-        }
-    }
-       
-    /**
-     * @brief Modifie le mot de passe d'un utilisateur
-     */
-    public function modifierMotDePasse()
-    {
-
-    }
-       
-    /**
-     * @brief Modifie les roles d'un utilisateur
-     */
-    public function modifierRoles()
-    {
-        if (!isset($_SESSION['utilisateur'])) {
-                header('Location: index.php?controleur=utilisateur&methode=authentification');
-                exit();
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $utilisateurConnecte->setEmail($email);
+        $utilisateurConnecte->setPseudo($pseudo);
+        $utilisateurConnecte->setNumTelephone($numTelephone);
+        $utilisateurConnecte->setAdresse($adresse);
+        $utilisateurConnecte->setEstMaitre($estMaitre);
+        $utilisateurConnecte->setEstPromeneur($estPromeneur);
+        $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
 
-            $managerutilisateur = new UtilisateurDAO($this->getPDO());
-
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $id_utilisateur = $utilisateurConnecte->getId();
-                
-            $estMaitre = isset($_POST['estMaitre']) ? 1 : 0;
-            $estPromeneur = isset($_POST['estPromeneur']) ? 1 : 0;
-
-            // VALIDATION SPÉCIALE : au moins un rôle
-            if (!$estMaitre && !$estPromeneur) {
-                $messagesErreurs[] = "Vous devez sélectionner au moins un rôle (maître ou/et promeneur).";
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'messagesErreurs' => $messagesErreurs,
-                    'utilisateur' => ($managerutilisateur->findById($id_utilisateur))
-                ]);
-                return;
-            }
-
-            // Mettre à jour les rôles de l'utilisateur dans la base de données
-            $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
-            $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
-
-            $utilisateurConnecte->setEstMaitre($estMaitre);
-            $utilisateurConnecte->setEstPromeneur($estPromeneur);
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
-
-            // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateurConnecte
-                ]);
-        }
+        header('Location: index.php?controleur=utilisateur&methode=afficherTonUtilisateur');
+        exit();
     }
     
     /**

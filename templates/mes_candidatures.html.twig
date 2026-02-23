@@ -1,81 +1,192 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Mes Candidatures — DogSitter{% endblock %}
+{% block title %}Mes Candidatures — DogSynergie{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <style>
+        .mycand-page {
+            background: linear-gradient(180deg, #FEFAE0 0%, #F8F4E8 100%);
+            min-height: calc(100vh - 88px);
+            padding: 0 16px 40px;
+        }
+
+        .mycand-shell {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        .mycand-alert {
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .mycand-empty {
+            background: #FAF6E9;
+            border: 1px dashed #DDA15E;
+            border-radius: 12px;
+            padding: 26px;
+            text-align: center;
+            color: #537031;
+            font-weight: 600;
+        }
+
+        .mycand-card {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #FAF6E9;
+            box-shadow: 0 8px 20px rgba(83, 112, 49, 0.1);
+            height: 100%;
+        }
+
+        .mycand-head {
+            background: linear-gradient(135deg, #9AAD5A 0%, #537031 100%);
+            color: #fff;
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mycand-meta {
+            color: #6c757d;
+            margin-bottom: 12px;
+            font-size: 0.92rem;
+        }
+
+        .mycand-desc {
+            background: #fff;
+            border: 1px solid #E9D4B7;
+            border-radius: 9px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            margin-bottom: 14px;
+        }
+
+        .mycand-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 10px;
+        }
+
+        .mycand-price {
+            background: #9AAD5A;
+            color: #fff;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .mycand-actions {
+            border-top: 1px solid #E9D4B7;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            background: #fffaf1;
+        }
+
+        .mycand-actions .btn {
+            border: none;
+            font-weight: 700;
+            border-radius: 9px;
+            padding: 7px 12px;
+        }
+
+        .btn-mycand-view {
+            background: #537031;
+            color: #fff;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .btn-mycand-cancel {
+            background: #BC6C25;
+            color: #fff;
+            flex: 1;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5" style="background-color: #FEFAE0;">
-    {% if not userConnecte.estPromeneur %}
-        <div class="alert text-center fw-bold" style="background-color:#DDA15E; color:white;">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            Accès refusé : seuls les promeneurs peuvent voir leurs candidatures.
-        </div>
-    {% else %}
-        <h2 class="text-center mb-5 fw-bold" style="color:#537031; font-family: 'Poppins', sans-serif;">
-            Mes Candidatures
-        </h2>
-
-        {% if candidatures is empty %}
-            <div class="alert text-center" style="background-color:#F8F4E8; color:#537031;">
-                Vous n'avez soumis aucune candidature pour le moment.
-                <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" style="color:#DDA15E; font-weight:bold;">
-                    Explorer les annonces
-                </a>
+<div class="mycand-page">
+    <div class="mycand-shell">
+        {% if not userConnecte.estPromeneur %}
+            <div class="alert mycand-alert text-center" style="background-color:#DDA15E; color:white;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Accès refusé : seuls les promeneurs peuvent voir leurs candidatures.
             </div>
         {% else %}
-            <div class="row g-4">
-                {% for c in candidatures %}
-                    <div class="col-md-6">
-                        <div class="card h-100 shadow-sm border-0" style="background-color:#FAF6E9; border-left:6px solid #9AAD5A;">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="fw-bold mb-2" style="color:#537031;">
-                                    <i class="bi bi-hand-thumbs-up me-1"></i> {{ c.titre }}
-                                </h5>
-                                <p class="text-muted mb-2">
-                                    <i class="bi bi-calendar-event me-1"></i> {{ c.datePromenade ?? 'Date non précisée' }}<br>
-                                    <i class="bi bi-clock me-1"></i> {{ c.horaire ?? 'Horaire non précisé' }}<br>
-                                    <i class="bi bi-geo-alt me-1"></i> {{ c.endroitPromenade ?? 'Lieu non précisé' }}
-                                </p>
+            <div class="ds-profile-hero">
+                <div class="ds-profile-hero-inner">
+                    <h1 class="ds-profile-hero-title"><i class="bi bi-send-check-fill me-2"></i>Mes Candidatures</h1>
+                    <p class="ds-profile-hero-subtitle">Suivez vos demandes envoyées et gérez-les en un clic.</p>
+                </div>
+            </div>
 
-                                {% if c.description %}
-                                    <p class="small mb-2" style="background-color:#F8F4E8; padding:8px; border-radius:5px;">
-                                        {{ c.description }}
+            {% if candidatures is empty %}
+                <div class="mycand-empty">
+                    <i class="bi bi-search me-1"></i>
+                    Vous n'avez soumis aucune candidature pour le moment.
+                    <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" class="fw-bold ms-1" style="color:#DDA15E;">
+                        Explorer les annonces
+                    </a>
+                </div>
+            {% else %}
+                <div class="row g-4">
+                    {% for c in candidatures %}
+                        <div class="col-12 col-md-6">
+                            <div class="card mycand-card">
+                                <div class="mycand-head">
+                                    <i class="bi bi-hand-thumbs-up"></i> {{ c.titre }}
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-3">
+                                    <p class="mycand-meta">
+                                        <i class="bi bi-calendar-event me-1"></i> {{ c.datePromenade ?? 'Date non précisée' }}<br>
+                                        <i class="bi bi-clock me-1"></i> {{ c.horaire ?? 'Horaire non précisé' }}<br>
+                                        <i class="bi bi-geo-alt me-1"></i> {{ c.endroitPromenade ?? 'Lieu non précisé' }}
                                     </p>
-                                {% endif %}
 
-                                <div class="mt-auto d-flex justify-content-between align-items-center">
-                                    <small class="text-muted fw-bold">Maître : {{ c.nom_maitre ?? 'N/A' }}</small>
-                                    <span class="fw-bold text-white px-2 py-1 rounded" style="background-color:#9AAD5A;">
-                                        <i class="bi bi-cash me-1"></i> {{ c.tarif ?? '0' }} €
-                                    </span>
+                                    {% if c.description %}
+                                        <div class="mycand-desc">{{ c.description }}</div>
+                                    {% endif %}
+
+                                    <div class="mycand-foot">
+                                        <small class="text-muted fw-bold">Maître : {{ c.nom_maitre ?? 'N/A' }}</small>
+                                        <span class="mycand-price"><i class="bi bi-cash me-1"></i>{{ c.tarif ?? '0' }} €</span>
+                                    </div>
+                                </div>
+
+                                <div class="mycand-actions">
+                                    <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ c.id_annonce }}"
+                                       class="btn btn-sm btn-mycand-view">
+                                        <i class="bi bi-eye me-1"></i> Voir
+                                    </a>
+                                    <button class="btn btn-sm btn-mycand-cancel"
+                                            onclick="annulerCandidature({{ c.id_annonce }}, this)">
+                                        <i class="bi bi-trash me-1"></i> Annuler
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="card-footer bg-light d-flex justify-content-between gap-2">
-                                <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ c.id_annonce }}" 
-                                   class="btn btn-sm fw-bold text-white" style="background-color:#537031;">
-                                    <i class="bi bi-eye me-1"></i> Voir
-                                </a>
-                                <button class="btn btn-sm fw-bold text-white" style="background-color:#BC6C25;"
-                                        onclick="annulerCandidature({{ c.id_annonce }}, this)">
-                                    <i class="bi bi-trash me-1"></i> Annuler
-                                </button>
-                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 </div>
 
-<style>
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-}
-</style>
-
 {% endblock %}
+
+
+
+
+

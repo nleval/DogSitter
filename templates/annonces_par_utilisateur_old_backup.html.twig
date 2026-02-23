@@ -1,9 +1,15 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Mes Annonces — DogSitter{% endblock %}
+{% block title %}Mes Annonces — DogSynergie{% endblock %}
 
 {% block content %}
 <div class="container py-5" style="background-color: #FEFAE0; min-height: 100vh;">
+    <div class="ds-profile-hero">
+        <div class="ds-profile-hero-inner">
+            <h1 class="ds-profile-hero-title"><i class="bi bi-megaphone-fill me-2"></i>Mes Annonces</h1>
+            <p class="ds-profile-hero-subtitle">Gérez vos annonces de promenades publiées.</p>
+        </div>
+    </div>
     
     <h2 class="text-center mb-2 fw-bold" style="color:#537031; font-family: 'Poppins', sans-serif;">
         <i class="bi bi-megaphone me-2"></i>Mes Annonces
@@ -23,7 +29,7 @@
         <div class="row g-4">
             {% for annonce in annoncesListe %}
                 <div class="col-lg-6">
-                    <div class="card h-100 shadow-lg border-0" style="background-color:#FAF6E9; border-left:6px solid #537031;">
+                        <div class="card ds-lift-card h-100 shadow-lg border-0" style="background-color:#FAF6E9; border-left:6px solid #537031;">
                         
                         <div class="card-header" style="background-color:#537031; color:white; padding:15px;">
                             <div class="d-flex justify-content-between align-items-start">
@@ -96,21 +102,8 @@
     {% endif %}
 </div>
 
-<style>
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 20px rgba(83, 112, 49, 0.15) !important;
-    }
-    .text-sm {
-        font-size: 0.875rem;
-    }
-    .badge {
-        font-weight: 600;
-        padding: 6px 12px;
-        border-radius: 20px;
-    }
-</style>
+ 
 {% endblock %}
+
+
+

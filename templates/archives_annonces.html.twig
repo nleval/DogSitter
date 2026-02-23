@@ -1,17 +1,15 @@
-{% extends 'base_template.twig' %}
+﻿{% extends 'base_template.twig' %}
 
-{% block title %}Archives des annonces — DogSitter{% endblock %}
+{% block title %}Archives des annonces — DogSynergie{% endblock %}
 
 {% block content %}
-<div style="background-color: #FEFAE0; min-height: 100vh; padding: 40px 20px;">
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0 20px 40px;">
     <div style="max-width: 1200px; margin: 0 auto;">
-        
-        <!-- Header -->
-        <div style="margin-bottom: 40px;">
-            <h1 style="color: #537031; margin: 0 0 10px 0; font-size: 32px; font-weight: 600;">
-                <i class="bi bi-archive"></i> Archives des annonces
-            </h1>
-            <p style="color: #999; margin: 0; font-size: 14px;">Annonces qui ont une ou plusieurs promenades terminées</p>
+        <div class="ds-profile-hero">
+            <div class="ds-profile-hero-inner">
+                <h1 class="ds-profile-hero-title"><i class="bi bi-archive me-2"></i>Archives des annonces</h1>
+                <p class="ds-profile-hero-subtitle">Annonces qui ont une ou plusieurs promenades terminées</p>
+            </div>
         </div>
 
         {% if annonces|length > 0 %}
@@ -113,3 +111,7 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+
