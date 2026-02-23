@@ -118,7 +118,18 @@ while (count($files) > 3) {
 }
 
 // Insérer la date de sauvegarde dans la table `dog_derniereSave`
-//$conn->query("INSERT INTO dog_derniereSave (date_save) VALUES ('$date')");
+$conn->query("INSERT INTO dog_derniereSave (date_save) VALUES ('$date')");
+
+// Limiter la table à 3 lignes maximum
+$result = $conn->query("SELECT id FROM dog_derniereSave ORDER BY id ASC");
+$rows = $result->fetch_all(MYSQLI_ASSOC);
+
+while (count($rows) > 3) {
+    // Supprimer la plus ancienne ligne (la première dans l'ordre ASC)
+    $oldestId = $rows[0]['id'];
+    $conn->query("DELETE FROM dog_derniereSave WHERE id = $oldestId");
+    array_shift($rows); // Mettre à jour le tableau
+}
 
 // Terminer le script
 echo "Sauvegarde complète des tables avec préfixe \"$prefixeTable\" terminée dans : $backupFile\n";
