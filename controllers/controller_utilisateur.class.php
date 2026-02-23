@@ -511,7 +511,7 @@ class ControllerUtilisateur extends Controller
             $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
 
             // Rediriger vers la page de l'utilisateur
-                $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+                $template = $this->getTwig()->load("utilisateurModifier.html.twig");
                 echo $template->render([
                     'utilisateur' => $utilisateurConnecte
                 ]);
