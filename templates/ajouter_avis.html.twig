@@ -45,7 +45,14 @@
                     <!-- Note -->
                     <div style="margin-bottom: 28px;">
                         <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px;">Note *</label>
-                        <div class="rating" data-value="{{ donnees.note|default('3') }}" style="display: flex; gap: 12px; cursor: pointer; margin-bottom: 10px;">
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'note' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <div class="rating" data-value="{{ donnees.note|default('3') }}" title="Choisissez une note de 1 à 5" style="display: flex; gap: 12px; cursor: pointer; margin-bottom: 10px;">
                             <img src="images/Nonos.svg" data-star="1" alt="1 étoile" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
                             <img src="images/Nonos.svg" data-star="2" alt="2 étoiles" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
                             <img src="images/Nonos.svg" data-star="3" alt="3 étoiles" style="width: 50px; height: 50px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
@@ -58,12 +65,19 @@
                     <!-- Commentaire -->
                     <div style="margin-bottom: 28px;">
                         <label for="commentaire" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Commentaire</label>
-                        <textarea id="commentaire" name="commentaire" rows="5" placeholder="Donnez votre avis sur cette promenade..." style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">{{ donnees.commentaire|default('')|trim }}</textarea>
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'commentaire' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <textarea id="commentaire" name="commentaire" rows="5" maxlength="500" title="Commentaire optionnel (maximum 500 caractères)" placeholder="Donnez votre avis sur cette promenade..." style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">{{ donnees.commentaire|default('')|trim }}</textarea>
                     </div>
 
                     <!-- Boutons -->
                     <div style="display: flex; gap: 12px; margin-top: 40px;">
-                        <button type="submit" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
+                        <button type="submit" title="Publier votre avis" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
                             <i class="bi bi-check-circle" style="margin-right: 6px;"></i> Publier l'avis
                         </button>
                         <a href="{{ referer|default('index.php') }}" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">

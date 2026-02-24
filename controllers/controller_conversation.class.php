@@ -186,6 +186,13 @@ class ControllerConversation extends Controller
             return;
         }
 
+        $longueurTitre = mb_strlen($titre);
+        if ($longueurTitre < 2 || $longueurTitre > 80) {
+            http_response_code(400);
+            echo "Le titre doit contenir entre 2 et 80 caractères.";
+            return;
+        }
+
         $conversationDAO = new ConversationDAO($this->getPdo());
         if (!$conversationDAO->utilisateurFaitPartieConversation($id_conversation, $idUtilisateur)) {
             http_response_code(403);

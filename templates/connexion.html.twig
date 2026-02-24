@@ -21,11 +21,22 @@
                         <!-- EMAIL -->
                         <div style="margin-bottom: 28px;">
                             <label for="email" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">E-mail *</label>
+                            {% if erreurs is defined and erreurs.email is defined %}
+                                <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ erreurs.email }}</div>
+                            {% elseif erreurs is defined and erreurs %}
+                                {% for err in erreurs %}
+                                    {% if 'email' in err|lower or 'mail' in err|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             <input type="email"
                                 id="email"
                                 name="email"
                                 value="{{ old.email|default('') }}"
+                                minlength="5"
                                 maxlength="100"
+                                title="Saisissez une adresse email valide (ex : nom@domaine.fr)"
                                 placeholder="votreE-mail@example.org"
                                 style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
                                 required />
@@ -34,11 +45,21 @@
                         <!-- MOT DE PASSE -->
                         <div style="margin-bottom: 28px;">
                             <label for="motDePasse" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe *</label>
+                            {% if erreurs is defined and erreurs.motDePasse is defined %}
+                                <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ erreurs.motDePasse }}</div>
+                            {% elseif erreurs is defined and erreurs %}
+                                {% for err in erreurs %}
+                                    {% if 'mot de passe' in err|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             <input type="password"
                                 id="motDePasse"
                                 name="motDePasse"
                                 minlength="8"
                                 maxlength="50"
+                                title="Mot de passe de votre compte (8 à 50 caractères)"
                                 placeholder="Veuillez saisir votre mot de passe"
                                 style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
                                 required />
@@ -68,15 +89,6 @@
                                 {% if success is defined and success %}
                                     <div class="alert alert-success mt-4">
                                         {{ success }}
-                                    </div>
-                                {% endif %}
-                                {% if erreurs is defined and erreurs %}
-                                    <div class="alert alert-danger mt-4">
-                                        <ul class="mb-0">
-                                            {% for err in erreurs %}
-                                                <li>{{ err }}</li>
-                                            {% endfor %}
-                                        </ul>
                                     </div>
                                 {% endif %}
                     </form>

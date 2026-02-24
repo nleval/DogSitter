@@ -234,7 +234,8 @@ class ControllerAnnonce extends Controller
                 'endroitPromenade' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 255
+                    'longueur_min' => 2,
+                    'longueur_max' => 120
                 ],
                 'description' => [
                     'obligatoire' => false,
@@ -450,7 +451,8 @@ class ControllerAnnonce extends Controller
                 'endroitPromenade' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 255
+                    'longueur_min' => 2,
+                    'longueur_max' => 120
                 ],
                 'description' => [
                     'obligatoire' => false,

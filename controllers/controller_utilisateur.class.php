@@ -161,6 +161,7 @@ class ControllerUtilisateur extends Controller
                 'email' => [
                     'obligatoire' => true,
                     'format' => FILTER_VALIDATE_EMAIL,  
+                    'longueur_min' => 5,
                     'longueur_max' => 100
                 ],
 
@@ -175,7 +176,8 @@ class ControllerUtilisateur extends Controller
                     'obligatoire' => true,
                     'type' => 'string',
                     'longueur_min' => 5,
-                    'longueur_max' => 120
+                    'longueur_max' => 120,
+                    'pattern' => '/^[^,]+,\s*[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s\'’\-\.]{1,}$/u'
                 ],
 
                 'motDePasse' => [
@@ -188,6 +190,8 @@ class ControllerUtilisateur extends Controller
                 'numTelephone' => [
                     'obligatoire' => true,
                     'type' => 'string',
+                    'longueur_min' => 10,
+                    'longueur_max' => 10,
                     'format' => '/^0[1-9](\d{2}){4}$/'
                 ],
 
@@ -416,32 +420,34 @@ class ControllerUtilisateur extends Controller
                 'obligatoire' => true,
                 'type' => 'string',
                 'longueur_min' => 5,
-                'longueur_max' => 255,
+                'longueur_max' => 100,
                 'format' => FILTER_VALIDATE_EMAIL,
             ],
             'pseudo' => [
                 'obligatoire' => true,
                 'type' => 'string',
                 'longueur_min' => 2,
-                'longueur_max' => 100,
+                'longueur_max' => 30,
             ],
             'numTelephone' => [
                 'obligatoire' => false,
                 'type' => 'string',
-                'pattern' => '/^0\d{9}$/',
+                'longueur_min' => 10,
+                'longueur_max' => 10,
+                'pattern' => '/^0[1-9](\d{2}){4}$/',
             ],
             'adresse' => [
                 'obligatoire' => false,
                 'type' => 'string',
                 'longueur_min' => 5,
-                'longueur_max' => 255,
-                'pattern' => '/^[0-9a-zA-ZÀ-ÿ\s,\'\-\.]+$/u',
+                'longueur_max' => 120,
+                'pattern' => '/^[^,]+,\s*[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s\'’\-\.]{1,}$/u',
             ],
             'motDePasse' => [
                 'obligatoire' => false,
                 'type' => 'string',
                 'longueur_min' => 8,
-                'longueur_max' => 100,
+                'longueur_max' => 50,
             ],
         ];
 
@@ -465,6 +471,11 @@ class ControllerUtilisateur extends Controller
             $messagesErreurs[] = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.";
         }
 
+        $utilisateurEmail = $managerutilisateur->findByEmail($email);
+        if ($utilisateurEmail !== null && (int)$utilisateurEmail->getId() !== (int)$id_utilisateur) {
+            $messagesErreurs[] = "Cette adresse email est déjà utilisée. Veuillez en choisir une autre.";
+        }
+
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
             if ($_FILES['photo']['error'] !== 0) {
                 $messagesErreurs[] = "Erreur lors de l'envoi de la photo.";
@@ -479,44 +490,79 @@ class ControllerUtilisateur extends Controller
         }
 
         if (!empty($messagesErreurs)) {
+            $utilisateurAffichage = $managerutilisateur->findById($id_utilisateur);
+            if ($utilisateurAffichage) {
+                $utilisateurAffichage->setEmail($email);
+                $utilisateurAffichage->setPseudo($pseudo);
+                $utilisateurAffichage->setNumTelephone($numTelephone);
+                $utilisateurAffichage->setAdresse($adresse);
+                $utilisateurAffichage->setEstMaitre($estMaitre);
+                $utilisateurAffichage->setEstPromeneur($estPromeneur);
+            }
+
             $template = $this->getTwig()->load('utilisateurModifier.html.twig');
             echo $template->render([
                 'messagesErreurs' => $messagesErreurs,
-                'utilisateur' => $managerutilisateur->findById($id_utilisateur)
+                'utilisateur' => $utilisateurAffichage
             ]);
             return;
         }
 
-        $managerutilisateur->modifierChamp($id_utilisateur, 'email', $email);
-        $managerutilisateur->modifierChamp($id_utilisateur, 'pseudo', $pseudo);
-        $managerutilisateur->modifierChamp($id_utilisateur, 'numTelephone', $numTelephone);
-        $managerutilisateur->modifierChamp($id_utilisateur, 'adresse', $adresse);
-        $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
-        $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
+        try {
+            $managerutilisateur->modifierChamp($id_utilisateur, 'email', $email);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'pseudo', $pseudo);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'numTelephone', $numTelephone);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'adresse', $adresse);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estMaitre', $estMaitre);
+            $managerutilisateur->modifierChamp($id_utilisateur, 'estPromeneur', $estPromeneur);
 
-        if ($motDePasse !== '') {
-            $motDePasseHache = password_hash($motDePasse, PASSWORD_BCRYPT);
-            $managerutilisateur->modifierChamp($id_utilisateur, 'motDePasse', $motDePasseHache);
-        }
+            if ($motDePasse !== '') {
+                $motDePasseHache = password_hash($motDePasse, PASSWORD_BCRYPT);
+                $managerutilisateur->modifierChamp($id_utilisateur, 'motDePasse', $motDePasseHache);
+            }
 
-        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
-            $userPseudo = preg_replace('/[^a-zA-Z0-9_-]/', '', $pseudo);
-            $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
-            $uploadDir = 'images/utilisateur/';
-            $fileName = $id_utilisateur . '_' . $userPseudo . '.' . $fileExtension;
-            $filePath = $uploadDir . $fileName;
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
+                $userPseudo = preg_replace('/[^a-zA-Z0-9_-]/', '', $pseudo);
+                $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+                $uploadDir = 'images/utilisateur/';
+                $fileName = $id_utilisateur . '_' . $userPseudo . '.' . $fileExtension;
+                $filePath = $uploadDir . $fileName;
 
-            $anciennePhoto = glob($uploadDir . $id_utilisateur . '_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-            foreach ($anciennePhoto as $fichier) {
-                if (is_file($fichier)) {
-                    unlink($fichier);
+                $anciennePhoto = glob($uploadDir . $id_utilisateur . '_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                foreach ($anciennePhoto as $fichier) {
+                    if (is_file($fichier)) {
+                        unlink($fichier);
+                    }
+                }
+
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                    $managerutilisateur->modifierChamp($id_utilisateur, 'photoProfil', $fileName);
+                    $utilisateurConnecte->setPhotoProfil($fileName);
                 }
             }
-
-            if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
-                $managerutilisateur->modifierChamp($id_utilisateur, 'photoProfil', $fileName);
-                $utilisateurConnecte->setPhotoProfil($fileName);
+        } catch (PDOException $e) {
+            if ((string)$e->getCode() === '23000') {
+                $messagesErreurs[] = "Cette adresse email est déjà utilisée. Veuillez en choisir une autre.";
+            } else {
+                $messagesErreurs[] = "Une erreur inattendue est survenue lors de la mise à jour du profil.";
             }
+
+            $utilisateurAffichage = $managerutilisateur->findById($id_utilisateur);
+            if ($utilisateurAffichage) {
+                $utilisateurAffichage->setEmail($email);
+                $utilisateurAffichage->setPseudo($pseudo);
+                $utilisateurAffichage->setNumTelephone($numTelephone);
+                $utilisateurAffichage->setAdresse($adresse);
+                $utilisateurAffichage->setEstMaitre($estMaitre);
+                $utilisateurAffichage->setEstPromeneur($estPromeneur);
+            }
+
+            $template = $this->getTwig()->load('utilisateurModifier.html.twig');
+            echo $template->render([
+                'messagesErreurs' => $messagesErreurs,
+                'utilisateur' => $utilisateurAffichage
+            ]);
+            return;
         }
 
         $utilisateurConnecte->setEmail($email);

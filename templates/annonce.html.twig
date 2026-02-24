@@ -159,22 +159,24 @@
                                 {% if annonce.getIdUtilisateur() != userConnecte.getId() %}
                                     {% if userConnecte.estPromeneur %}
                                         <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ annonce.getIdUtilisateur() }}"
+                                            title="Démarrer une conversation avec le propriétaire"
                                             style="flex: 1; min-width: 200px; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 1px solid #DDA15E; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.backgroundColor='#FEFAE0'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
                                             <i class="bi bi-chat-dots"></i> Envoyer un message
                                         </a>
 
                                         {% if annonce.status == 'active' %}
                                             <a href="?controleur=Annonce&methode=repondreAnnonce&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                title="Postuler à cette annonce"
                                                 style="flex: 1; min-width: 200px; background-color: #537031; color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.backgroundColor='#4a5f28'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='#537031'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
                                                 <i class="bi bi-check-circle"></i> Postuler pour l'annonce
                                             </a>
                                         {% else %}
-                                            <button style="flex: 1; min-width: 200px; background-color: #DDA15E; color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 600; cursor: not-allowed; opacity: 0.7;">
+                                            <button title="Action indisponible : annonce non active" style="flex: 1; min-width: 200px; background-color: #DDA15E; color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 600; cursor: not-allowed; opacity: 0.7;">
                                                 Statut: {{ annonce.status }}
                                             </button>
                                         {% endif %}
                                     {% else %}
-                                        <button style="flex: 1; min-width: 200px; background-color: #DDA15E; color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 600; cursor: not-allowed; opacity: 0.7;" disabled>
+                                        <button title="Action réservée aux promeneurs" style="flex: 1; min-width: 200px; background-color: #DDA15E; color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 600; cursor: not-allowed; opacity: 0.7;" disabled>
                                             Seuls les promeneurs peuvent postuler
                                         </button>
                                     {% endif %}
@@ -190,6 +192,7 @@
                                     {% if userConnecte and userConnecte.estMaitre and userConnecte.getId() == proprietaire.getId() %}
                                         {% if acceptedCandidatId %}
                                             <a href="?controleur=Avis&methode=creerAvis&id_utilisateur_note={{ acceptedCandidatId }}&id_annonce={{ annonce.getIdAnnonce() }}"
+                                                title="Laisser un avis sur la promenade"
                                                 style="background-color: #537031; color: #FEFAE0; padding: 10px 16px; font-size: 12px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2); cursor: pointer; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.backgroundColor='#4a5f28'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='#537031'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
                                                 <i class="bi bi-pencil" style="margin-right: 4px;"></i>Laisser un avis
                                             </a>

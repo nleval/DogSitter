@@ -88,10 +88,10 @@
                                             ...
                                         </button>
                                         <div class="dm-msg-popover">
-                                            <button type="button" class="dm-edit-trigger" data-message-id="{{ message.idMessage }}" data-message-text="{{ message.contenu|e('html_attr') }}">Modifier</button>
+                                            <button type="button" class="dm-edit-trigger" data-message-id="{{ message.idMessage }}" data-message-text="{{ message.contenu|e('html_attr') }}" title="Modifier ce message">Modifier</button>
                                             <form method="post" action="?controleur=message&methode=supprimerMessage" onsubmit="return confirm('Supprimer ce message pour tous ?');">
                                                 <input type="hidden" name="id_message" value="{{ message.idMessage }}">
-                                                <button type="submit">Supprimer</button>
+                                                <button type="submit" title="Supprimer définitivement ce message">Supprimer</button>
                                             </form>
                                         </div>
                                     </div>
@@ -111,13 +111,13 @@
         <div class="dm-composer">
             <div class="dm-edit-bar" id="editBar">
                 <span>Edition du message</span>
-                <button type="button" id="cancelEdit">Annuler</button>
+                <button type="button" id="cancelEdit" title="Annuler la modification du message">Annuler</button>
             </div>
             <form method="post" action="?controleur=message&methode=envoyerMessage" class="dm-form">
                 <input type="hidden" name="id_conversation" value="{{ idConversation }}">
                 <input type="hidden" name="edit_message_id" id="editMessageId" value="">
-                <input type="text" name="contenu" id="messageInput" placeholder="Message..." required>
-                <button type="submit" id="sendButton">Envoyer</button>
+                <input type="text" name="contenu" id="messageInput" placeholder="Message..." required minlength="1" maxlength="1000" title="Votre message (1 à 1000 caractères)">
+                <button type="submit" id="sendButton" title="Envoyer le message">Envoyer</button>
             </form>
         </div>
     </div>
@@ -129,15 +129,15 @@
         <div class="dm-sheet-title">Conversation</div>
         <form method="post" action="?controleur=conversation&methode=renommerConversation">
             <input type="hidden" name="id_conversation" value="{{ idConversation }}">
-            <input class="dm-sheet-field" type="text" name="titre" maxlength="80" placeholder="Renommer la conversation" required>
+            <input class="dm-sheet-field" type="text" name="titre" minlength="2" maxlength="80" placeholder="Renommer la conversation" required title="Nouveau titre de conversation (2 à 80 caractères)">
             <div class="dm-sheet-actions">
-                <button class="dm-sheet-primary" type="submit">Enregistrer</button>
-                <button class="dm-sheet-danger" type="button" data-sheet-close>Annuler</button>
+                <button class="dm-sheet-primary" type="submit" title="Enregistrer le nouveau titre">Enregistrer</button>
+                <button class="dm-sheet-danger" type="button" data-sheet-close title="Fermer sans enregistrer">Annuler</button>
             </div>
         </form>
         <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');" class="dm-sheet-delete">
             <input type="hidden" name="id_conversation" value="{{ idConversation }}">
-            <button class="dm-sheet-danger w-100" type="submit">Supprimer</button>
+            <button class="dm-sheet-danger w-100" type="submit" title="Supprimer définitivement la conversation">Supprimer</button>
         </form>
     </div>
 </div>

@@ -113,7 +113,11 @@ class Validator
 
                 case 'format':
                     if (is_string($parametre) && !preg_match($parametre, $valeur)) {
-                        $this->messagesErreurs[] = "Le format du champ $champ est invalide.";
+                        if ($champ === 'numTelephone') {
+                            $this->messagesErreurs[] = "Veuillez respecter le format FR : 10 chiffres en commençant par 0 (ex: 0612345678).";
+                        } else {
+                            $this->messagesErreurs[] = "Le format du champ $champ est invalide.";
+                        }
                         $ok = false;
                     }
                     if ($parametre === FILTER_VALIDATE_EMAIL && !filter_var($valeur, FILTER_VALIDATE_EMAIL)) {
@@ -141,7 +145,11 @@ class Validator
                     break;
                 case 'pattern':
                     if (!preg_match($parametre, $valeur)) {
-                        $this->messagesErreurs[] = "Le format du champ $champ est invalide.";
+                        if ($champ === 'numTelephone') {
+                            $this->messagesErreurs[] = "Veuillez respecter le format FR : 10 chiffres en commençant par 0 (ex: 0612345678).";
+                        } else {
+                            $this->messagesErreurs[] = "Le format du champ $champ est invalide.";
+                        }
                         $ok = false;
                     }
             }

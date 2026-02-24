@@ -114,11 +114,14 @@
 
                 <!-- CENTRE : recherche -->
                 <div class="mx-lg-auto my-3 my-lg-0" style="max-width:480px; width:100%;">
-                    <form class="d-flex">
+                    <form class="d-flex" role="search" aria-label="Recherche de dog sitter">
                         <input class="form-control rounded-start-pill"
+                               aria-label="Rechercher un dog sitter"
                                placeholder="Rechercher un dog sitter…"
+                               maxlength="100"
+                               title="Saisissez un nom, une ville ou un mot-clé"
                                style="background:#FEFAE0; border:none;">
-                        <button class="btn rounded-end-pill"
+                        <button class="btn rounded-end-pill" type="button" aria-label="Lancer la recherche" title="Lancer la recherche"
                                 style="background:#DDA15E; color:white;">
                             <i class="bi bi-search"></i>
                         </button>
@@ -255,7 +258,7 @@
                             style="color:#537031;">
                             Politique de confidentialité
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer" title="Fermer cette fenêtre"></button>
                     </div>
 
                     <div class="modal-body text-dark">
@@ -286,6 +289,7 @@
 
                     <div class="modal-footer">
                         <button class="btn"
+                            title="Fermer la fenêtre"
                                 style="background-color:#537031; color:white;"
                                 data-bs-dismiss="modal">
                             Fermer
@@ -305,7 +309,7 @@
                             style="color:#537031;">
                             Conditions Générales d’Utilisation
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer" title="Fermer cette fenêtre"></button>
                     </div>
 
                     <div class="modal-body text-dark">

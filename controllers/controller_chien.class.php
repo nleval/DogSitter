@@ -102,14 +102,14 @@ class ControllerChien extends Controller
                     'obligatoire' => true,
                     'type' => 'string',
                     'longueur_min' => 2,
-                    'longueur_max' => 50,
+                    'longueur_max' => 20,
                     'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
                 ],
                 'race' => [
                     'obligatoire' => true,
                     'type' => 'string',
                     'longueur_min' => 2,
-                    'longueur_max' => 80,
+                    'longueur_max' => 50,
                     'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
                 ],
                 'taille' => [
@@ -280,14 +280,14 @@ class ControllerChien extends Controller
                 'obligatoire' => true,
                 'type' => 'string',
                 'longueur_min' => 2,
-                'longueur_max' => 50,
+                'longueur_max' => 20,
                 'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
             ],
             'race' => [
                 'obligatoire' => true,
                 'type' => 'string',
                 'longueur_min' => 2,
-                'longueur_max' => 80,
+                'longueur_max' => 50,
                 'pattern' => '/^[A-Za-zÀ-ÿ0-9\'\-\s]+$/u'
             ],
             'taille' => [

@@ -24,9 +24,9 @@
             {% for conversation in conversationListe %}
                 <div class="dm-swipe" data-conversation-id="{{ conversation.idConversation }}">
                     <div class="dm-swipe-actions">
-                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');">
+                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');" title="Supprimer définitivement cette conversation">
                             <input type="hidden" name="id_conversation" value="{{ conversation.idConversation }}">
-                            <button type="submit">Supprimer</button>
+                            <button type="submit" title="Supprimer définitivement cette conversation">Supprimer</button>
                         </form>
                     </div>
 
@@ -67,7 +67,7 @@
                         </a>
 
                         <div class="dm-actions">
-                            <button type="button" class="dm-swipe-handle" aria-label="Actions">...</button>
+                            <button type="button" class="dm-swipe-handle" aria-label="Afficher les actions" title="Afficher les actions disponibles">...</button>
                         </div>
                     </div>
                 </div>

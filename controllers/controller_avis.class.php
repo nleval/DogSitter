@@ -394,7 +394,7 @@ class ControllerAvis extends Controller
                 'texte_commentaire' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 50
+                    'longueur_max' => 500
                 ]
             ];
 

@@ -19,36 +19,85 @@
                         <input type="hidden" name="profil_unifie" value="1">
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Email</label>
-                            <input type="text" name="email" value="{{ utilisateur.email }}" required style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'email' in message|lower or 'mail' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="email" name="email" value="{{ utilisateur.email }}" required minlength="5" maxlength="100" title="Saisissez une adresse email valide (ex : nom@domaine.fr)" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Pseudo</label>
-                            <input type="text" name="pseudo" value="{{ utilisateur.pseudo }}" required style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'pseudo' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="text" name="pseudo" value="{{ utilisateur.pseudo }}" required minlength="2" maxlength="30" title="Pseudo public entre 2 et 30 caractères" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Photo de profil (optionnel)</label>
-                            <input type="file" name="photo" accept="image/*" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'photo' in message|lower or 'image' in message|lower or 'fichier' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="file" name="photo" accept="image/*" title="Photo optionnelle au format image (JPG, PNG, GIF)" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Téléphone</label>
-                            <input type="text" name="numTelephone" value="{{ utilisateur.numTelephone }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'numtelephone' in message|lower or 'téléphone' in message|lower or 'telephone' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="tel" name="numTelephone" value="{{ utilisateur.numTelephone }}" inputmode="numeric" pattern="0[1-9][0-9]{8}" minlength="10" maxlength="10" title="Format FR requis : 10 chiffres en commençant par 0 (ex : 0612345678)" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Adresse</label>
-                            <input type="text" name="adresse" value="{{ utilisateur.adresse }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'adresse' in message|lower and 'email' not in message|lower and 'mail' not in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="text" name="adresse" value="{{ utilisateur.adresse }}" minlength="5" maxlength="120" pattern="[^,]+,\s*[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s'’\-\.]{1,}" title="Saisissez l'adresse avec une ville, ex : 123 Rue Exemple, Paris" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 24px;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe (optionnel)</label>
-                            <input type="password" name="motDePasse" placeholder="Laisser vide pour ne pas changer" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'motdepasse' in message|lower or 'mot de passe' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <input type="password" name="motDePasse" placeholder="Laisser vide pour ne pas changer" minlength="8" maxlength="50" title="Laissez vide pour conserver l'ancien mot de passe, sinon utilisez un mot de passe robuste" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
 
                         <div style="margin-bottom: 30px; padding-top: 20px; border-top: 1px solid #DDA15E;">
                             <label style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Rôles</label>
+                            {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
+                                {% for message in messagesErreurs %}
+                                    {% if 'rôle' in message|lower or 'role' in message|lower or 'maître' in message|lower or 'promeneur' in message|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             <div style="display: flex; gap: 24px;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <input type="checkbox" id="estMaitre" name="estMaitre" {% if utilisateur.getEstMaitre %}checked{% endif %} style="width: 18px; height: 18px; cursor: pointer; accent-color: #537031;">
@@ -62,7 +111,7 @@
                         </div>
 
                         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                            <button type="submit" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
+                            <button type="submit" title="Enregistrer les modifications du profil" style="flex: 1; min-width: 220px; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';">
                                 Enregistrer les modifications
                             </button>
                             <a href="?controleur=Index&methode=render" style="flex: 1; min-width: 220px; display: inline-flex; align-items: center; justify-content: center; background-color: #FAF6E9; color: #537031; padding: 12px 24px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
@@ -70,17 +119,6 @@
                             </a>
                         </div>
                     </form>
-
-                    {% if messagesErreurs is defined and messagesErreurs|length > 0 %}
-                        <div class="alert alert-danger mt-4 mb-0">
-                            <ul class="mb-0">
-                                {% for message in messagesErreurs %}
-                                    <li>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-
                 </div>
             </div>
         </div>
