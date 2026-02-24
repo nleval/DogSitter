@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 23 fév. 2026 à 14:22
+-- Généré le : mar. 24 fév. 2026 à 13:12
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -48,12 +48,12 @@ CREATE TABLE `dog_annonce` (
 
 INSERT INTO `dog_annonce` (`id_annonce`, `datePromenade`, `horaire`, `status`, `tarif`, `description`, `endroitPromenade`, `duree`, `id_utilisateur`, `id_promeneur`, `statut_promenade`, `titre`) VALUES
 (27, '2026-02-20', '20:00', 'Indisponible', '20', '', '', 60, 7, NULL, 'a_venir', 'je test des trucs'),
-(28, '2026-02-21', '20:00', 'Indisponible', '20', '', '', 60, 5, NULL, NULL, 'Test Annonce/Promenade'),
+(28, '2026-02-23', '17:30', 'Indisponible', '20', '', '', 60, 5, NULL, NULL, 'Test Annonce/Promenade'),
 (29, '2026-02-21', '20:00', 'Indisponible', '20', '', '', 60, 5, 4, 'archivee', 'Test Annonce/Promenade'),
-(30, '2026-02-23', '20:00', 'Indisponible', '19.98', '', 'Mouguerre, skate parc', 30, 5, 4, 'a_venir', 'test  js corrigé '),
-(32, '2026-02-25', '20:00', 'active', '19.99', '', '', 60, 4, NULL, NULL, 'Promenade matinale '),
-(33, '2026-02-24', '20:00', 'active', '19.99', '', '', 60, 5, NULL, NULL, 'Avec peyooooo'),
-(34, '2026-02-25', '20:00', 'active', '20', '', '', 60, 4, NULL, NULL, 'Promenade pour mon chien Gonzague');
+(30, '2026-02-23', '20:00', 'Indisponible', '19.98', '', 'Mouguerre, skate parc', 30, 5, 4, 'archivee', 'test  js corrigé '),
+(33, '2026-02-24', '00:01', 'active', '19.99', '', 'Mouguerre, skate parc', 60, 5, NULL, NULL, 'Avec peyooooo'),
+(35, '2026-02-24', '20:00', 'Indisponible', '19.97', '', '', 60, 4, 5, 'a_venir', 'Promenade de Loukia'),
+(36, '2026-02-24', '00:00', 'archivee', '100', '', '', 30, 5, 4, 'a_venir', 'Promenade de mon CHIEN BRICE');
 
 -- --------------------------------------------------------
 
@@ -69,6 +69,15 @@ CREATE TABLE `dog_avis` (
   `id_annonce` int(11) DEFAULT NULL,
   `id_utilisateur_note` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `dog_avis`
+--
+
+INSERT INTO `dog_avis` (`id_avis`, `note`, `texte_commentaire`, `id_utilisateur`, `id_annonce`, `id_utilisateur_note`) VALUES
+(8, '4', 'Super ! Mon chien est ravis ', 5, 36, 2),
+(9, '2', 'cekfnroknbotbno', 5, 36, 2),
+(10, '3', 'test avis ', 5, 36, 4);
 
 -- --------------------------------------------------------
 
@@ -91,10 +100,11 @@ CREATE TABLE `dog_chien` (
 --
 
 INSERT INTO `dog_chien` (`id_chien`, `nom_chien`, `poids`, `taille`, `race`, `cheminPhoto`, `id_utilisateur`) VALUES
-(8, 'Loukia', '25', 'Grand', 'Golden Retrievere', 'chien_4_1771339035.jpg', 4),
 (13, 'Loukia', '35', 'Grand', 'Golden Retriever', '', 7),
 (14, 'Loukia', '35', 'Grand', 'Golden Retriver', '', 5),
-(15, 'Karim', '2.8', 'Très petit', 'Arabe', 'chien_5_1771843815.jpg', 5);
+(15, 'Karim', '2.8', 'Très petit', 'Arabe', 'chien_5_1771843815.jpg', 5),
+(17, 'Loukia', '15', 'Moyen', 'Golden Retrievere', '', 4),
+(18, 'Brice', '90', 'Très grand', 'Batard', '', 5);
 
 -- --------------------------------------------------------
 
@@ -112,14 +122,14 @@ CREATE TABLE `dog_concerne` (
 --
 
 INSERT INTO `dog_concerne` (`id_chien`, `id_annonce`) VALUES
-(8, 32),
-(8, 34),
 (13, 27),
 (14, 28),
 (14, 29),
 (14, 30),
 (14, 33),
-(15, 33);
+(15, 33),
+(17, 35),
+(18, 36);
 
 -- --------------------------------------------------------
 
@@ -201,7 +211,9 @@ INSERT INTO `dog_message` (`id_message`, `contenu`, `DateHeureMessage`, `id_util
 (40, 'Bonjour ! J\'ai accepté votre candidature pour promener mon chien. Discutons ensemble des détails de la promenade (date, horaire, lieu de rendez-vous, instructions particulières, etc.). Au plaisir d\'échanger avec vous ! Voir l\'annonce: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=29', '2026-02-20 12:00:54', 5, 7, 0),
 (41, 'on va tester', '2026-02-22 13:12:37', 4, 7, 1),
 (42, 'Bonjour ! J\'ai accepté votre candidature pour promener mon chien. Discutons ensemble des détails de la promenade (date, horaire, lieu de rendez-vous, instructions particulières, etc.). Au plaisir d\'échanger avec vous ! Voir l\'annonce: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=30', '2026-02-22 13:16:34', 5, 7, 0),
-(43, 'ftnn', '2026-02-23 14:19:05', 4, 7, 0);
+(43, 'ftnn', '2026-02-23 14:19:05', 4, 7, 0),
+(44, 'Bonjour ! J\'ai accepté votre candidature pour promener mon chien. Discutons ensemble des détails de la promenade (date, horaire, lieu de rendez-vous, instructions particulières, etc.). Au plaisir d\'échanger avec vous ! Voir l\'annonce: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=35', '2026-02-23 18:16:07', 4, 7, 0),
+(45, 'Bonjour ! J\'ai accepté votre candidature pour promener mon chien. Discutons ensemble des détails de la promenade (date, horaire, lieu de rendez-vous, instructions particulières, etc.). Au plaisir d\'échanger avec vous ! Voir l\'annonce: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=36', '2026-02-23 21:46:59', 5, 7, 0);
 
 -- --------------------------------------------------------
 
@@ -250,8 +262,14 @@ INSERT INTO `dog_notification` (`id_notification`, `id_utilisateur`, `titre`, `m
 (127, 5, 'Nouvelle candidature reçue', 'Victor a postulé pour votre annonce \"test  js corrigé \".', 'candidature_reçue', 30, 35, 4, 1, '2026-02-22 12:15:23'),
 (128, 4, 'Candidature acceptée', 'Votre candidature pour l\'annonce \"test  js corrigé \" a été acceptée. Une conversation a été créée pour discuter des détails de la promenade. Consultez vos messages.', 'candidature_acceptée', 30, 35, 4, 1, '2026-02-22 12:16:34'),
 (133, 5, 'Nouveau message', 'Vous avez reçu un nouveau message de Victor le bdg', '', NULL, NULL, 4, 1, '2026-02-23 13:19:05'),
-(134, 5, 'Candidature soumise', 'Votre candidature pour l\'annonce \"Promenade matinale \" a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.', 'candidature_soumise', 32, 38, NULL, 1, '2026-02-23 13:19:58'),
-(135, 4, 'Nouvelle candidature reçue', 'Noa  a postulé pour votre annonce \"Promenade matinale \".', 'candidature_reçue', 32, 38, 5, 0, '2026-02-23 13:19:58');
+(136, 5, 'Candidature soumise', 'Votre candidature pour l\'annonce \"Promenade de Loukia\" a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.', 'candidature_soumise', 35, 39, NULL, 1, '2026-02-23 17:15:12'),
+(137, 4, 'Nouvelle candidature reçue', 'Noa  a postulé pour votre annonce \"Promenade de Loukia\".', 'candidature_reçue', 35, 39, 5, 1, '2026-02-23 17:15:12'),
+(138, 5, 'Candidature acceptée', 'Votre candidature pour l\'annonce \"Promenade de Loukia\" a été acceptée. Une conversation a été créée pour discuter des détails de la promenade. Consultez vos messages.', 'candidature_acceptée', 35, 39, 5, 1, '2026-02-23 17:16:07'),
+(139, 4, 'Candidature soumise', 'Votre candidature pour l\'annonce \"Promenade de mon CHIEN BRICE\" a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.', 'candidature_soumise', 36, 40, NULL, 1, '2026-02-23 20:21:58'),
+(140, 5, 'Nouvelle candidature reçue', 'Victor le bdg a postulé pour votre annonce \"Promenade de mon CHIEN BRICE\".', 'candidature_reçue', 36, 40, 4, 1, '2026-02-23 20:21:58'),
+(141, 4, 'Candidature acceptée', 'Votre candidature pour l\'annonce \"Promenade de mon CHIEN BRICE\" a été acceptée. Une conversation a été créée pour discuter des détails de la promenade. Consultez vos messages.', 'candidature_acceptée', 36, 40, 4, 1, '2026-02-23 20:46:59'),
+(142, 4, 'Annonce modifiée', 'Le maître a modifié l\'horaire dans l\'annonce \"Promenade de mon CHIEN BRICE\".', 'info', 36, NULL, 4, 1, '2026-02-23 20:48:04'),
+(145, 4, 'Nouvel avis recu', 'Vous avez recu un nouvel avis pour \"Promenade de mon CHIEN BRICE\". Note: 3/5.', 'info', 36, NULL, 4, 1, '2026-02-23 21:06:55');
 
 -- --------------------------------------------------------
 
@@ -277,7 +295,8 @@ INSERT INTO `dog_repond` (`id_reponse`, `id_annonce`, `id_utilisateur`, `statut`
 (33, 28, 4, 'acceptee', '2026-02-20 10:54:33', '2026-02-20 10:55:01'),
 (34, 29, 4, 'acceptee', '2026-02-20 11:00:22', '2026-02-20 11:00:54'),
 (35, 30, 4, 'acceptee', '2026-02-22 12:15:23', '2026-02-22 12:16:34'),
-(38, 32, 5, 'en_attente', '2026-02-23 13:19:58', '2026-02-23 13:19:58');
+(39, 35, 5, 'acceptee', '2026-02-23 17:15:12', '2026-02-23 17:16:07'),
+(40, 36, 4, 'acceptee', '2026-02-23 20:21:58', '2026-02-23 20:46:59');
 
 -- --------------------------------------------------------
 
@@ -305,7 +324,7 @@ CREATE TABLE `dog_utilisateur` (
 --
 
 INSERT INTO `dog_utilisateur` (`id_utilisateur`, `email`, `estMaitre`, `estPromeneur`, `adresse`, `motDePasse`, `pseudo`, `photoProfil`, `numTelephone`, `tentatives_echouees`, `date_dernier_echec_connexion`, `statut_compte`) VALUES
-(4, 'victor@gmail.com', 1, 1, '118 Chemin de Basoilar', '$2y$10$2BazQnxFFuzIYW.6UL8apuvxh2yRix6eoKv19mL1sryPogRl.91fq', 'Victor le bdg', '4_Victor.jpg', '0769951623', 0, NULL, 'actif'),
+(4, 'victor@gmail.com', 1, 1, '118 Chemin de Basoilar', '$2y$10$2BazQnxFFuzIYW.6UL8apuvxh2yRix6eoKv19mL1sryPogRl.91fq', 'Victor le bdg', '4_Victorlebdg.jpg', '0769951623', 0, NULL, 'actif'),
 (5, 'noa@gmail.com', 1, 1, '118 Chemin de Basoilar', '$2y$10$ZNIchL/e5TfoBc5G/ROhheKDn.vJ7gzByBDZTzfP5qWYzC8ZXX.Em', 'Noa ', '1771339484_cfc747fcdedd.jpg', '0769951623', 0, NULL, 'actif'),
 (6, 'promeneur@gmail.com', 0, 1, '118 Chemin de Basoilar', '$2y$10$CVkBakATKYADteuyQl2dfuyyeTtGbnRyE4x2jxWsuZC78av6ESbSy', 'Promeneur', NULL, '0769951623', 0, NULL, 'actif'),
 (7, 'testeur1@gmail.com', 1, 1, '118 Chemin de Basoilar', '$2y$10$5pKALMONzE3vHCVUPwz78eR1L04O6GhUz7RmTBnDtV/NCqZ3zBkRq', 'Testeur1', NULL, '0769951623', 0, NULL, 'actif'),
@@ -401,19 +420,19 @@ ALTER TABLE `dog_utilisateur`
 -- AUTO_INCREMENT pour la table `dog_annonce`
 --
 ALTER TABLE `dog_annonce`
-  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT pour la table `dog_avis`
 --
 ALTER TABLE `dog_avis`
-  MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `dog_chien`
 --
 ALTER TABLE `dog_chien`
-  MODIFY `id_chien` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_chien` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `dog_conversation`
@@ -425,19 +444,19 @@ ALTER TABLE `dog_conversation`
 -- AUTO_INCREMENT pour la table `dog_message`
 --
 ALTER TABLE `dog_message`
-  MODIFY `id_message` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id_message` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT pour la table `dog_notification`
 --
 ALTER TABLE `dog_notification`
-  MODIFY `id_notification` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `id_notification` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
 
 --
 -- AUTO_INCREMENT pour la table `dog_repond`
 --
 ALTER TABLE `dog_repond`
-  MODIFY `id_reponse` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id_reponse` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT pour la table `dog_utilisateur`

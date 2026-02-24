@@ -419,6 +419,9 @@ const NotificationsPage = {
             const dateCreation = new Date(notif.date_creation).toLocaleDateString('fr-FR', {
                 year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
+            const annonceLink = notif.id_annonce
+                ? `<a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=${encodeURIComponent(notif.id_annonce)}" class="notification-annonce-link" style="font-size: 13px; font-weight: 600; color: #537031; text-decoration: underline;">Voir l'annonce concernée</a>`
+                : '';
 
             html += `
                 <div class="notification-item ${notif.type} ${notif.lue === 0 ? 'unread-status' : ''}"
@@ -429,6 +432,7 @@ const NotificationsPage = {
                         <div style="flex: 1;">
                             <p class="notification-item-title">${this.escapeHtml(notif.titre)}</p>
                             <p class="notification-item-message">${this.escapeHtml(notif.message)}</p>
+                            ${annonceLink}
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="notification-item-date">${dateCreation}</span>
                                 <span class="notification-badge ${notif.lue === 0 ? 'unread' : ''}">
@@ -602,7 +606,7 @@ class NotificationManager {
      * @param {string} type - Type: 'success', 'info', 'error'
      * @param {number} duration - Durée d'affichage en ms (0 = pas d'auto-suppression)
      */
-    show(title, message, type = 'info', duration = 5000) {
+    show(title, message, type = 'info', duration = 5000, actionUrl = null, actionLabel = "Voir l'annonce") {
         if (!this.container) {
             console.error('Notifications container not found');
             return null;
@@ -628,6 +632,7 @@ class NotificationManager {
                 <div class="notification-text">
                     <p class="notification-title">${this.escapeHtml(title)}</p>
                     <p class="notification-message">${this.escapeHtml(message)}</p>
+                    ${actionUrl ? `<a href="${this.escapeHtml(actionUrl)}" style="display:inline-block; margin-top:6px; font-weight:600; color:#537031; text-decoration:underline;">${this.escapeHtml(actionLabel)}</a>` : ''}
                 </div>
                 <button class="notification-close" type="button" aria-label="Fermer">
                     <i class="bi bi-x"></i>
@@ -842,12 +847,17 @@ class NotificationChecker {
                                 
                                 // Afficher la notification avec durée appropriée
                                 const duration = notification.type && notification.type.includes('refusée') ? 6000 : 5000;
+                                const actionUrl = notification.id_annonce
+                                    ? `index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=${encodeURIComponent(notification.id_annonce)}`
+                                    : null;
                                 
                                 notificationManager.show(
                                     notification.titre,
                                     notification.message,
                                     'success',
-                                    duration
+                                    duration,
+                                    actionUrl,
+                                    "Voir l'annonce"
                                 );
 
                                 // Marquer comme lue après affichage (sauf nouveaux messages)

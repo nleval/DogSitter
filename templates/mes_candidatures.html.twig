@@ -2,129 +2,16 @@
 
 {% block title %}Mes Candidatures — DogSynergie{% endblock %}
 
-{% block head %}
-    {{ parent() }}
-    <style>
-        .mycand-page {
-            background: linear-gradient(180deg, #FEFAE0 0%, #F8F4E8 100%);
-            min-height: calc(100vh - 88px);
-            padding: 0 16px 40px;
-        }
-
-        .mycand-shell {
-            max-width: 1040px;
-            margin: 0 auto;
-        }
-
-        .mycand-alert {
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-
-        .mycand-empty {
-            background: #FAF6E9;
-            border: 1px dashed #DDA15E;
-            border-radius: 12px;
-            padding: 26px;
-            text-align: center;
-            color: #537031;
-            font-weight: 600;
-        }
-
-        .mycand-card {
-            border: none;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #FAF6E9;
-            box-shadow: 0 8px 20px rgba(83, 112, 49, 0.1);
-            height: 100%;
-        }
-
-        .mycand-head {
-            background: linear-gradient(135deg, #9AAD5A 0%, #537031 100%);
-            color: #fff;
-            padding: 14px 16px;
-            font-weight: 700;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mycand-meta {
-            color: #6c757d;
-            margin-bottom: 12px;
-            font-size: 0.92rem;
-        }
-
-        .mycand-desc {
-            background: #fff;
-            border: 1px solid #E9D4B7;
-            border-radius: 9px;
-            padding: 10px 12px;
-            font-size: 0.9rem;
-            margin-bottom: 14px;
-        }
-
-        .mycand-foot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-top: auto;
-            padding-top: 10px;
-        }
-
-        .mycand-price {
-            background: #9AAD5A;
-            color: #fff;
-            font-weight: 700;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .mycand-actions {
-            border-top: 1px solid #E9D4B7;
-            padding: 12px;
-            display: flex;
-            gap: 10px;
-            background: #fffaf1;
-        }
-
-        .mycand-actions .btn {
-            border: none;
-            font-weight: 700;
-            border-radius: 9px;
-            padding: 7px 12px;
-        }
-
-        .btn-mycand-view {
-            background: #537031;
-            color: #fff;
-            text-decoration: none;
-            flex: 1;
-        }
-
-        .btn-mycand-cancel {
-            background: #BC6C25;
-            color: #fff;
-            flex: 1;
-        }
-    </style>
-{% endblock %}
-
 {% block content %}
-<div class="mycand-page">
-    <div class="mycand-shell">
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
+    <div style="flex: 1; padding: 0 24px 24px 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
         {% if not userConnecte.estPromeneur %}
-            <div class="alert mycand-alert text-center" style="background-color:#DDA15E; color:white;">
+            <div class="alert text-center fw-semibold" style="background-color:#DDA15E; color:#FEFAE0; border:1px solid #BC6C25; border-radius:12px;">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 Accès refusé : seuls les promeneurs peuvent voir leurs candidatures.
             </div>
         {% else %}
-            <div class="ds-profile-hero">
+            <div class="ds-profile-hero" style="margin-top:0;">
                 <div class="ds-profile-hero-inner">
                     <h1 class="ds-profile-hero-title"><i class="bi bi-send-check-fill me-2"></i>Mes Candidatures</h1>
                     <p class="ds-profile-hero-subtitle">Suivez vos demandes envoyées et gérez-les en un clic.</p>
@@ -132,45 +19,62 @@
             </div>
 
             {% if candidatures is empty %}
-                <div class="mycand-empty">
-                    <i class="bi bi-search me-1"></i>
-                    Vous n'avez soumis aucune candidature pour le moment.
-                    <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" class="fw-bold ms-1" style="color:#DDA15E;">
-                        Explorer les annonces
+                <div style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center;">
+                    <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
+                        <i class="bi bi-search" style="margin-right: 8px; color: #DDA15E;"></i>
+                        Vous n'avez soumis aucune candidature pour le moment.
+                    </p>
+                    <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" style="display:inline-flex; margin-top:14px; align-items:center; gap:8px; background-color:#537031; color:#FEFAE0; padding:10px 16px; border:1px solid #4a5f28; border-radius:999px; text-decoration:none; font-weight:700; font-size:13px; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
+                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+                        <i class="bi bi-megaphone"></i> Explorer les annonces
                     </a>
                 </div>
             {% else %}
-                <div class="row g-4">
+                <div style="display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
                     {% for c in candidatures %}
-                        <div class="col-12 col-md-6">
-                            <div class="card mycand-card">
-                                <div class="mycand-head">
-                                    <i class="bi bi-hand-thumbs-up"></i> {{ c.titre }}
+                        <div style="background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(83, 112, 49, 0.10); border: 1px solid rgba(221, 161, 94, 0.45); transition: all 0.22s ease; display: flex; flex-direction: column; position: relative;"
+                             onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 18px rgba(83, 112, 49, 0.18)'; this.style.borderColor='#DDA15E';"
+                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(83, 112, 49, 0.10)'; this.style.borderColor='rgba(221, 161, 94, 0.45)';">
+                            <div style="height: 4px; background-color: #537031;"></div>
+                            <div style="flex: 1; padding: 20px; display: flex; flex-direction: column;">
+                                <h3 style="margin: 0 0 10px 0; color: #3f5623; font-size: 18px; font-weight: 700; line-height: 1.35; letter-spacing: 0.2px;">
+                                    <i class="bi bi-hand-thumbs-up me-1"></i>{{ c.titre }}
+                                </h3>
+
+                                <div style="display: flex; gap: 14px; margin: 0 0 14px 0; font-size: 13px; color: #537031; flex-wrap: wrap;">
+                                    <span style="display: inline-flex; align-items: center; gap: 6px;"><i class="bi bi-calendar-event" style="color: #537031;"></i>{{ c.datePromenade ?? 'Date non précisée' }}</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px;"><i class="bi bi-clock" style="color: #DDA15E;"></i>{{ c.horaire ?? 'Horaire non précisé' }}</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 6px;"><i class="bi bi-geo-alt-fill" style="color: #DDA15E;"></i>{{ c.endroitPromenade ?? 'Lieu non précisé' }}</span>
                                 </div>
 
-                                <div class="card-body d-flex flex-column p-3">
-                                    <p class="mycand-meta">
-                                        <i class="bi bi-calendar-event me-1"></i> {{ c.datePromenade ?? 'Date non précisée' }}<br>
-                                        <i class="bi bi-clock me-1"></i> {{ c.horaire ?? 'Horaire non précisé' }}<br>
-                                        <i class="bi bi-geo-alt me-1"></i> {{ c.endroitPromenade ?? 'Lieu non précisé' }}
+                                {% if c.description %}
+                                    <p style="margin: 0 0 14px 0; color: #4F4F4F; font-size: 14px; line-height: 1.6; flex: 1;">
+                                        {{ c.description|slice(0, 140) }}{% if c.description|length > 140 %}...{% endif %}
                                     </p>
+                                {% endif %}
 
-                                    {% if c.description %}
-                                        <div class="mycand-desc">{{ c.description }}</div>
-                                    {% endif %}
-
-                                    <div class="mycand-foot">
-                                        <small class="text-muted fw-bold">Maître : {{ c.nom_maitre ?? 'N/A' }}</small>
-                                        <span class="mycand-price"><i class="bi bi-cash me-1"></i>{{ c.tarif ?? '0' }} €</span>
+                                <div style="display: flex; gap: 18px; margin-bottom: 16px; padding-top: 10px; border-top: 1px solid rgba(221, 161, 94, 0.45); flex-wrap:wrap;">
+                                    <div style="display: flex; flex-direction: column; min-width:90px;">
+                                        <span style="font-size: 11px; color: #537031; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700;">Maître</span>
+                                        <span style="font-size: 14px; color: #3f5623; font-weight: 700;">{{ c.nom_maitre ?? 'N/A' }}</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; min-width:90px;">
+                                        <span style="font-size: 11px; color: #BC6C25; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700;">Tarif</span>
+                                        <span style="font-size: 16px; color: #BC6C25; font-weight: 800;"><i class="bi bi-cash me-1"></i>{{ c.tarif ?? '0' }}€</span>
                                     </div>
                                 </div>
 
-                                <div class="mycand-actions">
+                                <div style="display: flex; gap: 12px;">
                                     <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ c.id_annonce }}"
-                                       class="btn btn-sm btn-mycand-view">
+                                       style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
+                                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
+                                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
                                         <i class="bi bi-eye me-1"></i> Voir
                                     </a>
-                                    <button class="btn btn-sm btn-mycand-cancel"
+                                    <button style="flex: 1; background-color: #BC6C25; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #9a5316; border-radius: 8px; font-weight: 700; transition:all 0.2s;"
+                                            onmouseover="this.style.backgroundColor='#9a5316';"
+                                            onmouseout="this.style.backgroundColor='#BC6C25';"
                                             onclick="annulerCandidature({{ c.id_annonce }}, this)">
                                         <i class="bi bi-trash me-1"></i> Annuler
                                     </button>
