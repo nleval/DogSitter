@@ -490,16 +490,20 @@ public function marquerPromenadeTermineeEtArchiverAnnonce(int $id_annonce): bool
 }
 
 /**
- * @brief Archive automatiquement les promenades terminees dont la date est depassee
- * @return int Nombre d'annonces archivees
+ * @brief Archive automatiquement les annonces/promenades dont la date est depassee
+ * @return int Nombre d'annonces basculees en archivees
  */
 public function archiverPromenadesDepassees(): int
 {
     $stmt = $this->pdo->prepare("
         UPDATE " . PREFIXE_TABLE . "Annonce
-        SET statut_promenade = 'archivee'
-        WHERE statut_promenade = 'terminee'
-          AND STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+        SET status = 'archivee',
+            statut_promenade = CASE
+                WHEN id_promeneur IS NOT NULL THEN 'archivee'
+                ELSE statut_promenade
+            END
+        WHERE STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+          AND LOWER(status) <> 'archivee'
     ");
 
     $stmt->execute();

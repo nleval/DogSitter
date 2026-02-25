@@ -1,84 +1,295 @@
 ﻿{% extends 'base_template.twig' %}
 
-{% block title %}Chiens — DogSynergie
+{% block title %}
+    {{ chien.nom_chien ?? 'Chien' }} — DogSynergie
 {% endblock %}
 
 {% block content %}
-	<div class="container-fluid py-5" style="background-color: #FEFAE0; min-height: calc(100vh - 155px);">
-		<div class="ds-profile-hero">
-			<div class="ds-profile-hero-inner">
-				<h1 class="ds-profile-hero-title"><i class="bi bi-paw me-2"></i>Détails du chien</h1>
-				<p class="ds-profile-hero-subtitle">Informations détaillées sur le compagnon.</p>
-			</div>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col-12 col-lg-11">
-				<div class="card shadow-lg border-0 p-4" style="background-color: #FAF6E9; border-radius: 12px;">
-					{% if chien is defined %}
-						<div class="container py-5 shadow" style="background-color:#fffbe0; border-radius:15px; max-width:900px;">
-							<h2 class="fw-bold mb-4" style="color:#537031;">Détails du chien {{chien.nom_chien}}</h2>
+<div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
 
-							<div
-								class="row align-items-center">
-								<!-- Photo du chien -->
-								<div class="col-md-5 mb-4 mb-md-0">
-									<img src="./{{chien.cheminPhoto}}" class="img-fluid rounded shadow" style="object-fit: cover; width:100%; height:100%;" alt="Photo de {{chien.nom_chien}}">
-								</div>
+    <!-- HERO -->
+    <div class="ds-profile-hero">
+        <div class="ds-profile-hero-inner">
+            <h1 class="ds-profile-hero-title">
+                <i class="bi bi-paw-fill me-2"></i>
+                Profil du chien
+            </h1>
 
-								<!-- Infos du chien -->
-								<div class="col-md-7">
-									<h3 class="fw-bold" style="color:#9aad5a;">{{chien.nom_chien}}</h3>
-
-									<ul class="list-unstyled fs-5 mb-4">
-										<li>
-											<strong style="color:#537031;">Propriétaire :</strong>
-											{{proprietaire.pseudo}}</li>
-										<li>
-											<strong style="color:#537031;">Poids :</strong>
-											{{chien.poids}}
-										</li>
-										<li>
-											<strong style="color:#537031;">Taille :</strong>
-											{{chien.taille}}
-										</li>
-										<li>
-											<strong style="color:#537031;">Race :</strong>
-											{{chien.race}}</li>
-									</ul>
-
-									<div class="d-flex gap-2 flex-wrap">
-										<span class="badge" style="background-color:#dda15e; color:#fff; font-size:1rem;">
-											ID Utilisateur :
-											{{chien.id_utilisateur}}
-										</span>
-										<span class="badge" style="background-color:#fcf8de; color:#537031; font-size:1rem;">
-											ID Chien :
-											{{chien.id_chien}}
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="mt-4">
-							<a href="?controleur=Chien&methode=afficherAllChiens" class="btn px-4" style="background-color:#DDA15E; color:white;">
-								Retour
-							</a>
-						</div>
-					</div>
-					<br>
-				</div>
-			
-			{% else %}
-				<div class="alert alert-warning text-center" style="background-color:#F8F4E8; color:#BC6C25;">
-					Aucun chien trouvé.
-				</div>
-			{% endif %}
-			</div>
-		</div>
-	</div>
-		{% endblock %}
+            {% if chien is defined %}
+                <p class="ds-profile-hero-subtitle">
+                    Découvrez toutes les informations sur ce compagnon
+                </p>
+            {% endif %}
+        </div>
+    </div>
 
 
+    <!-- CONTENU -->
+    <div style="flex: 1; padding: 40px; max-width: 950px; margin: 0 auto; width: 100%;">
+
+        {% if chien is defined %}
+
+        <!-- CARTE PRINCIPALE -->
+        <div style="
+            background-color: #FFFFFF;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 6px 18px rgba(83,112,49,0.14);
+            border: 1px solid rgba(221,161,94,0.45);
+        ">
+
+            <div class="row align-items-center">
+
+                <!-- PHOTO + IDENTITÉ -->
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+
+                    {% if chien.cheminPhoto is not empty %}
+                        <img
+                            src="images/chiens/{{ chien.cheminPhoto }}"
+                            alt="{{ chien.nom_chien }}"
+                            style="
+                                width: 150px;
+                                height: 150px;
+                                object-fit: cover;
+                                border-radius: 50%;
+                                border: 6px solid #FEFAE0;
+                                box-shadow: 0 6px 18px rgba(83,112,49,0.18);
+                                margin-bottom: 16px;
+                            "
+                        >
+                    {% else %}
+                        <div style="
+                            width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            background-color: #9AAD5A;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 16px auto;
+                            border: 6px solid #FEFAE0;
+                            box-shadow: 0 6px 18px rgba(83,112,49,0.18);
+                        ">
+                            <i class="bi bi-paw-fill" style="font-size: 70px; color: #FEFAE0;"></i>
+                        </div>
+                    {% endif %}
+
+                    <h2 style="
+                        color: #3f5623;
+                        font-weight: 800;
+                        margin-bottom: 4px;
+                        text-transform: capitalize;
+                    ">
+                        {{ chien.nom_chien }}
+                    </h2>
+
+                    <div style="
+                        color: #BC6C25;
+                        font-weight: 700;
+                        font-size: 15px;
+                    ">
+                        {{ chien.race }}
+                    </div>
+
+                </div>
 
 
+                <!-- INFOS -->
+                <div class="col-md-8">
+
+                    <!-- SECTION INFOS -->
+                    <div style="
+                        background-color: #FAF6E9;
+                        border-radius: 10px;
+                        padding: 20px;
+                        border: 1px solid #DDA15E;
+                        margin-bottom: 20px;
+                    ">
+
+                        <h3 style="
+                            font-size: 13px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.7px;
+                            color: #FEFAE0;
+                            background-color: #537031;
+                            display: inline-block;
+                            padding: 6px 12px;
+                            border-radius: 999px;
+                            margin-bottom: 16px;
+                        ">
+                            Informations générales
+                        </h3>
+
+                        <div style="display: grid; gap: 10px; font-size: 15px;">
+
+                            <div>
+                                <i class="bi bi-speedometer2 me-2" style="color:#DDA15E;"></i>
+                                Poids :
+                                <strong style="color:#537031;">
+                                    {{ chien.poids }} kg
+                                </strong>
+                            </div>
+
+                            <div>
+                                <i class="bi bi-arrows-vertical me-2" style="color:#DDA15E;"></i>
+                                Taille :
+                                <strong style="color:#537031;">
+                                    {{ chien.taille }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <i class="bi bi-person-fill me-2" style="color:#DDA15E;"></i>
+                                Propriétaire :
+                                <strong style="color:#537031;">
+                                    {{ proprietaire.pseudo }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+
+                        {% if utilisateurConnecte is not null and utilisateurConnecte.id == chien.id_utilisateur %}
+
+                        <!-- MODIFIER -->
+                        <a href="?controleur=Chien&methode=afficherFormulaireModification&id_chien={{ chien.id_chien }}"
+                           style="
+                           flex: 1;
+                           background-color: #537031;
+                           color: #FEFAE0;
+                           padding: 12px 16px;
+                           font-size: 14px;
+                           border: 1px solid #4a5f28;
+                           border-radius: 8px;
+                           font-weight: 700;
+                           text-decoration: none;
+                           text-align: center;
+                           display: inline-flex;
+                           align-items: center;
+                           justify-content: center;
+                           gap: 8px;
+                           transition: all 0.2s;
+                           box-shadow: 0 4px 12px rgba(83,112,49,0.25);
+                        "
+                        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 18px rgba(83,112,49,0.35)';this.style.backgroundColor='#4a5f28';"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(83,112,49,0.25)';this.style.backgroundColor='#537031';"
+                        >
+                            <i class="bi bi-pencil-fill"></i>
+                            Modifier
+                        </a>
+
+
+                        <!-- SUPPRIMER -->
+                        <form method="post"
+                              action="?controleur=Chien&methode=supprimerChien"
+                              style="flex: 1;"
+                              onsubmit="return confirm('Supprimer ce chien ?');">
+
+                            <input type="hidden" name="id_chien" value="{{ chien.id_chien }}">
+
+                            <button type="submit"
+                                style="
+                                width: 100%;
+                                background-color: #DDA15E;
+                                color: #FEFAE0;
+                                padding: 12px 16px;
+                                font-size: 14px;
+                                border: 1px solid #BC6C25;
+                                border-radius: 8px;
+                                font-weight: 700;
+                                cursor: pointer;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 8px;
+                                transition: all 0.2s;
+                            "
+                            onmouseover="this.style.backgroundColor='#BC6C25';"
+                            onmouseout="this.style.backgroundColor='#DDA15E';"
+                            >
+                                <i class="bi bi-trash-fill"></i>
+                                Supprimer
+                            </button>
+
+                        </form>
+
+                        {% endif %}
+
+
+                        <!-- RETOUR -->
+                        <a href="?controleur=Utilisateur&methode=afficherUtilisateur&id_utilisateur={{ chien.id_utilisateur }}"
+                           style="
+                           flex: 1;
+                           background-color: #BC6C25;
+                           color: #FEFAE0;
+                           padding: 12px 16px;
+                           font-size: 14px;
+                           border: 1px solid #9a5316;
+                           border-radius: 8px;
+                           font-weight: 700;
+                           text-decoration: none;
+                           text-align: center;
+                           display: inline-flex;
+                           align-items: center;
+                           justify-content: center;
+                           gap: 8px;
+                           transition: all 0.2s;
+                        "
+                        onmouseover="this.style.backgroundColor='#9a5316';"
+                        onmouseout="this.style.backgroundColor='#BC6C25';"
+                        >
+                            <i class="bi bi-arrow-left-circle-fill"></i>
+                            Retour au profil
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- ERREUR -->
+        <div style="
+            background-color: #FAF6E9;
+            border-left: 4px solid #DDA15E;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+        ">
+            <p style="font-size: 16px; color: #537031; font-weight: 700;">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                Aucun chien trouvé
+            </p>
+
+            <a href="?controleur=Accueil&methode=afficherAccueil"
+               style="
+               margin-top: 12px;
+               display: inline-block;
+               background-color: #537031;
+               color: white;
+               padding: 10px 16px;
+               border-radius: 8px;
+               text-decoration: none;
+               font-weight: 700;
+            ">
+                Retour à l'accueil
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

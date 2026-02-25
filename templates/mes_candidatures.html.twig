@@ -24,9 +24,7 @@
                         <i class="bi bi-search" style="margin-right: 8px; color: #DDA15E;"></i>
                         Aucune candidature envoyée.
                     </p>
-                    <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" style="display:inline-flex; margin-top:14px; align-items:center; gap:8px; background-color:#537031; color:#FEFAE0; padding:10px 16px; border:1px solid #4a5f28; border-radius:999px; text-decoration:none; font-weight:700; font-size:13px; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
-                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
-                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+                          <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" style="display:inline-flex; margin-top:14px; align-items:center; gap:8px; background-color:#537031; color:#FEFAE0; padding:10px 16px; border:1px solid #4a5f28; border-radius:999px; text-decoration:none; font-weight:700; font-size:13px; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
                         <i class="bi bi-megaphone"></i> Explorer les annonces
                     </a>
                 </div>
@@ -66,18 +64,17 @@
                                 </div>
 
                                 <div style="display: flex; gap: 12px;">
-                                    <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ c.id_annonce }}"
-                                       style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
-                                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
-                                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
-                                        <i class="bi bi-eye me-1"></i> Détails
-                                    </a>
-                                    <button style="flex: 1; background-color: #BC6C25; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #9a5316; border-radius: 8px; font-weight: 700; transition:all 0.2s;"
-                                            onmouseover="this.style.backgroundColor='#9a5316';"
-                                            onmouseout="this.style.backgroundColor='#BC6C25';"
-                                            onclick="annulerCandidature({{ c.id_annonce }}, this)">
-                                        <i class="bi bi-trash me-1"></i> Annuler
+                                    <button type="button"
+                                        style="flex: 1; background-color: #DDA15E; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 700; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;"
+                                        onmouseover="this.style.backgroundColor='#BC6C25'; this.style.borderColor='#9a5316';"
+                                        onmouseout="this.style.backgroundColor='#DDA15E'; this.style.borderColor='#BC6C25';"
+                                        onclick="annulerCandidature({{ c.id_annonce }}, this)">
+                                        <i class="bi bi-trash"></i> Annuler
                                     </button>
+                                    <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ c.id_annonce }}"
+                                        style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 0 4px 12px rgba(83, 112, 49, 0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+                                        <i class="bi bi-eye"></i> Détails
+                                    </a>
                                 </div>
                             </div>
                         </div>

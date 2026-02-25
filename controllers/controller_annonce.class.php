@@ -97,6 +97,7 @@ class ControllerAnnonce extends Controller
     {    
         // Récupérer toutes les annonces depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $managerAnnonce->archiverPromenadesDepassees();
         $annoncesListe = $managerAnnonce->findAll();
 
         // FILTRER: Afficher uniquement les annonces 'active' (disponibles)
@@ -141,8 +142,6 @@ class ControllerAnnonce extends Controller
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         $id_utilisateur = $_GET['id_utilisateur'] ?? $utilisateurConnecte->getId();
         $managerAnnonce = new AnnonceDAO($this->getPDO());
-        
-        // Archiver automatiquement les promenades terminées dépassées
         $managerAnnonce->archiverPromenadesDepassees();
         
         // Récupérer le filtre de statut depuis GET
@@ -573,6 +572,7 @@ public function repondreAnnonce($id_annonce = null)
 
     // Vérifier que l'annonce existe
     $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $managerAnnonce->archiverPromenadesDepassees();
     $annonce = $managerAnnonce->findById($id_annonce);
 
     if (!$annonce) {
@@ -595,6 +595,15 @@ public function repondreAnnonce($id_annonce = null)
         http_response_code(403);
         echo $this->getTwig()->render('403.html.twig', [
             'message' => "Cette annonce n'est plus disponible. Un maître a déjà accepté une candidature."
+        ]);
+        return;
+    }
+
+    $dateAnnonce = $this->construireDatePromenade($annonce);
+    if ($dateAnnonce && $dateAnnonce <= new DateTime()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Cette annonce a dépassé sa date de promenade et ne peut plus recevoir de candidature."
         ]);
         return;
     }
@@ -754,6 +763,7 @@ public function accepterCandidature()
     }
 
     $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $managerAnnonce->archiverPromenadesDepassees();
     $annonce = $managerAnnonce->findById($id_annonce);
 
     // Vérifier que l'annonce appartient à l'utilisateur
@@ -763,6 +773,11 @@ public function accepterCandidature()
 
     if ($annonce->getIdPromeneur()) {
         $sendJson(409, ['success' => false, 'message' => "Un promeneur est deja assigne a cette annonce."]);
+    }
+
+    $dateAnnonce = $this->construireDatePromenade($annonce);
+    if ($dateAnnonce && $dateAnnonce <= new DateTime()) {
+        $sendJson(409, ['success' => false, 'message' => "Cette annonce a dépassé sa date et a été archivée automatiquement."]);
     }
 
     // Appel à la méthode de la DAO pour accepter la candidature
