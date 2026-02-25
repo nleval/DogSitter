@@ -367,6 +367,88 @@ function initConversationActivePage() {
     });
 }
 
+function initWorkloadErgonomics() {
+    const scope = document.querySelector('main[data-ds-workload="true"]');
+    if (!scope) return;
+
+    const autocompleteByName = {
+        email: 'email',
+        pseudo: 'username',
+        motdepasse: 'current-password',
+        adresse: 'street-address',
+        numtelephone: 'tel',
+        titre: 'off',
+        description: 'off',
+        race: 'off',
+        nom_chien: 'off'
+    };
+
+    document.querySelectorAll('form').forEach(form => {
+        form.classList.add('ds-compact-form');
+
+        form.querySelectorAll('input, textarea, select').forEach(field => {
+            const fieldName = (field.getAttribute('name') || '').toLowerCase().replace(/\[\]$/, '');
+
+            if (!field.getAttribute('autocomplete') && autocompleteByName[fieldName]) {
+                field.setAttribute('autocomplete', autocompleteByName[fieldName]);
+            }
+
+            const placeholder = field.getAttribute('placeholder');
+            if (placeholder) {
+                const compact = placeholder
+                    .replace(/^Ex\s*:\s*/i, 'Ex. ')
+                    .replace(/^Veuillez\s+saisir\s+/i, '')
+                    .replace(/^Donnez\s+des\s+détails\s*/i, 'Infos utiles ')
+                    .trim();
+                field.setAttribute('placeholder', compact.length > 58 ? `${compact.slice(0, 55).trim()}…` : compact);
+            }
+        });
+
+        const primaryAction = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (primaryAction) {
+            const actionRow = primaryAction.closest('div');
+            if (actionRow) actionRow.classList.add('ds-form-actions');
+        }
+
+        form.querySelectorAll('a').forEach(link => {
+            const text = (link.textContent || '').trim().toLowerCase();
+            if (text === 'annuler' || text.includes('retour')) {
+                link.classList.add('ds-secondary-action');
+            }
+        });
+    });
+
+    document.querySelectorAll('.ds-profile-hero-subtitle').forEach(subtitle => {
+        const text = (subtitle.textContent || '').replace(/\s+/g, ' ').trim();
+        if (text.length > 72) {
+            subtitle.textContent = `${text.slice(0, 69).trim()}…`;
+        }
+    });
+
+    const labelMap = new Map([
+        ['enregistrer les modifications', 'Enregistrer'],
+        ["publier l'annonce", 'Publier'],
+        ["publier l'avis", 'Publier'],
+        ["retour à l'accueil", 'Accueil'],
+        ['voir le profil', 'Profil'],
+        ['envoyer un message', 'Message'],
+        ['filtres de recherche', 'Filtres']
+    ]);
+
+    document.querySelectorAll('button, a').forEach(el => {
+        const current = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!current) return;
+        const lower = current.toLowerCase();
+
+        if (labelMap.has(lower)) {
+            const replacement = labelMap.get(lower);
+            if (replacement) {
+                el.textContent = replacement;
+            }
+        }
+    });
+}
+
 const NotificationsPage = {
     allNotifications: [],
     currentFilter: 'all',
@@ -947,6 +1029,7 @@ let candidatureChecker;
 
 // Initialiser au chargement du DOM
 document.addEventListener('DOMContentLoaded', function() {
+    initWorkloadErgonomics();
     initTarteAuCitron();
     initAnnonceFiltersPage();
     initAjouterAvisStars();
@@ -1212,8 +1295,17 @@ function annulerCandidature(idAnnonce, button) {
         })
         .then(response => {
             if (response.ok) {
-                const card = button.closest('.card');
-                const annonceTitle = card.querySelector('h5')?.textContent || 'l\'annonce';
+                const card = button.closest('.candidature-card');
+
+                if (!card) {
+                    notificationManager.show(
+                        'Candidature annulée',
+                        'Votre candidature a été annulée avec succès.',
+                        'info',
+                        3000
+                    );
+                    return;
+                }
                 
                 // Animation de suppression
                 card.style.opacity = '0';

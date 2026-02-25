@@ -14,7 +14,7 @@
             <div class="ds-profile-hero" style="margin-top:0;">
                 <div class="ds-profile-hero-inner">
                     <h1 class="ds-profile-hero-title"><i class="bi bi-send-check-fill me-2"></i>Mes Candidatures</h1>
-                    <p class="ds-profile-hero-subtitle">Suivez vos demandes envoyées et gérez-les en un clic.</p>
+                    <p class="ds-profile-hero-subtitle">Suivez vos candidatures en un coup d'œil.</p>
                 </div>
             </div>
 
@@ -22,7 +22,7 @@
                 <div style="background-color: #FAF6E9; border-left: 4px solid #DDA15E; padding: 24px; border-radius: 8px; text-align: center;">
                     <p style="font-size: 16px; color: #537031; margin: 0; font-weight: 600;">
                         <i class="bi bi-search" style="margin-right: 8px; color: #DDA15E;"></i>
-                        Vous n'avez soumis aucune candidature pour le moment.
+                        Aucune candidature envoyée.
                     </p>
                     <a href="index.php?controleur=annonce&methode=afficherAllAnnonces" style="display:inline-flex; margin-top:14px; align-items:center; gap:8px; background-color:#537031; color:#FEFAE0; padding:10px 16px; border:1px solid #4a5f28; border-radius:999px; text-decoration:none; font-weight:700; font-size:13px; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
@@ -33,7 +33,7 @@
             {% else %}
                 <div style="display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
                     {% for c in candidatures %}
-                        <div style="background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(83, 112, 49, 0.10); border: 1px solid rgba(221, 161, 94, 0.45); transition: all 0.22s ease; display: flex; flex-direction: column; position: relative;"
+                            <div class="candidature-card" style="background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(83, 112, 49, 0.10); border: 1px solid rgba(221, 161, 94, 0.45); transition: all 0.22s ease; display: flex; flex-direction: column; position: relative;"
                              onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 18px rgba(83, 112, 49, 0.18)'; this.style.borderColor='#DDA15E';"
                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(83, 112, 49, 0.10)'; this.style.borderColor='rgba(221, 161, 94, 0.45)';">
                             <div style="height: 4px; background-color: #537031;"></div>
@@ -70,7 +70,7 @@
                                        style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow:0 4px 12px rgba(83, 112, 49, 0.25);"
                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';"
                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
-                                        <i class="bi bi-eye me-1"></i> Voir
+                                        <i class="bi bi-eye me-1"></i> Détails
                                     </a>
                                     <button style="flex: 1; background-color: #BC6C25; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #9a5316; border-radius: 8px; font-weight: 700; transition:all 0.2s;"
                                             onmouseover="this.style.backgroundColor='#9a5316';"

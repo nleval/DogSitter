@@ -9,7 +9,7 @@
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
                 <h1 class="ds-profile-hero-title"><i class="bi bi-megaphone me-2"></i>Les Annonces</h1>
-                <p class="ds-profile-hero-subtitle">Explorez toutes les annonces de promenade près de chez vous</p>
+                <p class="ds-profile-hero-subtitle">Trouvez une annonce rapidement</p>
             </div>
         </div>
 
@@ -19,12 +19,12 @@
             <div style="background-color: #FAF6E9; padding: 22px; margin-bottom: 32px; border-radius: 12px; border: 1px solid #DDA15E; box-shadow: 0 5px 14px rgba(83, 112, 49, 0.14);">
                 <h3 style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #FEFAE0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 16px 0; padding: 7px 12px; border-radius: 999px; background-color: #537031; border: 1px solid #4a5f28;">
                     <i class="bi bi-funnel-fill" style="color: #FEFAE0;"></i>
-                    Filtres de recherche
+                    Filtres
                 </h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
                     <div style="background-color: #FEFAE0; padding: 10px; border-radius: 8px; border: 1px solid #DDA15E;">
                         <label for="villeCodePostal" style="display: block; color: #537031; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px;">Ville ou code postal</label>
-                        <input type="text" id="villeCodePostal" placeholder="Ex: Paris" title="Saisissez une ville ou un code postal" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 8px; font-size: 14px; background-color: #ffffff; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.12)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
+                        <input type="text" id="villeCodePostal" placeholder="Ex. Paris" title="Saisissez une ville ou un code postal" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 8px; font-size: 14px; background-color: #ffffff; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.12)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
                     </div>
                     <div style="background-color: #FEFAE0; padding: 10px; border-radius: 8px; border: 1px solid #DDA15E;">
                         <label for="disponibilites" style="display: block; color: #537031; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px;">Disponibilités</label>
@@ -32,14 +32,14 @@
                     </div>
                     <div style="background-color: #FEFAE0; padding: 10px; border-radius: 8px; border: 1px solid #DDA15E;">
                         <label for="dureePromenade" style="display: block; color: #537031; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px;">Durée max (min)</label>
-                        <input type="number" id="dureePromenade" placeholder="Ex: 45" min="0" title="Durée maximale souhaitée en minutes" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 8px; font-size: 14px; background-color: #ffffff; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.12)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
+                        <input type="number" id="dureePromenade" placeholder="Ex. 45" min="0" title="Durée maximale souhaitée en minutes" style="width: 100%; padding: 12px 14px; border: 1px solid #DDA15E; border-radius: 8px; font-size: 14px; background-color: #ffffff; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.12)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';" />
                     </div>
                     <div style="display: flex; gap: 10px; align-items: stretch; background-color: #FEFAE0; padding: 10px; border-radius: 8px; border: 1px solid #DDA15E;">
                         <button id="searchBtn" title="Appliquer les filtres" style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 0 3px 10px rgba(83, 112, 49, 0.25);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 14px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 10px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
-                            <i class="bi bi-search"></i> Chercher
+                            <i class="bi bi-search"></i> Filtrer
                         </button>
                         <button id="resetBtn" title="Réinitialiser tous les filtres" style="flex: 1; background-color: #DDA15E; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#BC6C25'; this.style.borderColor='#9a5316';" onmouseout="this.style.backgroundColor='#DDA15E'; this.style.borderColor='#BC6C25';">
-                            <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+                            <i class="bi bi-arrow-counterclockwise"></i> Effacer
                         </button>
                     </div>
                 </div>

@@ -9,7 +9,7 @@
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
                 <h1 class="ds-profile-hero-title"><i class="bi bi-pencil-square me-2"></i>Modifier l'annonce</h1>
-                <p class="ds-profile-hero-subtitle">Mettez à jour les détails de votre annonce de promenade</p>
+                <p class="ds-profile-hero-subtitle">Mettez à jour l'essentiel de l'annonce</p>
             </div>
         </div>
 
@@ -105,13 +105,13 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                        <textarea id="description" name="description" rows="5" maxlength="500" title="Détails utiles pour le promeneur (max 500 caractères)" placeholder="Donnez des détails (comportement du chien, préférences...)" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">{{ donnees.description|default(annonce.description)|trim }}</textarea>
+                        <textarea id="description" name="description" rows="5" maxlength="500" title="Détails utiles pour le promeneur (max 500 caractères)" placeholder="Infos utiles (comportement, préférences...)" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">{{ donnees.description|default(annonce.description)|trim }}</textarea>
                     </div>
 
                     <!-- Boutons -->
                     <div style="display: flex; gap: 12px;">
                         <button type="submit" title="Enregistrer les modifications de l'annonce" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                            <i class="bi bi-check-circle me-2"></i> Enregistrer les modifications
+                            <i class="bi bi-check-circle me-2"></i> Enregistrer
                         </button>
                         <a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce={{ annonce.idAnnonce }}" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
                             <i class="bi bi-x-circle me-2"></i> Annuler

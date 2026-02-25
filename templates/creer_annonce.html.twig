@@ -9,7 +9,7 @@
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
                 <h1 class="ds-profile-hero-title"><i class="bi bi-pencil-square me-2"></i>Créer une annonce</h1>
-                <p class="ds-profile-hero-subtitle">Publiez une promenade pour votre chien</p>
+                <p class="ds-profile-hero-subtitle">Publiez une promenade en quelques étapes</p>
             </div>
         </div>
 
@@ -154,7 +154,7 @@
                                 rows="4"
                                 maxlength="500"
                                 title="Détails utiles pour le promeneur (max 500 caractères)"
-                                placeholder="Donnez des détails (comportement du chien, préférences, accessoires...)"
+                                placeholder="Infos utiles (comportement, préférences...)"
                                 style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; resize: vertical; transition: border-color 0.2s; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">{{ donnees.description|default('')|trim }}</textarea>
                         </div>
 
@@ -187,7 +187,7 @@
                                     </div>
                                 {% else %}
                                     <p style="color: #9AAD5A; font-size: 14px; margin: 0;">
-                                        Aucun chien trouvé — vous pouvez en ajouter depuis votre profil.
+                                        Aucun chien disponible.
                                     </p>
                                 {% endfor %}
                             </div>
@@ -202,7 +202,7 @@
                             </a>
                             <button type="submit"
                                 style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                                Publier l'annonce
+                                Publier
                             </button>
                         </div>
                     </form>

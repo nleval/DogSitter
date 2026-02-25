@@ -9,7 +9,7 @@
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
                 <h1 class="ds-profile-hero-title"><i class="bi bi-chat-left-quote me-2"></i>Ajouter un avis</h1>
-                <p class="ds-profile-hero-subtitle">Partagez votre expérience de promenade</p>
+                <p class="ds-profile-hero-subtitle">Partagez votre expérience en quelques mots</p>
             </div>
         </div>
 
@@ -72,13 +72,13 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                        <textarea id="commentaire" name="commentaire" rows="5" maxlength="500" title="Commentaire optionnel (maximum 500 caractères)" placeholder="Donnez votre avis sur cette promenade..." style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">{{ donnees.commentaire|default('')|trim }}</textarea>
+                        <textarea id="commentaire" name="commentaire" rows="5" maxlength="500" title="Commentaire optionnel (maximum 500 caractères)" placeholder="Votre avis (optionnel)" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">{{ donnees.commentaire|default('')|trim }}</textarea>
                     </div>
 
                     <!-- Boutons -->
                     <div style="display: flex; gap: 12px; margin-top: 40px;">
                         <button type="submit" title="Publier votre avis" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                            <i class="bi bi-check-circle" style="margin-right: 6px;"></i> Publier l'avis
+                            <i class="bi bi-check-circle" style="margin-right: 6px;"></i> Publier
                         </button>
                         <a href="{{ referer|default('index.php') }}" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
                             <i class="bi bi-x-circle" style="margin-right: 6px;"></i> Annuler

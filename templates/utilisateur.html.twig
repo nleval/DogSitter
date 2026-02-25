@@ -52,7 +52,7 @@
                     {% if est_profil_public is defined and est_profil_public %}
                         <!-- Bouton envoyer un message -->
                         <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ utilisateur.id }}" class="btn" title="Démarrer une conversation avec cet utilisateur" style="background-color: #DDA15E; color: #FEFAE0; padding: 10px 18px; font-size: 14px; border: none; border-radius: 6px; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); text-decoration: none;">
-                            <i class="bi bi-chat-dots"></i> Envoyer un message
+                            <i class="bi bi-chat-dots"></i> Message
                         </a>
                     {% endif %}
                     {% if not (est_profil_public is defined and est_profil_public) %}
@@ -104,7 +104,7 @@
                 <div style="width: 100%; max-width: 900px;">
                     <!-- Section Informations -->
                     <div style="margin-bottom: 50px;">
-                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Informations de contact</h2>
+                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Contact</h2>
                         <div class="row g-3">
                             <!-- Email -->
                             <div class="col-12">
@@ -138,7 +138,7 @@
                     <!-- Section Mes chiens -->
                     {% if utilisateur.estMaitre %}
                     <div style="margin-bottom: 50px;">
-                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Mes chiens</h2>
+                        <h2 style="font-size: 14px; font-weight: 600; color: #537031; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">Chiens</h2>
                         <div class="row g-3">
                             {% if chiens is defined and chiens|length > 0 %}
                                 {% for chien in chiens %}
@@ -185,7 +185,7 @@
                     <!-- Bouton Retour -->
                     <div style="text-align: center;">
                         <a href="?controleur=Index&methode=render" class="btn" style="background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 12px 40px; font-size: 14px; border: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; transition: transform 0.2s; cursor: pointer; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);">
-                            <i class="bi bi-house-door"></i> Retour à l'accueil
+                            <i class="bi bi-house-door"></i> Accueil
                         </a>
                     </div>
                 </div>

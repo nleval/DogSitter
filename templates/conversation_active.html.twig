@@ -34,14 +34,14 @@
                             Conversation
                         {% endif %}
                     </h1>
-                    <span>Conversation active</span>
+                    <span>En direct</span>
                 </div>
             </div>
 
             <div class="dm-header-actions">
                 {% if autreUtilisateur %}
                     <a class="dm-profile" href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ autreUtilisateur.id }}">
-                        Voir le profil
+                        Profil
                     </a>
                 {% endif %}
                 <button type="button" class="dm-actions-btn" id="openConversationSheet" title="Options">
@@ -110,13 +110,13 @@
 
         <div class="dm-composer">
             <div class="dm-edit-bar" id="editBar">
-                <span>Edition du message</span>
+                <span>Modification du message</span>
                 <button type="button" id="cancelEdit" title="Annuler la modification du message">Annuler</button>
             </div>
             <form method="post" action="?controleur=message&methode=envoyerMessage" class="dm-form">
                 <input type="hidden" name="id_conversation" value="{{ idConversation }}">
                 <input type="hidden" name="edit_message_id" id="editMessageId" value="">
-                <input type="text" name="contenu" id="messageInput" placeholder="Message..." required minlength="1" maxlength="1000" title="Votre message (1 à 1000 caractères)">
+                <input type="text" name="contenu" id="messageInput" placeholder="Votre message" required minlength="1" maxlength="1000" title="Votre message (1 à 1000 caractères)">
                 <button type="submit" id="sendButton" title="Envoyer le message">Envoyer</button>
             </form>
         </div>
@@ -129,7 +129,7 @@
         <div class="dm-sheet-title">Conversation</div>
         <form method="post" action="?controleur=conversation&methode=renommerConversation">
             <input type="hidden" name="id_conversation" value="{{ idConversation }}">
-            <input class="dm-sheet-field" type="text" name="titre" minlength="2" maxlength="80" placeholder="Renommer la conversation" required title="Nouveau titre de conversation (2 à 80 caractères)">
+            <input class="dm-sheet-field" type="text" name="titre" minlength="2" maxlength="80" placeholder="Nouveau titre" required title="Nouveau titre de conversation (2 à 80 caractères)">
             <div class="dm-sheet-actions">
                 <button class="dm-sheet-primary" type="submit" title="Enregistrer le nouveau titre">Enregistrer</button>
                 <button class="dm-sheet-danger" type="button" data-sheet-close title="Fermer sans enregistrer">Annuler</button>

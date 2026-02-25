@@ -8,7 +8,7 @@
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
                 <h1 class="ds-profile-hero-title"><i class="bi bi-signpost-2-fill me-2"></i>Détails de la promenade</h1>
-                <p class="ds-profile-hero-subtitle">Retrouvez toutes les informations de cette mission.</p>
+                <p class="ds-profile-hero-subtitle">Infos essentielles de la mission.</p>
             </div>
         </div>
         
@@ -51,15 +51,15 @@
                     <p style="margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Statut</p>
                     <p style="margin: 8px 0 0 0; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         {% if promenade.statut == 'en_cours' %}
-                            <i class="bi bi-play-circle" style="color: #537031;"></i> EN COURS
+                            <i class="bi bi-play-circle" style="color: #537031;"></i> En cours
                         {% elseif promenade.statut == 'terminee' %}
-                            <i class="bi bi-check-circle" style="color: #9AAD5A;"></i> TERMINÉE
+                            <i class="bi bi-check-circle" style="color: #9AAD5A;"></i> Terminée
                         {% elseif promenade.statut == 'archivee' %}
-                            <i class="bi bi-archive" style="color: #BC6C25;"></i> ARCHIVÉE
+                            <i class="bi bi-archive" style="color: #BC6C25;"></i> Archivée
                         {% elseif promenade.statut == 'annulee' %}
-                            <i class="bi bi-x-circle" style="color: #DC3545;"></i> ANNULÉE
+                            <i class="bi bi-x-circle" style="color: #DC3545;"></i> Annulée
                         {% else %}
-                            <i class="bi bi-calendar-check" style="color: #DDA15E;"></i> À VENIR
+                            <i class="bi bi-calendar-check" style="color: #DDA15E;"></i> À venir
                         {% endif %}
                     </p>
                 </div>
@@ -124,7 +124,7 @@
                         <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
                             <i class="bi bi-chat-dots"></i> Avis
                         </h3>
-                        <p style="color: #666; margin: 0 0 16px 0; font-size: 13px;">Vous pouvez laisser un avis sur le promeneur.</p>
+                        <p style="color: #666; margin: 0 0 16px 0; font-size: 13px;">Laissez un avis sur le promeneur.</p>
                         <a href="?controleur=avis&methode=ajouter&id_annonce={% if promenade.annonce %}{{ promenade.annonce.id_annonce }}{% endif %}&id_utilisateur_note={{ promenade.id_promeneur }}" style="display: block; text-align: center; padding: 14px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#DDA15E'; this.style.transform='translateY(0)'">
                             <i class="bi bi-star"></i> Laisser un avis
                         </a>
@@ -154,7 +154,7 @@
                             <p style="color: #999; margin: 0 0 12px 0; font-size: 12px;">Maître</p>
                             
                             <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ promenade.maitre.id }}" style="display: block; padding: 8px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease; margin-bottom: 8px;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
-                                <i class="bi bi-eye"></i> Voir le profil
+                                <i class="bi bi-eye"></i> Profil
                             </a>
                             
                             <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ promenade.maitre.id }}" style="display: block; padding: 8px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'" onmouseout="this.style.backgroundColor='#DDA15E'">
@@ -184,7 +184,7 @@
                             <p style="color: #999; margin: 0 0 12px 0; font-size: 12px;">Promeneur</p>
                             
                             <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ promenade.promeneur.id }}" style="display: block; padding: 8px; background-color: #537031; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease; margin-bottom: 8px;" onmouseover="this.style.backgroundColor='#4a5f28'" onmouseout="this.style.backgroundColor='#537031'">
-                                <i class="bi bi-eye"></i> Voir le profil
+                                <i class="bi bi-eye"></i> Profil
                             </a>
                             
                             <a href="?controleur=conversation&methode=creerConversationAvecUtilisateur&id_utilisateur={{ promenade.promeneur.id }}" style="display: block; padding: 8px; background-color: #DDA15E; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#c88a4a'" onmouseout="this.style.backgroundColor='#DDA15E'">
