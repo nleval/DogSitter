@@ -162,6 +162,12 @@ public function envoyerMessage()
         echo json_encode(['success' => false, 'message' => 'Paramètres manquants']);
         exit();
     }
+
+    if (mb_strlen($contenu) > 1000) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Le message ne doit pas dépasser 1000 caractères']);
+        exit();
+    }
     
     // Vérifier que l'utilisateur fait partie de la conversation
     $conversationDAO = new ConversationDAO($this->getPDO());
@@ -274,6 +280,12 @@ public function modifierMessage()
     if (!$id_message || $contenu === '') {
         http_response_code(400);
         echo "Parametres manquants.";
+        return;
+    }
+
+    if (mb_strlen($contenu) > 1000) {
+        http_response_code(400);
+        echo "Le message ne doit pas dépasser 1000 caractères.";
         return;
     }
 

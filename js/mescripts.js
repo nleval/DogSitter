@@ -367,6 +367,88 @@ function initConversationActivePage() {
     });
 }
 
+function initWorkloadErgonomics() {
+    const scope = document.querySelector('main[data-ds-workload="true"]');
+    if (!scope) return;
+
+    const autocompleteByName = {
+        email: 'email',
+        pseudo: 'username',
+        motdepasse: 'current-password',
+        adresse: 'street-address',
+        numtelephone: 'tel',
+        titre: 'off',
+        description: 'off',
+        race: 'off',
+        nom_chien: 'off'
+    };
+
+    document.querySelectorAll('form').forEach(form => {
+        form.classList.add('ds-compact-form');
+
+        form.querySelectorAll('input, textarea, select').forEach(field => {
+            const fieldName = (field.getAttribute('name') || '').toLowerCase().replace(/\[\]$/, '');
+
+            if (!field.getAttribute('autocomplete') && autocompleteByName[fieldName]) {
+                field.setAttribute('autocomplete', autocompleteByName[fieldName]);
+            }
+
+            const placeholder = field.getAttribute('placeholder');
+            if (placeholder) {
+                const compact = placeholder
+                    .replace(/^Ex\s*:\s*/i, 'Ex. ')
+                    .replace(/^Veuillez\s+saisir\s+/i, '')
+                    .replace(/^Donnez\s+des\s+détails\s*/i, 'Infos utiles ')
+                    .trim();
+                field.setAttribute('placeholder', compact.length > 58 ? `${compact.slice(0, 55).trim()}…` : compact);
+            }
+        });
+
+        const primaryAction = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (primaryAction) {
+            const actionRow = primaryAction.closest('div');
+            if (actionRow) actionRow.classList.add('ds-form-actions');
+        }
+
+        form.querySelectorAll('a').forEach(link => {
+            const text = (link.textContent || '').trim().toLowerCase();
+            if (text === 'annuler' || text.includes('retour')) {
+                link.classList.add('ds-secondary-action');
+            }
+        });
+    });
+
+    document.querySelectorAll('.ds-profile-hero-subtitle').forEach(subtitle => {
+        const text = (subtitle.textContent || '').replace(/\s+/g, ' ').trim();
+        if (text.length > 72) {
+            subtitle.textContent = `${text.slice(0, 69).trim()}…`;
+        }
+    });
+
+    const labelMap = new Map([
+        ['enregistrer les modifications', 'Enregistrer'],
+        ["publier l'annonce", 'Publier'],
+        ["publier l'avis", 'Publier'],
+        ["retour à l'accueil", 'Accueil'],
+        ['voir le profil', 'Profil'],
+        ['envoyer un message', 'Message'],
+        ['filtres de recherche', 'Filtres']
+    ]);
+
+    document.querySelectorAll('button, a').forEach(el => {
+        const current = (el.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!current) return;
+        const lower = current.toLowerCase();
+
+        if (labelMap.has(lower)) {
+            const replacement = labelMap.get(lower);
+            if (replacement) {
+                el.textContent = replacement;
+            }
+        }
+    });
+}
+
 const NotificationsPage = {
     allNotifications: [],
     currentFilter: 'all',
@@ -419,6 +501,9 @@ const NotificationsPage = {
             const dateCreation = new Date(notif.date_creation).toLocaleDateString('fr-FR', {
                 year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
             });
+            const annonceLink = notif.id_annonce
+                ? `<a href="index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=${encodeURIComponent(notif.id_annonce)}" class="notification-annonce-link" style="font-size: 13px; font-weight: 600; color: #537031; text-decoration: underline;">Voir l'annonce concernée</a>`
+                : '';
 
             html += `
                 <div class="notification-item ${notif.type} ${notif.lue === 0 ? 'unread-status' : ''}"
@@ -429,6 +514,7 @@ const NotificationsPage = {
                         <div style="flex: 1;">
                             <p class="notification-item-title">${this.escapeHtml(notif.titre)}</p>
                             <p class="notification-item-message">${this.escapeHtml(notif.message)}</p>
+                            ${annonceLink}
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="notification-item-date">${dateCreation}</span>
                                 <span class="notification-badge ${notif.lue === 0 ? 'unread' : ''}">
@@ -602,7 +688,7 @@ class NotificationManager {
      * @param {string} type - Type: 'success', 'info', 'error'
      * @param {number} duration - Durée d'affichage en ms (0 = pas d'auto-suppression)
      */
-    show(title, message, type = 'info', duration = 5000) {
+    show(title, message, type = 'info', duration = 5000, actionUrl = null, actionLabel = "Voir l'annonce") {
         if (!this.container) {
             console.error('Notifications container not found');
             return null;
@@ -628,6 +714,7 @@ class NotificationManager {
                 <div class="notification-text">
                     <p class="notification-title">${this.escapeHtml(title)}</p>
                     <p class="notification-message">${this.escapeHtml(message)}</p>
+                    ${actionUrl ? `<a href="${this.escapeHtml(actionUrl)}" style="display:inline-block; margin-top:6px; font-weight:600; color:#537031; text-decoration:underline;">${this.escapeHtml(actionLabel)}</a>` : ''}
                 </div>
                 <button class="notification-close" type="button" aria-label="Fermer">
                     <i class="bi bi-x"></i>
@@ -842,12 +929,17 @@ class NotificationChecker {
                                 
                                 // Afficher la notification avec durée appropriée
                                 const duration = notification.type && notification.type.includes('refusée') ? 6000 : 5000;
+                                const actionUrl = notification.id_annonce
+                                    ? `index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=${encodeURIComponent(notification.id_annonce)}`
+                                    : null;
                                 
                                 notificationManager.show(
                                     notification.titre,
                                     notification.message,
                                     'success',
-                                    duration
+                                    duration,
+                                    actionUrl,
+                                    "Voir l'annonce"
                                 );
 
                                 // Marquer comme lue après affichage (sauf nouveaux messages)
@@ -937,6 +1029,7 @@ let candidatureChecker;
 
 // Initialiser au chargement du DOM
 document.addEventListener('DOMContentLoaded', function() {
+    initWorkloadErgonomics();
     initTarteAuCitron();
     initAnnonceFiltersPage();
     initAjouterAvisStars();
@@ -1202,8 +1295,17 @@ function annulerCandidature(idAnnonce, button) {
         })
         .then(response => {
             if (response.ok) {
-                const card = button.closest('.card');
-                const annonceTitle = card.querySelector('h5')?.textContent || 'l\'annonce';
+                const card = button.closest('.candidature-card');
+
+                if (!card) {
+                    notificationManager.show(
+                        'Candidature annulée',
+                        'Votre candidature a été annulée avec succès.',
+                        'info',
+                        3000
+                    );
+                    return;
+                }
                 
                 // Animation de suppression
                 card.style.opacity = '0';

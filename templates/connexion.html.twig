@@ -8,8 +8,8 @@
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
-                <h1 class="ds-profile-hero-title">Se connecter</h1>
-                <p class="ds-profile-hero-subtitle">Accédez à votre compte DogSynergie</p>
+                <h1 class="ds-profile-hero-title"><i class="bi bi-box-arrow-in-right me-2"></i>Se connecter</h1>
+                <p class="ds-profile-hero-subtitle">Accès rapide à votre compte</p>
             </div>
         </div>
 
@@ -21,12 +21,23 @@
                         <!-- EMAIL -->
                         <div style="margin-bottom: 28px;">
                             <label for="email" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">E-mail *</label>
+                            {% if erreurs is defined and erreurs.email is defined %}
+                                <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ erreurs.email }}</div>
+                            {% elseif erreurs is defined and erreurs %}
+                                {% for err in erreurs %}
+                                    {% if 'email' in err|lower or 'mail' in err|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             <input type="email"
                                 id="email"
                                 name="email"
                                 value="{{ old.email|default('') }}"
+                                minlength="5"
                                 maxlength="100"
-                                placeholder="votreE-mail@example.org"
+                                title="Saisissez une adresse email valide (ex : nom@domaine.fr)"
+                                placeholder="exemple@email.com"
                                 style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
                                 required />
                         </div>
@@ -34,25 +45,31 @@
                         <!-- MOT DE PASSE -->
                         <div style="margin-bottom: 28px;">
                             <label for="motDePasse" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Mot de passe *</label>
+                            {% if erreurs is defined and erreurs.motDePasse is defined %}
+                                <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ erreurs.motDePasse }}</div>
+                            {% elseif erreurs is defined and erreurs %}
+                                {% for err in erreurs %}
+                                    {% if 'mot de passe' in err|lower %}
+                                        <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                             <input type="password"
                                 id="motDePasse"
                                 name="motDePasse"
                                 minlength="8"
                                 maxlength="50"
-                                placeholder="Veuillez saisir votre mot de passe"
+                                title="Mot de passe de votre compte (8 à 50 caractères)"
+                                placeholder="Mot de passe"
                                 style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';"
                                 required />
                         </div>
 
                         <!-- BOUTONS -->
                         <div style="display: flex; gap: 12px; margin-bottom: 28px;">
-                            <a href="index.php"
-                                style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
-                                Annuler
-                            </a>
                             <button type="submit"
-                                style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                                Se connecter
+                                style="width: 100%; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 15px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: box-shadow 0.2s, background-color 0.2s; box-shadow: 0 4px 12px rgba(83, 112, 49, 0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+                                <i class="bi bi-box-arrow-in-right"></i> Se connecter
                             </button>
                         </div>
 
@@ -60,7 +77,7 @@
                         <div style="text-align: center; padding-top: 20px; border-top: 1px solid #DDA15E;">
                             <span style="color: #537031; font-size: 14px;">Vous n'avez pas de compte ?</span>
                             <a href="?controleur=Utilisateur&methode=afficherInscription"
-                                style="color: #DDA15E; font-weight: 600; text-decoration: none; margin-left: 8px;">
+                                style="color: #DDA15E; font-weight: 600; text-decoration: underline; margin-left: 8px;">
                                 Créer un compte
                             </a>
                         </div>
@@ -68,15 +85,6 @@
                                 {% if success is defined and success %}
                                     <div class="alert alert-success mt-4">
                                         {{ success }}
-                                    </div>
-                                {% endif %}
-                                {% if erreurs is defined and erreurs %}
-                                    <div class="alert alert-danger mt-4">
-                                        <ul class="mb-0">
-                                            {% for err in erreurs %}
-                                                <li>{{ err }}</li>
-                                            {% endfor %}
-                                        </ul>
                                     </div>
                                 {% endif %}
                     </form>

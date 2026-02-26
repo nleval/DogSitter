@@ -471,16 +471,39 @@ public function mettreAJourStatutPromenade(int $id_annonce, string $statut): boo
 }
 
 /**
- * @brief Archive automatiquement les promenades terminees dont la date est depassee
- * @return int Nombre d'annonces archivees
+ * @brief Marque une promenade comme terminee et archive l'annonce associee
+ * @param int $id_annonce Identifiant de l'annonce
+ * @return bool Succes de la mise a jour
+ */
+public function marquerPromenadeTermineeEtArchiverAnnonce(int $id_annonce): bool
+{
+    $stmt = $this->pdo->prepare(" 
+        UPDATE " . PREFIXE_TABLE . "Annonce
+        SET statut_promenade = 'terminee',
+            status = 'archivee'
+        WHERE id_annonce = :id_annonce
+    ");
+
+    return $stmt->execute([
+        ':id_annonce' => $id_annonce
+    ]);
+}
+
+/**
+ * @brief Archive automatiquement les annonces/promenades dont la date est depassee
+ * @return int Nombre d'annonces basculees en archivees
  */
 public function archiverPromenadesDepassees(): int
 {
     $stmt = $this->pdo->prepare("
         UPDATE " . PREFIXE_TABLE . "Annonce
-        SET statut_promenade = 'archivee'
-        WHERE statut_promenade = 'terminee'
-          AND STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+        SET status = 'archivee',
+            statut_promenade = CASE
+                WHEN id_promeneur IS NOT NULL THEN 'archivee'
+                ELSE statut_promenade
+            END
+        WHERE STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+          AND LOWER(status) <> 'archivee'
     ");
 
     $stmt->execute();

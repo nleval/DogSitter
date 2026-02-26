@@ -7,7 +7,7 @@
     <div class="ds-profile-hero">
         <div class="ds-profile-hero-inner">
             <h1 class="ds-profile-hero-title"><i class="bi bi-chat-dots-fill me-2"></i>Mes conversations</h1>
-            <p class="ds-profile-hero-subtitle">Consultez vos conversations actives.</p>
+            <p class="ds-profile-hero-subtitle">Accès rapide à vos échanges.</p>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
         <div class="dm-list-header">
             <h1 class="dm-list-title">
                 <i class="bi bi-chat-dots dm-title-icon"></i>
-                Messages
+                Conversations
             </h1>
             <a class="dm-home" href="?controleur=Index&methode=render">Accueil</a>
         </div>
@@ -24,9 +24,9 @@
             {% for conversation in conversationListe %}
                 <div class="dm-swipe" data-conversation-id="{{ conversation.idConversation }}">
                     <div class="dm-swipe-actions">
-                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');">
+                        <form method="post" action="?controleur=conversation&methode=supprimerConversation" onsubmit="return confirm('Supprimer cette conversation pour tous ?');" title="Supprimer définitivement cette conversation">
                             <input type="hidden" name="id_conversation" value="{{ conversation.idConversation }}">
-                            <button type="submit">Supprimer</button>
+                            <button type="submit" title="Supprimer définitivement cette conversation">Supprimer</button>
                         </form>
                     </div>
 
@@ -67,7 +67,7 @@
                         </a>
 
                         <div class="dm-actions">
-                            <button type="button" class="dm-swipe-handle" aria-label="Actions">...</button>
+                            <button type="button" class="dm-swipe-handle" aria-label="Afficher les actions" title="Afficher les actions disponibles">...</button>
                         </div>
                     </div>
                 </div>

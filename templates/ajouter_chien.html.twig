@@ -14,23 +14,15 @@
     <div style="background-color: #FEFAE0; min-height: 100vh; padding: 0; display: flex; flex-direction: column;">
         <div class="ds-profile-hero">
             <div class="ds-profile-hero-inner">
-                <h1 class="ds-profile-hero-title">{% if isEdit %}Modifier un chien{% else %}Ajouter un chien{% endif %}</h1>
-                <p class="ds-profile-hero-subtitle">{% if isEdit %}Mettez a jour les informations de votre compagnon{% else %}Completez les informations de votre compagnon{% endif %}</p>
+                <h1 class="ds-profile-hero-title"><i class="bi {% if isEdit %}bi-pencil{% else %}bi-paw{% endif %} me-2"></i>{% if isEdit %}Modifier un chien{% else %}Ajouter un chien{% endif %}</h1>
+                <p class="ds-profile-hero-subtitle">{% if isEdit %}Mettez à jour l'essentiel{% else %}Ajoutez les infos essentielles{% endif %}</p>
             </div>
         </div>
 
         <!-- Contenu principal -->
         <div style="flex: 1; padding: 50px 40px; display: flex; justify-content: center; background-color: #FEFAE0;">
             <div style="width: 100%; max-width: 600px;">
-                {% if erreurs is defined and erreurs %}
-                    <div class="alert alert-danger mb-4">
-                        <ul class="mb-0">
-                            {% for err in erreurs %}
-                                <li>{{ err }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% elseif erreur is defined %}
+                {% if erreur is defined %}
                     <div class="alert alert-danger mb-4">{{ erreur }}</div>
                 {% endif %}
 
@@ -38,19 +30,40 @@
                     <!-- Nom du chien -->
                     <div style="margin-bottom: 28px;">
                         <label for="nom_chien" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Nom du chien *</label>
-                        <input type="text" id="nom_chien" name="nom_chien" required minlength="2" maxlength="50" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" placeholder="Ex: Rex, Bella..." value="{{ old.nom_chien|default(chien.getNom_Chien()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'nom_chien' in err|lower or 'nom du chien' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <input type="text" id="nom_chien" name="nom_chien" required minlength="2" maxlength="20" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" title="Nom du chien (2 à 20 caractères, lettres/chiffres/espaces)" placeholder="Ex: Rex, Bella..." value="{{ old.nom_chien|default(chien.getNom_Chien()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Race -->
                     <div style="margin-bottom: 28px;">
                         <label for="race" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Race *</label>
-                        <input type="text" id="race" name="race" required minlength="2" maxlength="80" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" placeholder="Ex: Labrador, Beagle..." value="{{ old.race|default(chien.getRace()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'race' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <input type="text" id="race" name="race" required minlength="2" maxlength="50" pattern="[A-Za-zÀ-ÿ0-9'\-\s]+" title="Race du chien (2 à 50 caractères)" placeholder="Ex: Labrador, Beagle..." value="{{ old.race|default(chien.getRace()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#DDA15E'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Taille -->
                     <div style="margin-bottom: 28px;">
                         <label for="taille" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Taille</label>
-                        <select id="taille" name="taille" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; cursor: pointer;">
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'taille' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <select id="taille" name="taille" title="Choisissez la catégorie de taille de votre chien" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; cursor: pointer;">
                             <option value="">Sélectionner une taille...</option>
                             <option value="Très petit" {% if old.taille|default(chien.getTaille()|default('')) == 'Très petit' %}selected{% endif %}>Très petit (< 5 kg)</option>
                             <option value="Petit" {% if old.taille|default(chien.getTaille()|default('')) == 'Petit' %}selected{% endif %}>Petit (5-15 kg)</option>
@@ -63,12 +76,26 @@
                     <!-- Poids -->
                     <div style="margin-bottom: 28px;">
                         <label for="poids" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Poids (en kg)</label>
-                        <input type="number" id="poids" name="poids" placeholder="Ex: 25" step="0.1" min="0.1" max="120" value="{{ old.poids|default(chien.getPoids()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'poids' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <input type="number" id="poids" name="poids" placeholder="Ex: 25" step="0.1" min="0.1" max="120" title="Poids en kilogrammes (0.1 à 120)" value="{{ old.poids|default(chien.getPoids()|default('')) }}" style="width: 100%; padding: 12px 16px; border: 1px solid #9AAD5A; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#537031'; this.style.boxShadow='0 0 0 3px rgba(83, 112, 49, 0.1)';" onblur="this.style.borderColor='#9AAD5A'; this.style.boxShadow='none';">
                     </div>
 
                     <!-- Photo du chien -->
                     <div style="margin-bottom: 28px;">
                         <label for="photo" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Photo du chien</label>
+                        {% if erreurs is defined and erreurs %}
+                            {% for err in erreurs %}
+                                {% if 'photo' in err|lower or 'fichier' in err|lower or 'image' in err|lower %}
+                                    <div style="color: #dc3545; font-size: 13px; margin-bottom: 8px;">{{ err }}</div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                         {% if isEdit and chien.getCheminPhoto() is not empty %}
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                                 <img src="images/chiens/{{ chien.getCheminPhoto() }}" alt="Photo de {{ chien.getNom_Chien() }}" width="64" height="64" style="object-fit: cover; border-radius: 50%; border: 3px solid #FEFAE0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -79,7 +106,7 @@
                             <i class="bi bi-cloud-arrow-up" style="font-size: 32px; color: #9AAD5A; display: block; margin-bottom: 10px;"></i>
                             <p style="color: #537031; margin: 0 0 4px 0; font-weight: 600;">Glissez-déposez une photo ou cliquez</p>
                             <p style="color: #9AAD5A; margin: 0; font-size: 12px;">JPEG, PNG (max 2MB)</p>
-                            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png" style="display: none;">
+                            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png" title="Photo au format JPEG ou PNG (max 2 Mo)" style="display: none;">
                         </div>
                         <div id="fileInfo" style="margin-top: 12px; padding: 12px 16px; background-color: #E8F5E0; border-radius: 6px; border: 1px solid #9AAD5A; display: none;">
                             <p style="color: #537031; margin: 0; font-size: 13px; font-weight: 600;">✓ <span id="fileName"></span></p>
@@ -88,11 +115,11 @@
 
                     <!-- Boutons -->
                     <div style="display: flex; gap: 12px; margin-top: 40px;">
-                        <button type="submit" style="flex: 1; background: linear-gradient(135deg, #537031 0%, #4a5f28 100%); color: #FEFAE0; padding: 14px 20px; font-size: 14px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(83, 112, 49, 0.2)';">
-                            <i class="bi bi-check-circle me-2"></i> {% if isEdit %}Enregistrer les modifications{% else %}Ajouter le chien{% endif %}
+                        <button type="submit" title="Enregistrer ce chien" style="flex: 1; background-color: #537031; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 0 4px 12px rgba(83, 112, 49, 0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+                            <i class="bi bi-check-circle"></i> {% if isEdit %}Enregistrer{% else %}Ajouter{% endif %}
                         </button>
-                        <a href="?controleur=utilisateur&methode=afficherTonUtilisateur" style="flex: 1; background-color: #FAF6E9; color: #537031; padding: 14px 20px; font-size: 14px; border: 2px solid #DDA15E; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(83, 112, 49, 0.08);" onmouseover="this.style.backgroundColor='#F0F8EC'; this.style.borderColor='#537031';" onmouseout="this.style.backgroundColor='#FAF6E9'; this.style.borderColor='#DDA15E';">
-                            <i class="bi bi-x-circle me-2"></i> Annuler
+                        <a href="?controleur=utilisateur&methode=afficherTonUtilisateur" style="flex: 1; background-color: #DDA15E; color: #FEFAE0; padding: 12px 16px; font-size: 13px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.backgroundColor='#BC6C25'; this.style.borderColor='#9a5316';" onmouseout="this.style.backgroundColor='#DDA15E'; this.style.borderColor='#BC6C25';">
+                            <i class="bi bi-x-circle"></i> Annuler
                         </a>
                     </div>
                 </form>

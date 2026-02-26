@@ -97,6 +97,7 @@ class ControllerAnnonce extends Controller
     {    
         // Récupérer toutes les annonces depuis la base de données
         $managerAnnonce = new AnnonceDAO($this->getPDO());
+        $managerAnnonce->archiverPromenadesDepassees();
         $annoncesListe = $managerAnnonce->findAll();
 
         // FILTRER: Afficher uniquement les annonces 'active' (disponibles)
@@ -141,8 +142,6 @@ class ControllerAnnonce extends Controller
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         $id_utilisateur = $_GET['id_utilisateur'] ?? $utilisateurConnecte->getId();
         $managerAnnonce = new AnnonceDAO($this->getPDO());
-        
-        // Archiver automatiquement les promenades terminées dépassées
         $managerAnnonce->archiverPromenadesDepassees();
         
         // Récupérer le filtre de statut depuis GET
@@ -234,7 +233,8 @@ class ControllerAnnonce extends Controller
                 'endroitPromenade' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 255
+                    'longueur_min' => 2,
+                    'longueur_max' => 120
                 ],
                 'description' => [
                     'obligatoire' => false,
@@ -412,6 +412,14 @@ class ControllerAnnonce extends Controller
             return;
         }
 
+        if (strtolower((string) $annonce->getStatus()) === 'archivee') {
+            http_response_code(403);
+            echo $this->getTwig()->render('403.html.twig', [
+                'message' => "Cette annonce est archivée. Vous pouvez la consulter, mais vous ne pouvez plus la modifier."
+            ]);
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $regles = [
@@ -442,7 +450,8 @@ class ControllerAnnonce extends Controller
                 'endroitPromenade' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 255
+                    'longueur_min' => 2,
+                    'longueur_max' => 120
                 ],
                 'description' => [
                     'obligatoire' => false,
@@ -464,13 +473,59 @@ class ControllerAnnonce extends Controller
                 return;
             }
 
-            $managerAnnonce->modifierChamp($id_annonce, 'titre', $_POST['titre']);
-            $managerAnnonce->modifierChamp($id_annonce, 'datePromenade', $_POST['datePromenade']);
-            $managerAnnonce->modifierChamp($id_annonce, 'horaire', $_POST['horaire']);
-            $managerAnnonce->modifierChamp($id_annonce, 'duree', $_POST['duree']);
-            $managerAnnonce->modifierChamp($id_annonce, 'tarif', $_POST['tarif']);
-            $managerAnnonce->modifierChamp($id_annonce, 'endroitPromenade', $_POST['endroitPromenade']);
-            $managerAnnonce->modifierChamp($id_annonce, 'description', $_POST['description']);
+            $nouveauxChamps = [
+                'titre' => (string) ($_POST['titre'] ?? ''),
+                'datePromenade' => (string) ($_POST['datePromenade'] ?? ''),
+                'horaire' => (string) ($_POST['horaire'] ?? ''),
+                'duree' => (string) ($_POST['duree'] ?? ''),
+                'tarif' => (string) ($_POST['tarif'] ?? ''),
+                'endroitPromenade' => (string) ($_POST['endroitPromenade'] ?? ''),
+                'description' => (string) ($_POST['description'] ?? '')
+            ];
+
+            $anciensChamps = [
+                'titre' => (string) ($annonce->getTitre() ?? ''),
+                'datePromenade' => (string) ($annonce->getDatePromenade() ?? ''),
+                'horaire' => (string) ($annonce->getHoraire() ?? ''),
+                'duree' => (string) ($annonce->getDuree() ?? ''),
+                'tarif' => (string) ($annonce->getTarif() ?? ''),
+                'endroitPromenade' => (string) ($annonce->getEndroitPromenade() ?? ''),
+                'description' => (string) ($annonce->getDescription() ?? '')
+            ];
+
+            $libellesChamps = [
+                'titre' => 'le titre',
+                'datePromenade' => 'la date',
+                'horaire' => "l'horaire",
+                'duree' => 'la durée',
+                'tarif' => 'le tarif',
+                'endroitPromenade' => 'le lieu',
+                'description' => 'la description'
+            ];
+
+            $champsModifies = [];
+            foreach ($nouveauxChamps as $champ => $nouvelleValeur) {
+                if (trim($nouvelleValeur) !== trim($anciensChamps[$champ])) {
+                    $managerAnnonce->modifierChamp($id_annonce, $champ, $nouvelleValeur);
+                    $champsModifies[] = $libellesChamps[$champ] ?? $champ;
+                }
+            }
+
+            $idPromeneurAssigne = $annonce->getIdPromeneur();
+            if ($idPromeneurAssigne && !empty($champsModifies)) {
+                $managerNotification = new NotificationDAO($this->getPDO());
+                $message = "Le maître a modifié " . implode(', ', $champsModifies) . " dans l'annonce \"" . $annonce->getTitre() . "\".";
+
+                $managerNotification->creerNotification(
+                    (int) $idPromeneurAssigne,
+                    'Annonce modifiée',
+                    $message,
+                    'info',
+                    (int) $id_annonce,
+                    null,
+                    (int) $idPromeneurAssigne
+                );
+            }
 
             header('Location: index.php?controleur=annonce&methode=afficherAnnonce&id_annonce=' . $id_annonce);
             exit();
@@ -517,6 +572,7 @@ public function repondreAnnonce($id_annonce = null)
 
     // Vérifier que l'annonce existe
     $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $managerAnnonce->archiverPromenadesDepassees();
     $annonce = $managerAnnonce->findById($id_annonce);
 
     if (!$annonce) {
@@ -539,6 +595,15 @@ public function repondreAnnonce($id_annonce = null)
         http_response_code(403);
         echo $this->getTwig()->render('403.html.twig', [
             'message' => "Cette annonce n'est plus disponible. Un maître a déjà accepté une candidature."
+        ]);
+        return;
+    }
+
+    $dateAnnonce = $this->construireDatePromenade($annonce);
+    if ($dateAnnonce && $dateAnnonce <= new DateTime()) {
+        http_response_code(403);
+        echo $this->getTwig()->render('403.html.twig', [
+            'message' => "Cette annonce a dépassé sa date de promenade et ne peut plus recevoir de candidature."
         ]);
         return;
     }
@@ -698,6 +763,7 @@ public function accepterCandidature()
     }
 
     $managerAnnonce = new AnnonceDAO($this->getPDO());
+    $managerAnnonce->archiverPromenadesDepassees();
     $annonce = $managerAnnonce->findById($id_annonce);
 
     // Vérifier que l'annonce appartient à l'utilisateur
@@ -707,6 +773,11 @@ public function accepterCandidature()
 
     if ($annonce->getIdPromeneur()) {
         $sendJson(409, ['success' => false, 'message' => "Un promeneur est deja assigne a cette annonce."]);
+    }
+
+    $dateAnnonce = $this->construireDatePromenade($annonce);
+    if ($dateAnnonce && $dateAnnonce <= new DateTime()) {
+        $sendJson(409, ['success' => false, 'message' => "Cette annonce a dépassé sa date et a été archivée automatiquement."]);
     }
 
     // Appel à la méthode de la DAO pour accepter la candidature
@@ -1294,7 +1365,7 @@ public function verMesPromenades()
             exit();
         }
 
-        $success = $managerAnnonce->mettreAJourStatutPromenade($id_annonce, 'terminee');
+        $success = $managerAnnonce->marquerPromenadeTermineeEtArchiverAnnonce($id_annonce);
 
         if ($success) {
             header('Location: index.php?controleur=annonce&methode=mesPromenades&statut=terminee');
@@ -1339,6 +1410,11 @@ public function verMesPromenades()
 
     private function determinerStatutPromenade(Annonce $annonce): string
     {
+        $statusAnnonce = strtolower((string) $annonce->getStatus());
+        if ($statusAnnonce === 'archivee') {
+            return 'archivee';
+        }
+
         $statut = $annonce->getStatutPromenade();
         if ($statut === 'terminee' || $statut === 'archivee' || $statut === 'annulee') {
             return $statut;

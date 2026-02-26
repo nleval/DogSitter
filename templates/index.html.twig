@@ -53,9 +53,8 @@
                 {% endif %}
             {% elseif not estConnecte %}
                 <a href="?controleur=utilisateur&methode=authentification"
-                    class="btn btn-lg shadow-lg fw-bold text-white"
-                    style="background-color:#BC6C25; min-width:280px;">
-                    <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
+                    style="min-width: 220px; background-color: #DDA15E; color: #FEFAE0; padding: 12px 16px; font-size: 16px; border: 1px solid #BC6C25; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(188, 108, 37, 0.18);" onmouseover="this.style.backgroundColor='#BC6C25'; this.style.borderColor='#9a5316';" onmouseout="this.style.backgroundColor='#DDA15E'; this.style.borderColor='#BC6C25';">
+                    <i class="bi bi-box-arrow-in-right"></i> Se connecter
                 </a>
             {% endif %}
         </div>
@@ -70,141 +69,141 @@
             {% if not estConnecte %}
                 <div class="row text-center">
                     <div class="col-md-4 mb-4">
-                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <a href="?controleur=utilisateur&methode=ajouterUtilisateur" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                             <div class="card-body">
                                 <i class="bi bi-person-plus display-5" style="color:#DDA15E;"></i>
                                 <h5 class="card-title fw-bold mt-3" style="color:#537031;">Créez votre compte</h5>
                                 <p class="card-text text-muted">Inscrivez-vous gratuitement en tant que propriétaire, promeneur, ou les deux.</p>
-                                <a href="?controleur=utilisateur&methode=ajouterUtilisateur" class="fw-bold text-decoration-none" style="color:#DDA15E;">S'inscrire</a>
+                                <span class="fw-bold text-decoration-none" style="color:#DDA15E;">S'inscrire</span>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                             <div class="card-body">
                                 <i class="bi bi-search-heart display-5" style="color:#DDA15E;"></i>
                                 <h5 class="card-title fw-bold mt-3" style="color:#537031;">Trouvez votre match</h5>
                                 <p class="card-text text-muted">Consultez les annonces, les profils et les avis pour choisir en confiance.</p>
-                                <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Découvrir</a>
+                                <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Découvrir</span>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-md-4 mb-4">
-                        <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                        <a href="?controleur=utilisateur&methode=authentification" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                             <div class="card-body">
                                 <i class="bi bi-chat-dots display-5" style="color:#DDA15E;"></i>
                                 <h5 class="card-title fw-bold mt-3" style="color:#537031;">Échangez et organisez</h5>
                                 <p class="card-text text-muted">Discutez via la messagerie, validez la promenade et suivez vos activités.</p>
-                                <a href="?controleur=utilisateur&methode=authentification" class="fw-bold text-decoration-none" style="color:#DDA15E;">Se connecter</a>
+                                <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Se connecter</span>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             {% else %}
                 <div class="row text-center">
                     {% if estMaitre and not estPromeneur %}
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=Annonce&methode=creerAnnonce" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Publier une annonce</h5>
                                     <p class="card-text text-muted">Créez rapidement une demande de promenade adaptée à votre chien.</p>
-                                    <a href="?controleur=Annonce&methode=creerAnnonce" class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-megaphone display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer mes annonces</h5>
                                     <p class="card-text text-muted">Modifiez vos annonces, suivez leur statut et consultez les détails.</p>
-                                    <a href="?controleur=Annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mes annonces</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mes annonces</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=annonce&methode=voirCandidatures" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-clipboard-check display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Valider les candidatures</h5>
                                     <p class="card-text text-muted">Consultez les promeneurs intéressés et acceptez le bon profil.</p>
-                                    <a href="?controleur=annonce&methode=voirCandidatures" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les candidatures</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les candidatures</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     {% elseif estPromeneur and not estMaitre %}
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-search display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Parcourir les annonces</h5>
                                     <p class="card-text text-muted">Trouvez des promenades proches de vous selon vos disponibilités.</p>
-                                    <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=annonce&methode=verMesCandidatures" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-send-check display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Suivre mes candidatures</h5>
                                     <p class="card-text text-muted">Vérifiez les réponses des propriétaires à vos demandes envoyées.</p>
-                                    <a href="?controleur=annonce&methode=verMesCandidatures" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes candidatures</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes candidatures</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=annonce&methode=mesPromenades&statut=a_venir" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-map display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer mes promenades</h5>
                                     <p class="card-text text-muted">Retrouvez vos promenades validées et suivez leur avancement.</p>
-                                    <a href="?controleur=annonce&methode=mesPromenades&statut=a_venir" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes promenades</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Mes promenades</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     {% elseif estMaitre and estPromeneur %}
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=Annonce&methode=creerAnnonce" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-pencil-square display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Publier une annonce</h5>
                                     <p class="card-text text-muted">Publiez vos demandes de promenade quand vous êtes en mode maître.</p>
-                                    <a href="?controleur=Annonce&methode=creerAnnonce" class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Publier maintenant</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-search-heart display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Trouver et candidater</h5>
                                     <p class="card-text text-muted">Passez en mode promeneur pour trouver des annonces et envoyer vos candidatures.</p>
-                                    <a href="?controleur=Annonce&methode=afficherAllAnnonces" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir les annonces</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-grid-3x3-gap display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Gérer tout depuis mon espace</h5>
                                     <p class="card-text text-muted">Retrouvez vos annonces, candidatures, promenades et échanges au même endroit.</p>
-                                    <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Mon espace</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Mon espace</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     {% else %}
                         <div class="col-md-4 mb-4">
-                            <div class="card shadow h-100 p-3" style="border: 1px solid #DDA15E;">
+                            <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="card shadow h-100 p-3" style="border: 1px solid #DDA15E; text-decoration: none; display: flex; flex-direction: column; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(83, 112, 49, 0.2)'; this.style.borderColor='#537031';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 0 rgba(0,0,0,0)'; this.style.borderColor='#DDA15E';">
                                 <div class="card-body">
                                     <i class="bi bi-person-check display-5" style="color:#DDA15E;"></i>
                                     <h5 class="card-title fw-bold mt-3" style="color:#537031;">Compléter mon profil</h5>
                                     <p class="card-text text-muted">Activez votre rôle maître ou promeneur pour débloquer toutes les fonctionnalités.</p>
-                                    <a href="?controleur=utilisateur&methode=afficherUtilisateur&id_utilisateur={{ idUtilisateurConnecte }}" class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mon profil</a>
+                                    <span class="fw-bold text-decoration-none" style="color:#DDA15E;">Voir mon profil</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     {% endif %}
                 </div>
@@ -241,8 +240,8 @@
             data-bs-target="#devLinks"
             aria-expanded="false"
             aria-controls="devLinks"
-            style="background-color:#537031;">
-            <i class="bi bi-tools me-1"></i> Liens de Développement / Test
+            style="background-color: #537031; color: #FEFAE0; padding: 10px 16px; font-size: 13px; border: 1px solid #4a5f28; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 0 4px 12px rgba(83, 112, 49, 0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(83, 112, 49, 0.35)'; this.style.backgroundColor='#4a5f28';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(83, 112, 49, 0.25)'; this.style.backgroundColor='#537031';">
+            <i class="bi bi-tools"></i> Liens de Développement / Test
         </button>
         <div class="collapse mt-3" id="devLinks">
             <div class="card card-body" style="background-color:#FEFAE0; border: 1px solid #DDA15E;">

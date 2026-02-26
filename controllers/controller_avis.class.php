@@ -205,26 +205,15 @@ class ControllerAvis extends Controller
             return;
         }
 
-        // Vérifier que la promenade est terminée (date de promenade <= aujourd'hui)
-        
-        if (!empty($id_annonce)) {
-            $managerAnnonce = new AnnonceDAO($this->getPDO());
-            $annonce = $managerAnnonce->findById($id_annonce);
-            
-            if ($annonce) {
-                $walkDate = new DateTime($annonce->getDatePromenade());
-                $today = new DateTime('today');
-                
-                if ($walkDate > $today) {
-                    $template = $this->getTwig()->load('ajouter_avis.html.twig');
-                    echo $template->render([
-                        'erreurs' => ["Cette promenade n'a pas encore eu lieu. Vous pourrez laisser un avis après qu'elle soit terminée."],
-                        'id_utilisateur_note' => $id_utilisateur_note,
-                        'id_annonce' => $id_annonce
-                    ]);
-                    return;
-                }
-            }
+        // Vérifier que la promenade est terminée
+        if ($annonce && !$this->peutLaisserAvisPourAnnonce($annonce)) {
+            $template = $this->getTwig()->load('ajouter_avis.html.twig');
+            echo $template->render([
+                'erreurs' => ["Cette promenade n'a pas encore eu lieu. Vous pourrez laisser un avis après qu'elle soit terminée."],
+                'id_utilisateur_note' => $id_utilisateur_note,
+                'id_annonce' => $id_annonce
+            ]);
+            return;
         }
         
 
@@ -238,19 +227,8 @@ class ControllerAvis extends Controller
             $erreurs = [];
 
             // Vérifier à nouveau que la promenade est terminée
-            
-            if (!empty($id_annonce)) {
-                $managerAnnonce = new AnnonceDAO($this->getPDO());
-                $annonce = $managerAnnonce->findById($id_annonce);
-                
-                if ($annonce) {
-                    $walkDate = new DateTime($annonce->getDatePromenade());
-                    $today = new DateTime('today');
-                    
-                    if ($walkDate > $today) {
-                        $erreurs[] = "Cette promenade n'a pas encore eu lieu. Vous ne pouvez pas laisser d'avis.";
-                    }
-                }
+            if ($annonce && !$this->peutLaisserAvisPourAnnonce($annonce)) {
+                $erreurs[] = "Cette promenade n'a pas encore eu lieu. Vous ne pouvez pas laisser d'avis.";
             }
 
             if (!empty($erreurs)) {
@@ -264,12 +242,6 @@ class ControllerAvis extends Controller
                 return;
             }
             
-
-            //Temporaire
-            $id_promenade = 26;
-            $id_utilisateur_note = 2;
-            //
-
             $regles = [
                 'note' => [
                     'obligatoire' => true,
@@ -397,7 +369,7 @@ class ControllerAvis extends Controller
 
         // ---------- AVIS ----------
         $managerAvis = new AvisDAO($this->getPDO());
-        $avis = $managerAvis->findById($id_avis);
+        $avis = $managerAvis->trouverParId($id_avis);
 
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         $id_utilisateur = $utilisateurConnecte->getId();
@@ -422,7 +394,7 @@ class ControllerAvis extends Controller
                 'texte_commentaire' => [
                     'obligatoire' => false,
                     'type' => 'string',
-                    'longueur_max' => 50
+                    'longueur_max' => 500
                 ]
             ];
 
@@ -450,6 +422,26 @@ class ControllerAvis extends Controller
         echo $this->getTwig()->render('modifier_avis.html.twig', [
             'avis' => $avis
         ]);
+    }
+
+    private function peutLaisserAvisPourAnnonce(Annonce $annonce): bool
+    {
+        if (strtolower((string) $annonce->getStatus()) === 'archivee') {
+            return true;
+        }
+
+        $statutPromenade = strtolower((string) $annonce->getStatutPromenade());
+        if ($statutPromenade === 'terminee' || $statutPromenade === 'archivee') {
+            return true;
+        }
+
+        try {
+            $walkDate = new DateTime((string) $annonce->getDatePromenade());
+            $today = new DateTime('today');
+            return $walkDate <= $today;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
 }
