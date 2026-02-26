@@ -110,16 +110,8 @@
                 {% endif %}
 
                 <!-- Actions -->
-                {% if promenade.statut == 'en_cours' and utilisateurConnecte.id == promenade.id_promeneur %}
-                    <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
-                        <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
-                            <i class="bi bi-lightning"></i> Actions
-                        </h3>
-                        <a href="?controleur=annonce&methode=marquerTerminee&id_annonce={{ promenade.id_annonce }}" style="display: block; text-align: center; padding: 14px; background-color: #9AAD5A; color: #FEFAE0; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; margin-bottom: 12px;" onmouseover="this.style.backgroundColor='#7a8f47'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#9AAD5A'; this.style.transform='translateY(0)'">
-                            <i class="bi bi-check-circle"></i> Marquer comme terminée
-                        </a>
-                    </div>
-                {% elseif promenade.statut == 'terminee' and utilisateurConnecte.id == promenade.maitre.id %}
+                {# Suppression du bouton "Marquer comme terminée" : tout est automatique #}
+                {% if promenade.statut == 'terminee' and utilisateurConnecte.id == promenade.maitre.id %}
                     <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(83, 112, 49, 0.08);">
                         <h3 style="color: #537031; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">
                             <i class="bi bi-chat-dots"></i> Avis

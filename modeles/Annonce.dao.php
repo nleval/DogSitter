@@ -495,19 +495,61 @@ public function marquerPromenadeTermineeEtArchiverAnnonce(int $id_annonce): bool
  */
 public function archiverPromenadesDepassees(): int
 {
-    $stmt = $this->pdo->prepare("
+    // 1. Passer en 'en_attente' (maître) et 'en_cours' (promeneur) si la promenade commence
+    $stmt1 = $this->pdo->prepare("
         UPDATE " . PREFIXE_TABLE . "Annonce
-        SET status = 'archivee',
-            statut_promenade = CASE
-                WHEN id_promeneur IS NOT NULL THEN 'archivee'
-                ELSE statut_promenade
-            END
-        WHERE STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') < NOW()
+        SET statut_promenade = CASE
+            WHEN id_promeneur IS NOT NULL THEN 'en_cours'
+            ELSE 'en_attente'
+        END
+        WHERE STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') <= NOW()
+          AND STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') + INTERVAL duree MINUTE > NOW()
           AND LOWER(status) <> 'archivee'
+          AND (statut_promenade = 'a_venir' OR statut_promenade IS NULL)
     ");
+    $stmt1->execute();
+    $count1 = $stmt1->rowCount();
 
-    $stmt->execute();
-    return $stmt->rowCount();
+    // 2. Passer en 'terminee' et 'archivee' si la promenade est terminée
+    $stmt2 = $this->pdo->prepare("
+        SELECT id_annonce, id_utilisateur, id_promeneur, titre
+        FROM " . PREFIXE_TABLE . "Annonce
+        WHERE STR_TO_DATE(CONCAT(datePromenade, ' ', horaire), '%Y-%m-%d %H:%i') + INTERVAL duree MINUTE <= NOW()
+          AND LOWER(status) <> 'archivee'
+          AND statut_promenade IN ('en_cours', 'en_attente')
+    ");
+    $stmt2->execute();
+    $annoncesTerminees = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+    $count2 = 0;
+    foreach ($annoncesTerminees as $annonce) {
+        // Mettre à jour la BDD
+        $stmtUpdate = $this->pdo->prepare("
+            UPDATE " . PREFIXE_TABLE . "Annonce
+            SET statut_promenade = 'terminee', status = 'archivee'
+            WHERE id_annonce = :id_annonce
+        ");
+        $stmtUpdate->execute([':id_annonce' => $annonce['id_annonce']]);
+        $count2++;
+
+        // Notification automatique
+        try {
+            require_once __DIR__ . '/../modeles/Notification.dao.php';
+            $notifDAO = new NotificationDAO($this->pdo);
+            $titreNotif = 'Promenade terminée';
+            $messageNotif = "La promenade pour l'annonce \"{$annonce['titre']}\" est terminée et archivée.";
+            // Notifier le maître
+            $notifDAO->creerNotification((int)$annonce['id_utilisateur'], $titreNotif, $messageNotif, 'promenade_terminee', (int)$annonce['id_annonce'], null, (int)$annonce['id_promeneur']);
+            // Notifier le promeneur
+            if (!empty($annonce['id_promeneur'])) {
+                $notifDAO->creerNotification((int)$annonce['id_promeneur'], $titreNotif, $messageNotif, 'promenade_terminee', (int)$annonce['id_annonce'], null, (int)$annonce['id_promeneur']);
+            }
+        } catch (\Throwable $e) {
+            error_log('Erreur notification fin promenade : ' . $e->getMessage());
+        }
+    }
+
+    return $count1 + $count2;
 }
 
 /**
