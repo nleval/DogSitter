@@ -41,7 +41,7 @@
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
-                            <input type="date" id="datePromenade" name="datePromenade" value="{{ donnees.datePromenade|default(annonce.datePromenade) }}" required title="Choisissez la date de la promenade" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
+                            <input type="date" id="datePromenade" name="datePromenade" value="{{ donnees.datePromenade|default(annonce.datePromenade) }}" min="{{ 'now'|date_modify('+1 day')|date('Y-m-d') }}" required title="Choisissez une date de promenade à partir de demain" style="width: 100%; padding: 12px 16px; border: 1px solid #DDA15E; border-radius: 6px; font-size: 14px; background-color: #FEFAE0; color: #2c2c2c; box-sizing: border-box;">
                         </div>
                         <div>
                             <label for="horaire" style="display: block; color: #537031; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Horaire *</label>

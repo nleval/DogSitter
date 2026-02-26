@@ -189,7 +189,7 @@
                                     <h3 style="font-size: 18px; font-weight: 600; color: #537031; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">
                                         <i class="bi bi-star-fill" style="margin-right: 8px; color: #DDA15E;"></i>Avis de cette promenade
                                     </h3>
-                                    {% if userConnecte and userConnecte.estMaitre and userConnecte.getId() == proprietaire.getId() %}
+                                    {% if userConnecte and userConnecte.estMaitre and userConnecte.getId() == proprietaire.getId() and (annonce.status == 'active' or annonce.status == 'archivee') %}
                                         {% if acceptedCandidatId %}
                                             <a href="?controleur=Avis&methode=creerAvis&id_utilisateur_note={{ acceptedCandidatId }}&id_annonce={{ annonce.getIdAnnonce() }}"
                                                 title="Laisser un avis sur la promenade"
