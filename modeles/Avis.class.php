@@ -9,6 +9,11 @@
 class Avis
 {
     /**
+     * @brief Auteur de l'avis (objet Utilisateur)
+     * @var Utilisateur|null
+     */
+    public $auteur = null;
+    /**
      * @brief Identifiant de l'avis
      * @var int|null
      */
