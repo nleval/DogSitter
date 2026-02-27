@@ -101,6 +101,45 @@ foreach ($sortedTables as $table) {
     $backupSql .= "\n";
 }
 
+// ==============================
+// Export des triggers
+// ==============================
+
+$backupSql .= "-- -------------------------------------------\n";
+$backupSql .= "-- Triggers\n";
+$backupSql .= "-- -------------------------------------------\n\n";
+
+// Désactiver les vérifications pour éviter les erreurs à l'import
+$backupSql .= "SET FOREIGN_KEY_CHECKS=0;\n";
+$backupSql .= "DELIMITER $$\n\n";
+
+$triggersResult = $conn->query("SHOW TRIGGERS");
+
+if ($triggersResult) {
+    while ($trigger = $triggersResult->fetch_assoc()) {
+
+        $triggerTable = $trigger['Table'];
+
+        // On vérifie que la table du trigger a le bon préfixe
+        if (strpos($triggerTable, $prefixeTable) === 0) {
+
+            $triggerName = $trigger['Trigger'];
+
+            $createTrigger = $conn->query("SHOW CREATE TRIGGER `$triggerName`");
+            if ($createTrigger) {
+                $row = $createTrigger->fetch_assoc();
+
+                $backupSql .= "-- Trigger : $triggerName\n";
+                $backupSql .= "DROP TRIGGER IF EXISTS `$triggerName` $$\n";
+                $backupSql .= $row['SQL Original Statement'] . " $$\n\n";
+            }
+        }
+    }
+}
+
+$backupSql .= "DELIMITER ;\n";
+$backupSql .= "SET FOREIGN_KEY_CHECKS=1;\n\n";
+
 file_put_contents($backupFile, $backupSql);
 
 // Garder maximum 3 fichiers de sauvegarde

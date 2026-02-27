@@ -1,5 +1,5 @@
 -- Sauvegarde complète des tables préfixées par dog_ dans dogsitter
--- Générée le 2026-02-23-14-25-37
+-- Générée le 2026-02-27-10-16-45
 
 -- Structure de la table dog_utilisateur
 CREATE TABLE `dog_utilisateur` (
@@ -17,7 +17,7 @@ CREATE TABLE `dog_utilisateur` (
   `statut_compte` enum('actif','desactive') COLLATE utf8mb4_general_ci DEFAULT 'actif',
   PRIMARY KEY (`id_utilisateur`),
   UNIQUE KEY `unique_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_utilisateur
 INSERT INTO dog_utilisateur VALUES ('4','victor@gmail.com','1','1','118 Chemin de Basoilar','$2y$10$2BazQnxFFuzIYW.6UL8apuvxh2yRix6eoKv19mL1sryPogRl.91fq','Victor le bdg','4_Victor.jpg','0769951623','0',NULL,'actif');
@@ -25,6 +25,9 @@ INSERT INTO dog_utilisateur VALUES ('5','noa@gmail.com','1','1','118 Chemin de B
 INSERT INTO dog_utilisateur VALUES ('6','promeneur@gmail.com','0','1','118 Chemin de Basoilar','$2y$10$CVkBakATKYADteuyQl2dfuyyeTtGbnRyE4x2jxWsuZC78av6ESbSy','Promeneur',NULL,'0769951623','0',NULL,'actif');
 INSERT INTO dog_utilisateur VALUES ('7','testeur1@gmail.com','1','1','118 Chemin de Basoilar','$2y$10$5pKALMONzE3vHCVUPwz78eR1L04O6GhUz7RmTBnDtV/NCqZ3zBkRq','Testeur1',NULL,'0769951623','0',NULL,'actif');
 INSERT INTO dog_utilisateur VALUES ('8','maitre@gmail.com','1','0','118 Chemin de Basoilar','$2y$10$cYiW/E3UqQ/ztPXFOJdRyuru3UZajs5qfOUCyur57aDl.amnj5SnO','Maitre',NULL,'0769951623','0',NULL,'actif');
+INSERT INTO dog_utilisateur VALUES ('9','noah.leval@gmail.com','1','0','28 Av. de Maignon','$2y$10$eXw1Z.FNiMVL3bDcY/yZxemj3m/YZm1UAvZyPUbNypPMDil1R5YPW','Noah maitre','9_Noahmaitre.png','0606060606','0',NULL,'actif');
+INSERT INTO dog_utilisateur VALUES ('10','noah.leval1@gmail.com','0','1','123 rue example','$2y$10$JgIJv43iud.k73phWgYEqO9p7AhO1qA6Z48yQevWDzd5n5iwWELOW','noah promeneur',NULL,'0606060607','0',NULL,'actif');
+INSERT INTO dog_utilisateur VALUES ('12','noah.leval2@gmail.com','1','1','28 Av. de Maignon la où c''est écrit hotel residenc','$2y$10$zAxQJCai46yvRw6w.Q8XfORlw/psAcWJtVF2yWvC.DS0/3egWeA3e','noah les deux','1771864182_41dadaebaa70.png','0606060608','0',NULL,'actif');
 
 -- Structure de la table dog_annonce
 CREATE TABLE `dog_annonce` (
@@ -45,7 +48,7 @@ CREATE TABLE `dog_annonce` (
   KEY `id_promeneur` (`id_promeneur`),
   CONSTRAINT `fk_annonce_promeneur` FOREIGN KEY (`id_promeneur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE SET NULL,
   CONSTRAINT `fk_annonce_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_annonce
 INSERT INTO dog_annonce VALUES ('27','2026-02-20','20:00','Indisponible','20','','','60','7',NULL,'a_venir','je test des trucs');
@@ -55,6 +58,7 @@ INSERT INTO dog_annonce VALUES ('30','2026-02-23','20:00','Indisponible','19.98'
 INSERT INTO dog_annonce VALUES ('32','2026-02-25','20:00','active','19.99','','','60','4',NULL,NULL,'Promenade matinale ');
 INSERT INTO dog_annonce VALUES ('33','2026-02-24','20:00','active','19.99','','','60','5',NULL,NULL,'Avec peyooooo');
 INSERT INTO dog_annonce VALUES ('34','2026-02-25','20:00','active','20','','','60','4',NULL,NULL,'Promenade pour mon chien Gonzague');
+INSERT INTO dog_annonce VALUES ('35','2026-03-05','00:05','active','30','Il tire','Chemin blanc','45','12',NULL,NULL,'Promenade avec le chien');
 
 -- Structure de la table dog_avis
 CREATE TABLE `dog_avis` (
@@ -86,13 +90,14 @@ CREATE TABLE `dog_chien` (
   PRIMARY KEY (`id_chien`),
   KEY `id_utilisateur` (`id_utilisateur`),
   CONSTRAINT `fk_chien_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_chien
 INSERT INTO dog_chien VALUES ('8','Loukia','25','Grand','Golden Retrievere','chien_4_1771339035.jpg','4');
 INSERT INTO dog_chien VALUES ('13','Loukia','35','Grand','Golden Retriever','','7');
 INSERT INTO dog_chien VALUES ('14','Loukia','35','Grand','Golden Retriver','','5');
 INSERT INTO dog_chien VALUES ('15','Karim','2.8','Très petit','Arabe','chien_5_1771843815.jpg','5');
+INSERT INTO dog_chien VALUES ('19','klaxon','30','Moyen','Ceter','chien_12_1771867634.jpg','12');
 
 -- Structure de la table dog_concerne
 CREATE TABLE `dog_concerne` (
@@ -113,6 +118,7 @@ INSERT INTO dog_concerne VALUES ('8','32');
 INSERT INTO dog_concerne VALUES ('14','33');
 INSERT INTO dog_concerne VALUES ('15','33');
 INSERT INTO dog_concerne VALUES ('8','34');
+INSERT INTO dog_concerne VALUES ('19','35');
 
 -- Structure de la table dog_conversation
 CREATE TABLE `dog_conversation` (
@@ -147,10 +153,12 @@ CREATE TABLE `dog_dernieresave` (
   `id` int NOT NULL AUTO_INCREMENT,
   `date_save` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Données de la table dog_dernieresave
-INSERT INTO dog_dernieresave VALUES ('1','2026-02-23 14:24:03');
+INSERT INTO dog_dernieresave VALUES ('2','2026-02-23 14:25:37');
+INSERT INTO dog_dernieresave VALUES ('3','2026-02-23 14:32:21');
+INSERT INTO dog_dernieresave VALUES ('4','2026-02-23 14:32:23');
 
 -- Structure de la table dog_message
 CREATE TABLE `dog_message` (
@@ -202,7 +210,7 @@ CREATE TABLE `dog_repond` (
   KEY `fk_repond_user` (`id_utilisateur`),
   CONSTRAINT `fk_repond_annonce` FOREIGN KEY (`id_annonce`) REFERENCES `dog_annonce` (`id_annonce`) ON DELETE CASCADE,
   CONSTRAINT `fk_repond_user` FOREIGN KEY (`id_utilisateur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_repond
 INSERT INTO dog_repond VALUES ('32','27','5','acceptee','2026-02-19 16:19:49','2026-02-19 16:20:24');
@@ -210,6 +218,7 @@ INSERT INTO dog_repond VALUES ('33','28','4','acceptee','2026-02-20 11:54:33','2
 INSERT INTO dog_repond VALUES ('34','29','4','acceptee','2026-02-20 12:00:22','2026-02-20 12:00:54');
 INSERT INTO dog_repond VALUES ('35','30','4','acceptee','2026-02-22 13:15:23','2026-02-22 13:16:34');
 INSERT INTO dog_repond VALUES ('38','32','5','en_attente','2026-02-23 14:19:58','2026-02-23 14:19:58');
+INSERT INTO dog_repond VALUES ('39','32','12','en_attente','2026-02-23 18:22:18','2026-02-23 18:22:18');
 
 -- Structure de la table dog_notification
 CREATE TABLE `dog_notification` (
@@ -233,7 +242,7 @@ CREATE TABLE `dog_notification` (
   CONSTRAINT `fk_notif_promeneur` FOREIGN KEY (`id_promeneur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE CASCADE,
   CONSTRAINT `fk_notif_reponse` FOREIGN KEY (`id_reponse`) REFERENCES `dog_repond` (`id_reponse`) ON DELETE CASCADE,
   CONSTRAINT `fk_notif_user` FOREIGN KEY (`id_utilisateur`) REFERENCES `dog_utilisateur` (`id_utilisateur`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_notification
 INSERT INTO dog_notification VALUES ('80','5','Nouveau message','Vous avez reçu un nouveau message de Victor','',NULL,NULL,'4','1','2026-02-18 16:24:05');
@@ -261,4 +270,192 @@ INSERT INTO dog_notification VALUES ('128','4','Candidature acceptée','Votre ca
 INSERT INTO dog_notification VALUES ('133','5','Nouveau message','Vous avez reçu un nouveau message de Victor le bdg','',NULL,NULL,'4','1','2026-02-23 14:19:05');
 INSERT INTO dog_notification VALUES ('134','5','Candidature soumise','Votre candidature pour l''annonce "Promenade matinale " a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.','candidature_soumise','32','38',NULL,'1','2026-02-23 14:19:58');
 INSERT INTO dog_notification VALUES ('135','4','Nouvelle candidature reçue','Noa  a postulé pour votre annonce "Promenade matinale ".','candidature_reçue','32','38','5','0','2026-02-23 14:19:58');
+INSERT INTO dog_notification VALUES ('136','12','Candidature soumise','Votre candidature pour l''annonce "Promenade matinale " a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.','candidature_soumise','32','39',NULL,'1','2026-02-23 18:22:18');
+INSERT INTO dog_notification VALUES ('137','4','Nouvelle candidature reçue','noah les deux a postulé pour votre annonce "Promenade matinale ".','candidature_reçue','32','39','12','0','2026-02-23 18:22:18');
+
+-- -------------------------------------------
+-- Triggers
+-- -------------------------------------------
+
+SET FOREIGN_KEY_CHECKS=0;
+DELIMITER $$
+
+-- Trigger : trg_annonce_uniquement_maitre
+DROP TRIGGER IF EXISTS `trg_annonce_uniquement_maitre` $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `trg_annonce_uniquement_maitre` BEFORE INSERT ON `dog_annonce` FOR EACH ROW BEGIN 
+
+    DECLARE estMaitreUser BOOLEAN; 
+
+  
+
+    SELECT estMaitre INTO estMaitreUser 
+
+    FROM dog_Utilisateur 
+
+    WHERE id_utilisateur = NEW.id_utilisateur; 
+
+  
+
+    IF estMaitreUser = 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Seuls les maîtres peuvent poster une annonce'; 
+
+    END IF; 
+
+END $$
+
+-- Trigger : trg_avis_maitre_vers_promeneur
+DROP TRIGGER IF EXISTS `trg_avis_maitre_vers_promeneur` $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `trg_avis_maitre_vers_promeneur` BEFORE INSERT ON `dog_avis` FOR EACH ROW BEGIN 
+
+    DECLARE estMaitreAuteur BOOLEAN; 
+
+    DECLARE estPromeneurNote BOOLEAN; 
+
+  
+
+    SELECT estMaitre INTO estMaitreAuteur 
+
+    FROM dog_Utilisateur 
+
+    WHERE id_utilisateur = NEW.id_utilisateur; 
+
+  
+
+    SELECT estPromeneur INTO estPromeneurNote 
+
+    FROM dog_Utilisateur 
+
+    WHERE id_utilisateur = NEW.id_utilisateur_note; 
+
+  
+
+    IF estMaitreAuteur = 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Seul un maître peut laisser un avis'; 
+
+    END IF; 
+
+  
+
+    IF estPromeneurNote = 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Un avis ne peut être laissé que pour un promeneur'; 
+
+    END IF; 
+
+END $$
+
+-- Trigger : trg_chien_uniquement_maitre
+DROP TRIGGER IF EXISTS `trg_chien_uniquement_maitre` $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `trg_chien_uniquement_maitre` BEFORE INSERT ON `dog_chien` FOR EACH ROW BEGIN 
+
+    DECLARE estMaitreUser BOOLEAN; 
+
+  
+
+    SELECT estMaitre INTO estMaitreUser 
+
+    FROM dog_Utilisateur 
+
+    WHERE id_utilisateur = NEW.id_utilisateur; 
+
+  
+
+    IF estMaitreUser = 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Seuls les maîtres peuvent posséder des chiens'; 
+
+    END IF; 
+
+END $$
+
+-- Trigger : trg_annonce_doublon_chien
+DROP TRIGGER IF EXISTS `trg_annonce_doublon_chien` $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `trg_annonce_doublon_chien` BEFORE INSERT ON `dog_concerne` FOR EACH ROW BEGIN 
+
+    DECLARE nb INT; 
+
+  
+
+    SELECT COUNT(*) INTO nb 
+
+    FROM dog_Annonce a 
+
+    JOIN dog_Concerne c ON a.id_annonce = c.id_annonce 
+
+    WHERE a.id_utilisateur = ( 
+
+        SELECT id_utilisateur FROM dog_Annonce WHERE id_annonce = NEW.id_annonce 
+
+    ) 
+
+    AND c.id_chien = NEW.id_chien 
+
+    AND a.datePromenade = ( 
+
+        SELECT datePromenade FROM dog_Annonce WHERE id_annonce = NEW.id_annonce 
+
+    ) 
+
+    AND a.horaire = ( 
+
+        SELECT horaire FROM dog_Annonce WHERE id_annonce = NEW.id_annonce 
+
+    ) 
+
+    AND a.endroitPromenade = ( 
+
+        SELECT endroitPromenade FROM dog_Annonce WHERE id_annonce = NEW.id_annonce 
+
+    ); 
+
+  
+
+    IF nb > 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Annonce dupliquée avec le même chien, date, heure et lieu'; 
+
+    END IF; 
+
+END $$
+
+-- Trigger : trg_reponse_uniquement_promeneur
+DROP TRIGGER IF EXISTS `trg_reponse_uniquement_promeneur` $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `trg_reponse_uniquement_promeneur` BEFORE INSERT ON `dog_repond` FOR EACH ROW BEGIN 
+
+    DECLARE estPromeneurUser BOOLEAN; 
+
+  
+
+    SELECT estPromeneur INTO estPromeneurUser 
+
+    FROM dog_Utilisateur 
+
+    WHERE id_utilisateur = NEW.id_utilisateur; 
+
+  
+
+    IF estPromeneurUser = 0 THEN 
+
+        SIGNAL SQLSTATE '45000' 
+
+        SET MESSAGE_TEXT = 'Seuls les promeneurs peuvent répondre à une annonce'; 
+
+    END IF; 
+
+END $$
+
+DELIMITER ;
+SET FOREIGN_KEY_CHECKS=1;
 
