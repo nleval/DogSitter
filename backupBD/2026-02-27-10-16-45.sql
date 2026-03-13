@@ -153,7 +153,7 @@ CREATE TABLE `dog_dernieresave` (
   `id` int NOT NULL AUTO_INCREMENT,
   `date_save` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Données de la table dog_dernieresave
 INSERT INTO dog_dernieresave VALUES ('2','2026-02-23 14:25:37');
