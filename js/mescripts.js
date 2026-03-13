@@ -1040,6 +1040,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (document.getElementById('candidature-success-trigger')) {
         window.showCandidatureSuccess = true;
+        // Affichage immédiat de la notification si le trigger est présent (sans attendre reload)
+        setTimeout(() => {
+            notificationManager.show(
+                'Candidature soumise',
+                'Votre candidature a été enregistrée avec succès. Le maître sera notifié et examinera votre candidature.',
+                'success',
+                6000
+            );
+        }, 300);
+        window.showCandidatureSuccess = false;
     }
 
     notificationManager = new NotificationManager();

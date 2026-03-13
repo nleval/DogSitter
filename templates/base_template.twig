@@ -170,6 +170,36 @@
                                         <span>Voir mon profil</span>
                                     </a>
                                 </li>
+                                <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #DDA15E; opacity: 1; border-width:1.5px;"></li>
+                                {% if utilisateurConnecte.estPromeneur %}
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=verMesCandidatures" style="color: #537031;">
+                                        <i class="bi bi-hand-thumbs-up"></i> Mes candidatures
+                                    </a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=mesPromenades&statut=a_venir" style="color: #537031;">
+                                        <i class="bi bi-map"></i> Mes promenades
+                                    </a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=mesPromenades&statut=archivee" style="color: #537031;">
+                                        <i class="bi bi-archive"></i> Archives promenades
+                                    </a></li>
+                                {% endif %}
+                                {% if utilisateurConnecte.estMaitre and utilisateurConnecte.estPromeneur %}
+                                    <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #DDA15E; opacity: 1; border-width:1.5px;"></li>
+                                {% endif %}
+                                {% if utilisateurConnecte.estMaitre %}
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=afficherAnnoncesParUtilisateur&id_utilisateur={{ utilisateurConnecte.id }}" style="color: #537031;">
+                                        <i class="bi bi-bookmark-heart"></i> Mes annonces
+                                    </a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=voirCandidatures" style="color: #537031;">
+                                        <i class="bi bi-clipboard-check"></i> Candidatures
+                                    </a></li>
+                                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=annonce&methode=archivesAnnonces" style="color: #537031;">
+                                        <i class="bi bi-archive"></i> Archives
+                                    </a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider" style="margin: 6px 0; border-color: #DDA15E; opacity: 1; border-width:1.5px;"></li>
+                                <li><a class="dropdown-item d-flex align-items-center gap-2" href="?controleur=utilisateur&methode=afficherModif&id_utilisateur={{ utilisateurConnecte.id }}" style="color: #537031;">
+                                    <i class="bi bi-pencil"></i> Modifier profil
+                                </a></li>
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2" href="index.php?controleur=utilisateur&methode=deconnexion" style="color:#BC6C25;">
                                         <i class="bi bi-box-arrow-right"></i>
